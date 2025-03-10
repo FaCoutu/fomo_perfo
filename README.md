@@ -50,7 +50,7 @@
  <h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
  
  <div class="video-container">
-    <iframe id="video" width="100%" height="auto" src="https://www.youtube.com/embed/fm00cFcoJM8?si=LAj7-4izbuRZxSR5" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <iframe id="video" width="100%" height="auto" max-width=2000px; src="https://www.youtube.com/embed/fm00cFcoJM8?si=LAj7-4izbuRZxSR5" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     <button id="btnBascule" class="btn-video">Audio salle de droite</button>
  </div>
  
