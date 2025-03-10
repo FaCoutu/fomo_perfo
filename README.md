@@ -56,7 +56,7 @@
 <h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
 
 <div class="video-container">
-   <video id="video" controls autoplay>
+   <video id="video" controls>
       <source src="https://dl.dropboxusercontent.com/scl/fi/vn856dku4ckgm35azhbz1/Fumee-Omnisciente-Mirage-Onirique02.mp4?rlkey=khuru1f6c5woeclemz1ai9rlz&st=pksoqe29&raw=1" type="video/mp4">    
       Votre navigateur ne prend pas en charge la vidéo HTML5.
    </video>
@@ -152,14 +152,14 @@
         }
     });
 
-    // Ajouter l'action pour activer le plein écran au chargement de la page
-    window.onload = function() {
+    // L'utilisateur peut activer le plein écran manuellement en cliquant sur la vidéo
+    video.addEventListener("click", function() {
         if (video.requestFullscreen) {
             video.requestFullscreen();
         } else if (video.webkitRequestFullscreen) { // Safari
             video.webkitRequestFullscreen();
         }
-    };
+    });
 
 </script>
 </body>
