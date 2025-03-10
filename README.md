@@ -9,17 +9,14 @@
         text-align: center;
         padding: 10px;
     }
- 
     .video-container {
        position: relative;
        display: inline-block;
     }
- 
     video {
        width: 100%;
        max-width: 2000px;
     }
- 
     .btn-video {
         position: absolute;
         top: 10px;
@@ -37,15 +34,12 @@
         z-index: 10;
         text-align: left;
     }
- 
     .btn-video:hover {
         opacity: 1;
     }
- 
     .btn-salle1 {
         background-color: #194f18;
     }
- 
     .btn-salle2 {
         background-color: #433d69;
     }
@@ -61,7 +55,6 @@
        <source src="https://dl.dropboxusercontent.com/scl/fi/vn856dku4ckgm35azhbz1/Fumee-Omnisciente-Mirage-Onirique02.mp4?rlkey=khuru1f6c5woeclemz1ai9rlz&st=pksoqe29&raw=1" type="video/mp4">    
        Votre navigateur ne prend pas en charge la vidéo HTML5.
     </video>
- 
     <button id="btnBascule" class="btn-video">Audio salle de droite</button>
  </div>
  
