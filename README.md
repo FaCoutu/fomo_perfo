@@ -34,6 +34,15 @@
       margin-top: 0px;  /* Ajoute un espace après le premier titre */
       
    }
+   .btn-salle1 {
+    background-color: blue;
+    color: white;
+   }
+
+   .btn-salle2 {
+    background-color: red;
+    color: white;
+   }
 </style>
 </head>
 <body>
@@ -62,59 +71,69 @@
 
   <!-- Script JavaScript intégré -->
   <script>
-    var audioSalle1 = document.getElementById("audioSalle1");
-    var audioSalle2 = document.getElementById("audioSalle2");
-    var video = document.getElementById("video");
-    var btnBascule = document.getElementById("btnBascule");
-
-    var audioActif = audioSalle2; // On commence avec l'audio de la Salle 2
-    btnBascule.textContent = "Audio salle 2"; // Texte initial du bouton
-
-    // Démarrage de la vidéo : on synchronise et joue l'audio actif
-    video.addEventListener("play", function() {
-        if (audioActif.paused) {
-            audioActif.currentTime = video.currentTime; // Synchroniser avec la vidéo
-            audioActif.play(); // Jouer uniquement l'audio actif
-        }
-    });
-
-    // Mise en pause : on met aussi l'audio actif en pause
-    video.addEventListener("pause", function() {
-        audioActif.pause();
-    });
-
-    // Synchroniser la position de l'audio avec la vidéo
-    video.addEventListener("timeupdate", function() {
-        if (!video.paused) {
-            audioActif.currentTime = video.currentTime;
-        }
-    });
-
-    // Lorsqu'on cherche un moment précis dans la vidéo
-    video.addEventListener("seeked", function() {
-        audioActif.currentTime = video.currentTime;
-    });
-
-    // Bouton pour basculer entre les pistes audio
-    btnBascule.addEventListener("click", function() {
-        if (audioActif === audioSalle1) {
-            audioSalle1.muted = true;
-            audioSalle2.muted = false;
-            audioActif = audioSalle2;
-            btnBascule.textContent = "Audio salle 2"; // Met à jour le texte du bouton
-        } else {
-            audioSalle1.muted = false;
-            audioSalle2.muted = true;
-            audioActif = audioSalle1;
-            btnBascule.textContent = "Audio salle 1"; // Met à jour le texte du bouton
-        }
-
-        // Synchroniser et jouer immédiatement l'audio actif
-        audioActif.currentTime = video.currentTime;
-        if (!video.paused) {
-            audioActif.play();
-        }
-    });
+   var audioSalle1 = document.getElementById("audioSalle1");
+   var audioSalle2 = document.getElementById("audioSalle2");
+   var video = document.getElementById("video");
+   var btnBascule = document.getElementById("btnBascule");
+   
+   var audioActif = audioSalle2; // On commence avec l'audio de la Salle 2
+   btnBascule.textContent = "Audio salle 2"; // Texte initial
+   btnBascule.classList.add("btn-salle2"); // Couleur initiale (rouge)
+   
+   // Démarrage de la vidéo : on synchronise et joue l'audio actif
+   video.addEventListener("play", function() {
+       if (audioActif.paused) {
+           audioActif.currentTime = video.currentTime; // Synchroniser avec la vidéo
+           audioActif.play(); // Jouer uniquement l'audio actif
+       }
+   });
+   
+   // Mise en pause : on met aussi l'audio actif en pause
+   video.addEventListener("pause", function() {
+       audioActif.pause();
+   });
+   
+   // Synchroniser la position de l'audio avec la vidéo
+   video.addEventListener("timeupdate", function() {
+       if (!video.paused) {
+           audioActif.currentTime = video.currentTime;
+       }
+   });
+   
+   // Lorsqu'on cherche un moment précis dans la vidéo
+   video.addEventListener("seeked", function() {
+       audioActif.currentTime = video.currentTime;
+   });
+   
+   // Bouton pour basculer entre les pistes audio
+   btnBascule.addEventListener("click", function() {
+       if (audioActif === audioSalle1) {
+           audioSalle1.muted = true;
+           audioSalle2.muted = false;
+           audioActif = audioSalle2;
+           btnBascule.textContent = "Audio salle 2"; // Met à jour le texte du bouton
+   
+           // Mise à jour des couleurs
+           btnBascule.classList.remove("btn-salle1");
+           btnBascule.classList.add("btn-salle2");
+   
+       } else {
+           audioSalle1.muted = false;
+           audioSalle2.muted = true;
+           audioActif = audioSalle1;
+           btnBascule.textContent = "Audio salle 1"; // Met à jour le texte du bouton
+   
+           // Mise à jour des couleurs
+           btnBascule.classList.remove("btn-salle2");
+           btnBascule.classList.add("btn-salle1");
+       }
+   
+       // Synchroniser et jouer immédiatement l'audio actif
+       audioActif.currentTime = video.currentTime;
+       if (!video.paused) {
+           audioActif.play();
+       }
+   });
 </script>
 
 </body>
