@@ -20,7 +20,7 @@
         }
         /* Changer la taille de la police pour les titres */
         h1 {
-            font-size: 16px;  /* Ajuste la taille ici comme tu le souhaites */
+            font-size: 12px;  /* Ajuste la taille ici comme tu le souhaites */
             font-weight: bold;
             color: #333;  /* Facultatif : change la couleur si nécessaire */
         }
