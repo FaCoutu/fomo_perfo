@@ -9,18 +9,6 @@
        text-align: center;
        padding: 10px;
    }
-   /* Changer la taille de la police pour les titres */
-   h1 {
-      font-size: 16px !important;  /* Ajuste la taille ici comme tu le souhaites */
-      font-weight: bold;
-      color: #333;  /* Facultatif : change la couleur si nécessaire */
-      margin: 0;  /* Empêche les marges par défaut entre les h1 */
-      border: none;  /* Enlève les bordures */
-   }
-   /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
-   .titre-1 {
-       margin-bottom: 0px;  /* Ajoute un espace après le premier titre */
-   }
 
    .video-container {
       position: relative;
@@ -34,8 +22,8 @@
 
    .btn-video {
        position: absolute;
-       top: 10px;
-       left: 10%;
+       bottom: 40px;
+       left: 50%;
        transform: translateX(-50%);
        background-color: #433d69;
        color: white;
@@ -47,7 +35,6 @@
        opacity: 0.8;
        transition: opacity 0.3s, background-color 0.3s;
        z-index: 10;
-       text-align: left;
    }
 
    .btn-video:hover {
@@ -66,8 +53,8 @@
    /* On ajoute un wrapper pour gérer l'affichage du bouton */
    .video-container.fullscreen .btn-video {
        position: absolute;
-       top: 10px;
-       left: 10%;
+       bottom: 40px;
+       left: 50%;
        transform: translateX(-50%);
        z-index: 9999;
        display: block !important;
@@ -83,13 +70,13 @@
 
 <h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
 
-<div class="video-container">
+<div class="video-container" id="videoWrapper">
    <video id="video" controls autoplay>
       <source src="https://dl.dropboxusercontent.com/scl/fi/vn856dku4ckgm35azhbz1/Fumee-Omnisciente-Mirage-Onirique02.mp4?rlkey=khuru1f6c5woeclemz1ai9rlz&st=pksoqe29&raw=1" type="video/mp4">    
       Votre navigateur ne prend pas en charge la vidéo HTML5.
    </video>
 
-   <button id="btnBascule" class="btn-video">Audio salle de droite</button>
+   <button id="btnBascule" class="btn-video">Audio salle 2</button>
 </div>
 
 <audio id="audioSalle1" loop>
@@ -136,14 +123,14 @@
             audioSalle1.muted = true;
             audioSalle2.muted = false;
             audioActif = audioSalle2;
-            btnBascule.textContent = "Audio salle de droite";
+            btnBascule.textContent = "Audio salle 2";
             btnBascule.classList.remove("btn-salle1");
             btnBascule.classList.add("btn-salle2");
         } else {
             audioSalle1.muted = false;
             audioSalle2.muted = true;
             audioActif = audioSalle1;
-            btnBascule.textContent = "Audio salle de gauche";
+            btnBascule.textContent = "Audio salle 1";
             btnBascule.classList.remove("btn-salle2");
             btnBascule.classList.add("btn-salle1");
         }
@@ -153,7 +140,8 @@
             audioActif.play();
         }
     });
-   // Ajouter/retirer la classe fullscreen pour afficher le bouton en plein écran
+
+    // Ajouter/retirer la classe fullscreen pour afficher le bouton en plein écran
     document.addEventListener("fullscreenchange", function() {
         if (document.fullscreenElement) {
             videoWrapper.classList.add("fullscreen");
