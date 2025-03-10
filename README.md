@@ -73,12 +73,13 @@
      var audioSalle1 = document.getElementById("audioSalle1");
      var audioSalle2 = document.getElementById("audioSalle2");
      var btnBascule = document.getElementById("btnBascule");
- 
+     
      var audioActif = audioSalle2;
      btnBascule.classList.add("btn-salle2");
- 
+     
      var player;
- 
+     var lastSyncTime = 0;  // Variable pour suivre la dernière synchronisation
+     
      // Fonction d'initialisation de l'API YouTube
      function onYouTubePlayerAPIReady() {
          player = new YT.Player('video', {
@@ -87,7 +88,7 @@
              }
          });
      }
- 
+     
      // Quand l'état de la vidéo change (lecture, pause, etc.)
      function onPlayerStateChange(event) {
          if (event.data == YT.PlayerState.PLAYING) {
@@ -99,14 +100,21 @@
              audioActif.pause();
          }
      }
- 
+     
      // Synchronisation de l'audio et de la vidéo en fonction du temps
      setInterval(function() {
-         if (player && !player.getPlayerState() == YT.PlayerState.PAUSED) {
-             audioActif.currentTime = player.getCurrentTime();
+         if (player && player.getPlayerState() !== YT.PlayerState.PAUSED) {
+             var currentTime = player.getCurrentTime();
+     
+             // Synchroniser l'audio toutes les 100ms (ajustez cette valeur selon les besoins)
+             if (Math.abs(currentTime - lastSyncTime) > 0.1) {
+                 audioActif.currentTime = currentTime;
+                 lastSyncTime = currentTime;  // Mettre à jour la dernière synchronisation
+             }
          }
      }, 100);
- 
+     
+     // Changer l'audio actif à la demande
      btnBascule.addEventListener("click", function() {
          if (audioActif === audioSalle1) {
              audioSalle1.muted = true;
@@ -123,13 +131,13 @@
              btnBascule.classList.remove("btn-salle2");
              btnBascule.classList.add("btn-salle1");
          }
- 
+     
          audioActif.currentTime = player.getCurrentTime();
          if (player.getPlayerState() !== YT.PlayerState.PAUSED) {
              audioActif.play();
          }
      });
- 
+     
      // Charger l'API YouTube Iframe Player
      var tag = document.createElement('script');
      tag.src = "https://www.youtube.com/iframe_api";
