@@ -62,15 +62,16 @@
       background-color: #433d69;
       color: white;
    }
-   /* Bouton visible en mode plein écran */
-   :fullscreen .btn-video,
-   ::-webkit-full-screen .btn-video { /* Pour Safari */
-       position: absolute;
-       bottom: 40px;
-       left: 50%;
-       transform: translateX(-50%);
-       z-index: 9999; /* S'assurer que le bouton est au-dessus */
-   }
+   /* Forcer l'affichage du bouton en mode plein écran */
+      video:-webkit-full-screen + .btn-video,
+      video:fullscreen + .btn-video {
+          position: fixed;
+          bottom: 40px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 9999;
+          display: block !important;
+      }
    
 </style>
 </head>
