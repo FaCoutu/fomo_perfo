@@ -10,7 +10,7 @@
        padding: 30px;
    }
    video {
-       width: 100%;
+       width: 150%;
        max-width: 4000px;
    }
    button {
