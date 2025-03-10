@@ -25,10 +25,9 @@
             color: #333;  /* Couleur du texte */
             margin: 0;  /* Empêche les marges par défaut entre les h1 */
         }
-
         /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
         .titre-1 {
-            margin-bottom: 16px;  /* Ajoute un espace après le premier titre */
+            margin-bottom: 0px;  /* Ajoute un espace après le premier titre */
         }
     </style>
 </head>
