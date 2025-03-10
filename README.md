@@ -49,8 +49,6 @@
    .btn-salle2 {
        background-color: #433d69;
    }
-
-   /* Pas de modification ici pour le fullscreen, ça sera géré par JavaScript */
 </style>
 </head>
 <body>
@@ -127,23 +125,41 @@
         }
     });
 
-    // Fonction pour ajouter le z-index élevé en mode plein écran
+    // Fonction pour forcer le bouton en mode plein écran
     function adjustButtonInFullscreen() {
-        btnBascule.style.zIndex = "9999"; // Ajoute un z-index élevé pour s'assurer que le bouton soit visible
+        btnBascule.style.zIndex = "9999"; // Force z-index élevé en mode plein écran
     }
 
-    // Rendre le bouton visible en mode plein écran
+    // Fonction pour réinitialiser le bouton lorsque l'on quitte le plein écran
+    function resetButtonAfterFullscreen() {
+        btnBascule.style.zIndex = "10"; // Réinitialise le z-index lorsque l'on quitte le plein écran
+    }
+
+    // Rendre le bouton visible et ajuster le z-index en mode plein écran
     document.addEventListener("fullscreenchange", function() {
         if (document.fullscreenElement) {
             adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
+        } else {
+            resetButtonAfterFullscreen();  // Réinitialisation du z-index
         }
     });
 
     document.addEventListener("webkitfullscreenchange", function() {
         if (document.webkitFullscreenElement) {
             adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
+        } else {
+            resetButtonAfterFullscreen();  // Réinitialisation du z-index
         }
     });
+
+    // Ajouter l'action pour activer le plein écran au chargement de la page
+    window.onload = function() {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) { // Safari
+            video.webkitRequestFullscreen();
+        }
+    };
 
 </script>
 </body>
