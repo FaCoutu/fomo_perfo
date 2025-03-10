@@ -12,6 +12,17 @@
         .video-container {
             position: relative;
             display: inline-block;
+            width: 100%;
+            max-width: 2000px; /* Optionnel, pour limiter la largeur maximum */
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
         .btn-video {
             position: absolute;
@@ -46,7 +57,7 @@
 <h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
 
 <div class="video-container">
-    <iframe id="video" width="100%" height="auto" src="https://www.youtube.com/embed/fm00cFcoJM8?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <iframe id="video" src="https://www.youtube.com/embed/fm00cFcoJM8?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     <button id="btnBascule" class="btn-video">Audio salle de droite</button>
 </div>
 
@@ -91,7 +102,7 @@
 
     // Synchronisation de l'audio et de la vidéo en fonction du temps
     setInterval(function() {
-        if (player && !player.getPlayerState() == YT.PlayerState.PAUSED) {
+        if (player && player.getPlayerState() !== YT.PlayerState.PAUSED) {
             audioActif.currentTime = player.getCurrentTime();
         }
     }, 100);
