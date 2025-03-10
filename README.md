@@ -35,10 +35,7 @@
 <body>
 
 <!-- Premier titre avec une classe pour un espacement -->
-<h1 class="titre-1">Fumée Omnisciente, Mirage Onirique</h1>
-
-<!-- Deuxième titre, sans classe spécifique, donc prendra les mêmes styles -->
-<h1>Résidence de création, janvier 2025, Bain Mathieu</h1>
+<h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
 
 <!-- Vidéo divisée en deux (les deux salles) -->
 <video id="video" controls autoplay>
