@@ -10,8 +10,9 @@
        padding: 30px;
    }
    video {
-       width: 150%;
-       max-width: 4000px;
+       width: 120%;
+       max-width: 3000px;
+       video-align: center;
    }
    button {
        margin: 10px;
