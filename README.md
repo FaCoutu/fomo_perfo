@@ -55,7 +55,7 @@
 
             audioSalle1.play();
             audioSalle2.play();
-            audioSalle2.muted = true;  // D'abord, on mute l'audio de la salle 2, donc seul l'audio de la salle 1 est audible
+            audioSalle1.muted = true;  // D'abord, on mute l'audio de la salle 1, donc seul l'audio de la salle 2 est audible
         });
 
         document.getElementById("btnBascule").addEventListener("click", function() {
