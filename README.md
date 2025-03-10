@@ -10,7 +10,7 @@
        padding: 10px;
    }
    video {
-       width: 120%;
+       width: 100%;
        max-width: 2000px;
        video-align: center;
    }
@@ -66,66 +66,49 @@
     var audioSalle2 = document.getElementById("audioSalle2");
     var video = document.getElementById("video");
 
-    var audioActif = null; // Pour mémoriser l'audio actif avant la pause
+    var audioActif = audioSalle2; // On commence avec l'audio de la Salle 2
 
-    // Lors du démarrage de la vidéo, commence avec l'audio de la Salle 2
+    // Démarrage de la vidéo : on synchronise et joue l'audio actif
     video.addEventListener("play", function() {
-        audioSalle1.play();
-        audioSalle2.play();
-        audioSalle1.muted = true;  // Mute l'audio de la Salle 1
-        audioSalle2.muted = false; // L'audio de la Salle 2 est actif
-        audioActif = audioSalle2;  // On mémorise l'audio actif (Salle 2)
+        if (audioActif.paused) {
+            audioActif.currentTime = video.currentTime; // Synchroniser avec la vidéo
+            audioActif.play(); // Jouer uniquement l'audio actif
+        }
     });
 
-    // Lors de la mise en pause de la vidéo
+    // Mise en pause : on met aussi l'audio actif en pause
     video.addEventListener("pause", function() {
-        // Mémoriser l'audio actif avant de mettre en pause
-        if (!audioSalle1.muted) {
-            audioActif = audioSalle1; // Si l'audio de la salle 1 est actif
-        } else {
-            audioActif = audioSalle2; // Si l'audio de la salle 2 est actif
-        }
-
-        // Mettre les deux audios en pause
-        audioSalle1.pause();
-        audioSalle2.pause();
+        audioActif.pause();
     });
 
-    // Lors de la reprise de la vidéo
-    video.addEventListener("play", function() {
-        if (audioActif) {
-            audioActif.play();  // Reprendre l'audio actif
-            audioActif.currentTime = video.currentTime;  // Synchroniser l'audio avec la vidéo
-        }
-    });
-
-    // Synchroniser la position de l'audio avec celle de la vidéo
+    // Synchroniser la position de l'audio avec la vidéo
     video.addEventListener("timeupdate", function() {
-        var currentTime = video.currentTime;
-        audioSalle1.currentTime = currentTime;
-        audioSalle2.currentTime = currentTime;
-    });
-
-    // Lorsqu'on se déplace dans la vidéo, on reprend l'audio actif
-    video.addEventListener("seeked", function() {
-        if (audioActif) {
-            audioActif.currentTime = video.currentTime;  // Synchroniser l'audio
-            audioActif.play();  // Relancer l'audio actif
+        if (!video.paused) {
+            audioActif.currentTime = video.currentTime;
         }
     });
 
-    // Bascule entre l'audio de la première et de la seconde salle
+    // Lorsqu'on cherche un moment précis dans la vidéo
+    video.addEventListener("seeked", function() {
+        audioActif.currentTime = video.currentTime;
+    });
+
+    // Bouton pour basculer entre les pistes audio
     document.getElementById("btnBascule").addEventListener("click", function() {
-        if (audioSalle1.muted) {
-            // Si l'audio de la salle 1 est muet, on le rend audible et mute celui de la salle 2
-            audioSalle1.muted = false;
-            audioSalle2.muted = true;
-            audioActif = audioSalle1;  // Mémoriser l'audio actif (Salle 1)
-        } else {
-            // Si l'audio de la salle 2 est muet, on le rend audible et mute celui de la salle 1
+        if (audioActif === audioSalle1) {
             audioSalle1.muted = true;
             audioSalle2.muted = false;
-            audioActif = audioSalle2;  // Mémoriser l'audio actif (Salle 2)
+            audioActif = audioSalle2;
+        } else {
+            audioSalle1.muted = false;
+            audioSalle2.muted = true;
+            audioActif = audioSalle1;
+        }
+
+        // Synchroniser et jouer immédiatement l'audio actif
+        audioActif.currentTime = video.currentTime;
+        if (!video.paused) {
+            audioActif.play();
         }
     });
 </script>
