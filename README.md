@@ -22,7 +22,7 @@
    h1 {
       font-size: 16px !important;  /* Ajuste la taille ici comme tu le souhaites */
       font-weight: bold;
-      color: #333;  /* Facultatif : change la couleur si nécessaire */
+      color: #5B5B5B;  /* Facultatif : change la couleur si nécessaire */
       margin: 0;  /* Empêche les marges par défaut entre les h1 */
       border: none;  /* Enlève les bordures */
    }
