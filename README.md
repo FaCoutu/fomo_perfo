@@ -50,10 +50,10 @@
         .btn-salle2 {
             background-color: #433d69;
         }
-        /* Masquer les lecteurs audio */
+        /* Masquer les lecteurs audio
         .audio-container iframe {
             display: none;
-        }
+        } */
     </style>
 </head>
 <body>
