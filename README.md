@@ -22,7 +22,9 @@
 </head>
 <body>
 
-    <h1>Fumée Omniscient, Mirage Onirique - Résidence de création, janvier 2025, Bain Mathieu</h1>
+    <h1>Fumée Omniscient, Mirage Onirique</h1>
+
+    <h1>Résidence de création, janvier 2025, Bain Mathieu</h1>
 
     <!-- Vidéo divisée en deux (les deux salles) -->
     <video id="video" controls autoplay>
