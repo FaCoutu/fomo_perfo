@@ -22,8 +22,8 @@
 
    .btn-video {
        position: absolute;
-       top: 10%;
-       left: 10%;
+       top: 10px;
+       left: 10px;
        transform: translateX(-50%);
        background-color: #433d69;
        color: white;
@@ -53,8 +53,8 @@
    video:-webkit-full-screen + .btn-video,
    video:fullscreen + .btn-video {
        position: fixed;
-       top: 10%;
-       left: 10%;
+       top: 10px;
+       left: 10px;
        transform: translateX(-50%);
        z-index: 9999;
        display: block !important;
@@ -117,14 +117,14 @@
             audioSalle1.muted = true;
             audioSalle2.muted = false;
             audioActif = audioSalle2;
-            btnBascule.textContent = "Audio salle 2";
+            btnBascule.textContent = "Audio salle de droite";
             btnBascule.classList.remove("btn-salle1");
             btnBascule.classList.add("btn-salle2");
         } else {
             audioSalle1.muted = false;
             audioSalle2.muted = true;
             audioActif = audioSalle1;
-            btnBascule.textContent = "Audio salle 1";
+            btnBascule.textContent = "Audio salle de gauche";
             btnBascule.classList.remove("btn-salle2");
             btnBascule.classList.add("btn-salle1");
         }
