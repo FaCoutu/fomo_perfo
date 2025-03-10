@@ -22,8 +22,8 @@
 
    .btn-video {
        position: absolute;
-       bottom: 40px;
-       left: 50%;
+       top: 10px;
+       left: 10%;
        transform: translateX(-50%);
        background-color: #433d69;
        color: white;
@@ -35,6 +35,7 @@
        opacity: 0.8;
        transition: opacity 0.3s, background-color 0.3s;
        z-index: 10;
+       text-align: left;
    }
 
    .btn-video:hover {
@@ -49,34 +50,20 @@
        background-color: #433d69;
    }
 
-   /* Forcer l'affichage du bouton en mode plein écran */
-   /* On ajoute un wrapper pour gérer l'affichage du bouton */
-   .video-container.fullscreen .btn-video {
-       position: absolute;
-       bottom: 40px;
-       left: 50%;
-       transform: translateX(-50%);
-       z-index: 9999;
-       display: block !important;
-   }
-   
-   /* Empêcher l'affichage du bouton en plein écran sans wrapper */
-   .btn-video {
-       display: none;
-   }
+   /* Pas de modification ici pour le fullscreen, ça sera géré par JavaScript */
 </style>
 </head>
 <body>
 
 <h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
 
-<div class="video-container" id="videoWrapper">
+<div class="video-container">
    <video id="video" controls autoplay>
       <source src="https://dl.dropboxusercontent.com/scl/fi/vn856dku4ckgm35azhbz1/Fumee-Omnisciente-Mirage-Onirique02.mp4?rlkey=khuru1f6c5woeclemz1ai9rlz&st=pksoqe29&raw=1" type="video/mp4">    
       Votre navigateur ne prend pas en charge la vidéo HTML5.
    </video>
 
-   <button id="btnBascule" class="btn-video">Audio salle 2</button>
+   <button id="btnBascule" class="btn-video">Audio salle de droite</button>
 </div>
 
 <audio id="audioSalle1" loop>
@@ -92,7 +79,6 @@
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
-    var videoWrapper = document.getElementById("videoWrapper");
 
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
@@ -123,14 +109,14 @@
             audioSalle1.muted = true;
             audioSalle2.muted = false;
             audioActif = audioSalle2;
-            btnBascule.textContent = "Audio salle 2";
+            btnBascule.textContent = "Audio salle de droite";
             btnBascule.classList.remove("btn-salle1");
             btnBascule.classList.add("btn-salle2");
         } else {
             audioSalle1.muted = false;
             audioSalle2.muted = true;
             audioActif = audioSalle1;
-            btnBascule.textContent = "Audio salle 1";
+            btnBascule.textContent = "Audio salle de gauche";
             btnBascule.classList.remove("btn-salle2");
             btnBascule.classList.add("btn-salle1");
         }
@@ -141,31 +127,24 @@
         }
     });
 
-    // Ajouter/retirer la classe fullscreen pour afficher le bouton en plein écran
+    // Fonction pour ajouter le z-index élevé en mode plein écran
+    function adjustButtonInFullscreen() {
+        btnBascule.style.zIndex = "9999"; // Ajoute un z-index élevé pour s'assurer que le bouton soit visible
+    }
+
+    // Rendre le bouton visible en mode plein écran
     document.addEventListener("fullscreenchange", function() {
         if (document.fullscreenElement) {
-            videoWrapper.classList.add("fullscreen");
-        } else {
-            videoWrapper.classList.remove("fullscreen");
+            adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
         }
     });
 
     document.addEventListener("webkitfullscreenchange", function() {
         if (document.webkitFullscreenElement) {
-            videoWrapper.classList.add("fullscreen");
-        } else {
-            videoWrapper.classList.remove("fullscreen");
+            adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
         }
     });
 
-    // Pour activer le mode plein écran manuellement
-    video.addEventListener("dblclick", function() {
-        if (video.requestFullscreen) {
-            video.requestFullscreen();
-        } else if (video.webkitRequestFullscreen) { // Pour Safari
-            video.webkitRequestFullscreen();
-        }
-    });
 </script>
 </body>
 </html>
