@@ -84,25 +84,6 @@
 </audio>
 
 <script>
-   document.addEventListener("DOMContentLoaded", function() {
-    var video = document.getElementById("video");
-    
-    // Fonction pour activer le mode plein écran
-    function goFullscreen() {
-        if (video.requestFullscreen) {
-            video.requestFullscreen();  // Pour les navigateurs modernes
-        } else if (video.webkitRequestFullscreen) {
-            video.webkitRequestFullscreen();  // Pour Safari et anciens navigateurs Webkit
-        } else if (video.mozRequestFullScreen) {
-            video.mozRequestFullScreen();  // Pour Firefox
-        } else if (video.msRequestFullscreen) {
-            video.msRequestFullscreen();  // Pour Internet Explorer/Edge
-        }
-    }
-
-    // Activer le mode plein écran dès que la page est prête
-    goFullscreen();
-   });
     var video = document.getElementById("video");
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
@@ -155,22 +136,23 @@
         }
     });
 
+   // Fonction pour ajouter le z-index élevé en mode plein écran
+    function adjustButtonInFullscreen() {
+        btnBascule.style.zIndex = "9999"; // Ajoute un z-index élevé pour s'assurer que le bouton soit visible
+    }
+
     // Rendre le bouton visible en mode plein écran
     document.addEventListener("fullscreenchange", function() {
-       // Nous n'avons plus besoin de cacher ou d'afficher, car la règle CSS prend en charge cela
-       if (document.fullscreenElement) {
-           // Pas de changement, car l'affichage du bouton est géré par CSS
-       }
-   });
-   
-   document.addEventListener("webkitfullscreenchange", function() {
-       // Même logique que ci-dessus
-       if (document.webkitFullscreenElement) {
-           // Pas de changement, car l'affichage du bouton est géré par CSS
-       }
-   });
+        if (document.fullscreenElement) {
+            adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
+        }
+    });
 
-
+    document.addEventListener("webkitfullscreenchange", function() {
+        if (document.webkitFullscreenElement) {
+            adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
+        }
+    });
 </script>
 </body>
 </html>
