@@ -8,7 +8,7 @@
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 16px;
-            font-size: 14px;
+            font-size: 12px;
         }
         video {
             width: 100%;
