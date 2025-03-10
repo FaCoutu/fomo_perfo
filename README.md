@@ -11,7 +11,7 @@
    }
    video {
        width: 100%;
-       max-width: 3000px;
+       max-width: 4000px;
    }
    button {
        margin: 30px;
