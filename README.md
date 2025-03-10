@@ -29,7 +29,7 @@
 
     <!-- Vidéo divisée en deux (les deux salles) -->
     <video id="video" controls autoplay>
-        <source src="https://www.dropbox.com/scl/fi/2ytjemo9md4sk6nyq8mtk/felix-antoine-coutu_Fum-e-Omnisciente-Mirage-Onirique-V4.m4v?raw=1" type="video/m4v">    
+        <source src="https://www.dropbox.com/scl/fi/vn856dku4ckgm35azhbz1/Fumee-Omnisciente-Mirage-Onirique02.mp4?rlkey=khuru1f6c5woeclemz1ai9rlz&st=pksoqe29&raw=1" type="video/mp4">    
         Votre navigateur ne prend pas en charge la vidéo HTML5.
     </video>
 
