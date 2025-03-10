@@ -1,50 +1,3 @@
-Skip to content
-Navigation Menu
-FaCoutu
-Fumee-Omnisciente-Mirage-Onirique
-
-Type / to search
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-Commit 4f6ceb9
-Preview
-Give feedback
-FaCoutu
-FaCoutu
-authored
-19 minutes ago
-·
-·
-Verified
-Update README.md
-main
-1 parent 
-3aefe93
- commit 
-4f6ceb9
-File tree
-Filter files…
-README.md
-1 file changed
-+5
--4
-lines changed
-Search within code
- 
-‎README.md
-+5
--4
-
-
-Original file line number	Diff line number	Diff line change
-@@ -1,127 +1,128 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -106,78 +59,43 @@ Original file line number	Diff line number	Diff line change
 <!-- Boutons de contrôle -->
 <button id="btnBascule">Appuyer ici pour basculer entre l'audio de la première et de la seconde salle</button>
 
-<!-- Script JavaScript intégré -->
-<script>
-   document.getElementById("video").addEventListener("play", function() {
-       // Lors du démarrage de la vidéo, les deux pistes audio sont lancées et non muettes
-       var audioSalle1 = document.getElementById("audioSalle1");
-       var audioSalle2 = document.getElementById("audioSalle2");
-
-       // Variables pour mémoriser l'audio actif
-       var audioActif = audioSalle2;
-
-       audioSalle1.play();
-       audioSalle2.play();
-       audioSalle1.muted = true;  // D'abord, on mute l'audio de la salle 1, donc seul l'audio de la salle 2 est audible
-       audioActif = audioSalle2;  // Mémoriser l'audio actif
-   });
-
-   document.getElementById("btnBascule").addEventListener("click", function() {
-       var audioSalle1 = document.getElementById("audioSalle1");
-       var audioSalle2 = document.getElementById("audioSalle2");
-
-       // Mettre l'audio en pause quand la vidéo est mise en pause
-   document.getElementById("video").addEventListener("pause", function() {
-       var audioSalle1 = document.getElementById("audioSalle1");
-       var audioSalle2 = document.getElementById("audioSalle2");
-
-       audioSalle1.pause();
-       audioSalle2.pause();
-   });
-
-   // Synchroniser la position de l'audio avec celle de la vidéo
-   video.addEventListener("timeupdate", function() {
-       var currentTime = video.currentTime;  // Temps actuel de la vidéo
-       audioSalle1.currentTime = currentTime;  // Synchroniser l'audio 1
-       audioSalle2.currentTime = currentTime;  // Synchroniser l'audio 2
-   });
-
-   // Mettre à jour la position de l'audio lorsque l'utilisateur déplace le curseur
-   video.addEventListener("seeked", function() {
-       var currentTime = video.currentTime;  // Temps actuel après la recherche
-       audioSalle1.currentTime = currentTime;  // Synchroniser l'audio 1
-       audioSalle2.currentTime = currentTime;  // Synchroniser l'audio 2
-       // Restaure l'audio actif avant le déplacement
-       if (audioActif === audioSalle1) {
-           audioSalle1.muted = false;
-           audioSalle2.muted = true;
-       } else {
-           audioSalle1.muted = true;
-           audioSalle2.muted = false;
-       }
-   });
-
-       // Bascule entre l'audio de la première et de la deuxième salle
-       if (audioSalle1.muted) {
-           // Si l'audio de la salle 1 est muet, on le rend audible et on mute celui de la salle 2
-           audioSalle1.muted = false;
-           audioSalle2.muted = true;
-           audioActif = audioSalle1;  // Mémoriser l'audio actif après bascule
-       } else {
-           // Si l'audio de la salle 2 est muet, on le rend audible et on mute celui de la salle 1
-           audioSalle1.muted = true;
-           audioSalle2.muted = false;
-           audioActif = audioSalle2;  // Mémoriser l'audio actif après bascule
-       }
-   });
-</script>
+  <!-- Script JavaScript intégré -->
+  <script>
+     var audioSalle1 = document.getElementById("audioSalle1");
+     var audioSalle2 = document.getElementById("audioSalle2");
+     var video = document.getElementById("video");
+  
+     var audioActif = null;  // Variable pour mémoriser l'audio actif
+  
+     // Lors du démarrage de la vidéo
+     video.addEventListener("play", function() {
+         audioSalle1.play();
+         audioSalle2.play();
+         audioSalle1.muted = true;  // D'abord, on mute l'audio de la salle 1
+         audioActif = audioSalle2;  // Mémoriser l'audio actif (Salle 2)
+     });
+  
+     // Lors de la mise en pause de la vidéo
+     video.addEventListener("pause", function() {
+         // Mémoriser l'audio actif au moment de la pause
+         if (!audioSalle1.muted) {
+             audioActif = audioSalle1;
+         } else {
+             audioActif = audioSalle2;
+         }
+  
+         // Mettre les deux audios en pause
+         audioSalle1.pause();
+         audioSalle2.pause();
+     });
+  
+     // Lors de la reprise de la vidéo après une pause
+     video.addEventListener("play", function() {
+         if (audioActif) {
+             audioActif.play();  // Reprendre l'audio actif
+             audioActif.currentTime = video.currentTime;  // Synchroniser l'audio avec la vidéo
+         }
+     });
+  </script>
 </body>
 </html>
-0 commit comments
-Comments
-0
- (0)
-Comment
-You're receiving notifications because you're subscribed to this thread.
-
-Update README.md · FaCoutu/Fumee-Omnisciente-Mirage-Onirique@4f6ceb9
