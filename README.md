@@ -31,17 +31,15 @@
    /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
    .titre-1 {
       margin-bottom: 0px;  /* Ajoute un espace après le premier titre */
-      margin-top: 0px;  /* Ajoute un espace après le premier titre */
-      
+      margin-top: 0px;  /* Ajoute un espace après le premier titre */  
    }
    .btn-salle1 {
-    background-color: blue;
-    color: white;
+      background-color: blue;
+      color: white;
    }
-
    .btn-salle2 {
-    background-color: red;
-    color: white;
+      background-color: red;
+      color: white;
    }
 </style>
 </head>
