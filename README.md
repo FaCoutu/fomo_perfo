@@ -44,7 +44,7 @@
     </audio>
 
     <!-- Boutons de contrôle -->
-    <button id="btnBascule">Basculer l'audio</button>
+    <button id="btnBascule">Appuyer ici pour basculer entre l'audio de la première et de la seconde salle</button>
 
     <!-- Script JavaScript intégré -->
     <script>
@@ -69,6 +69,20 @@
 
             audioSalle1.pause();
             audioSalle2.pause();
+        });
+
+        // Synchroniser la position de l'audio avec celle de la vidéo
+        video.addEventListener("timeupdate", function() {
+            var currentTime = video.currentTime;  // Temps actuel de la vidéo
+            audioSalle1.currentTime = currentTime;  // Synchroniser l'audio 1
+            audioSalle2.currentTime = currentTime;  // Synchroniser l'audio 2
+        });
+
+        // Mettre à jour la position de l'audio lorsque l'utilisateur déplace le curseur
+        video.addEventListener("seeked", function() {
+            var currentTime = video.currentTime;  // Temps actuel après la recherche
+            audioSalle1.currentTime = currentTime;  // Synchroniser l'audio 1
+            audioSalle2.currentTime = currentTime;  // Synchroniser l'audio 2
         });
 
             // Bascule entre l'audio de la première et de la deuxième salle
