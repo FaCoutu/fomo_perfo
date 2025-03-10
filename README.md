@@ -8,7 +8,6 @@
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 16px;
-            font-size: 12px;
         }
         video {
             width: 100%;
@@ -18,6 +17,12 @@
             margin: 30px;
             padding: 20px;
             font-size: 12px;
+        }
+        /* Changer la taille de la police pour les titres */
+        h1 {
+            font-size: 16px;  /* Ajuste la taille ici comme tu le souhaites */
+            font-weight: bold;
+            color: #333;  /* Facultatif : change la couleur si nécessaire */
         }
     </style>
 </head>
