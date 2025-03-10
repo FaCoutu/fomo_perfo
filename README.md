@@ -79,7 +79,7 @@
             audioSalle1.pause();
             audioSalle2.pause();
 
-            // Restaure l'audio actif avant le déplacement
+            // Lors de la pause, rétablir l'audio actif avant la pause
             if (audioActif === audioSalle1) {
                 audioSalle1.muted = false;
                 audioSalle2.muted = true;
