@@ -84,9 +84,17 @@
        var audioSalle1 = document.getElementById("audioSalle1");
        var audioSalle2 = document.getElementById("audioSalle2");
 
+   video.addEventListener("pause", function() {
        audioSalle1.pause();
        audioSalle2.pause();
    });
+
+      // Lors de la reprise de la vidéo après une pause
+   video.addEventListener("play", function() {
+       audioActif.play();  // Reprendre l'audio actif
+       audioActif.currentTime = video.currentTime;  // Synchroniser l'audio avec la vidéo
+   });
+
 
    // Synchroniser la position de l'audio avec celle de la vidéo
    video.addEventListener("timeupdate", function() {
