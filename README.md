@@ -24,12 +24,18 @@
             font-weight: bold;
             color: #333;  /* Facultatif : change la couleur si nécessaire */
         }
+        /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
+        .titre-1 {
+            margin-bottom: 16px;  /* Ajoute un espace après le premier titre */
+        }
     </style>
 </head>
 <body>
 
-    <h1>Fumée Omnisciente, Mirage Onirique</h1>
+    <!-- Premier titre avec une classe pour un espacement -->
+    <h1 class="titre-1">Fumée Omnisciente, Mirage Onirique</h1>
 
+    <!-- Deuxième titre, sans classe spécifique, donc prendra les mêmes styles -->
     <h1>Résidence de création, janvier 2025, Bain Mathieu</h1>
 
     <!-- Vidéo divisée en deux (les deux salles) -->
