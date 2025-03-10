@@ -20,10 +20,11 @@
    }
    /* Changer la taille de la police pour les titres */
    h1 {
-            font-size: 8px !important;  /* Ajuste la taille ici comme tu le souhaites */
-            font-size: 16px !important;  /* Ajuste la taille ici comme tu le souhaites */
-       font-weight: bold;
-       color: #333;  /* Facultatif : change la couleur si nécessaire */
+      font-size: 16px !important;  /* Ajuste la taille ici comme tu le souhaites */
+      font-weight: bold;
+      color: #333;  /* Facultatif : change la couleur si nécessaire */
+      margin: 0;  /* Empêche les marges par défaut entre les h1 */
+      border: none;  /* Enlève les bordures */
    }
    /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
    .titre-1 {
