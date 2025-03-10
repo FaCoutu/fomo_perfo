@@ -53,8 +53,8 @@
    video:-webkit-full-screen + .btn-video,
    video:fullscreen + .btn-video {
        position: fixed;
-       bottom: 40px;
-       left: 50%;
+       top: -10px;
+       left: 10px;
        transform: translateX(-50%);
        z-index: 9999;
        display: block !important;
