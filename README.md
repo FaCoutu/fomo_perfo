@@ -1,3 +1,50 @@
+Skip to content
+Navigation Menu
+FaCoutu
+Fumee-Omnisciente-Mirage-Onirique
+
+Type / to search
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+Commit 4f6ceb9
+Preview
+Give feedback
+FaCoutu
+FaCoutu
+authored
+19 minutes ago
+·
+·
+Verified
+Update README.md
+main
+1 parent 
+3aefe93
+ commit 
+4f6ceb9
+File tree
+Filter files…
+README.md
+1 file changed
++5
+-4
+lines changed
+Search within code
+ 
+‎README.md
++5
+-4
+
+
+Original file line number	Diff line number	Diff line change
+@@ -1,127 +1,128 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -28,7 +75,7 @@
    }
    /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
    .titre-1 {
-       margin-bottom: 16px;  /* Ajoute un espace après le premier titre */
+      margin-bottom: 0px;  /* Ajoute un espace après le premier titre */
    }
 </style>
 </head>
@@ -84,17 +131,9 @@
        var audioSalle1 = document.getElementById("audioSalle1");
        var audioSalle2 = document.getElementById("audioSalle2");
 
-   video.addEventListener("pause", function() {
        audioSalle1.pause();
        audioSalle2.pause();
    });
-
-      // Lors de la reprise de la vidéo après une pause
-   video.addEventListener("play", function() {
-       audioActif.play();  // Reprendre l'audio actif
-       audioActif.currentTime = video.currentTime;  // Synchroniser l'audio avec la vidéo
-   });
-
 
    // Synchroniser la position de l'audio avec celle de la vidéo
    video.addEventListener("timeupdate", function() {
@@ -134,3 +173,11 @@
 </script>
 </body>
 </html>
+0 commit comments
+Comments
+0
+ (0)
+Comment
+You're receiving notifications because you're subscribed to this thread.
+
+Update README.md · FaCoutu/Fumee-Omnisciente-Mirage-Onirique@4f6ceb9
