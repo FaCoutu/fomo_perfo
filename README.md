@@ -46,7 +46,7 @@
 
     <!-- Pistes audio -->
     <audio id="audioSalle1" loop>
-        <source src="https://www.dropbox.com/scl/fi/5y2aka0keombw6ha0ltg4/FOMO_Audio_Perfo-res-Bain-Mathieu.wav?rlkey=bjy3ssu3mofyg2m5jgvbvwmgl&st=9brcjj0g&raw=1" type="audio/wav">
+        <source src="https://www.dropbox.com/scl/fi/5y2aka0keombw6ha0ltg4/FOMO_Audio_Perfo-res-Bain-Mathieu.wav?rlkey=bjy3ssu3mofyg2m5jgvbvwmgl&st=cg6zgwh8&raw=1" type="audio/wav">
         Votre navigateur ne prend pas en charge l'audio.
     </audio>
     <audio id="audioSalle2" loop>
