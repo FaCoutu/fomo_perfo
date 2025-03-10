@@ -62,6 +62,15 @@
             var audioSalle1 = document.getElementById("audioSalle1");
             var audioSalle2 = document.getElementById("audioSalle2");
 
+            // Mettre l'audio en pause quand la vidéo est mise en pause
+        document.getElementById("video").addEventListener("pause", function() {
+            var audioSalle1 = document.getElementById("audioSalle1");
+            var audioSalle2 = document.getElementById("audioSalle2");
+
+            audioSalle1.pause();
+            audioSalle2.pause();
+        });
+
             // Bascule entre l'audio de la première et de la deuxième salle
             if (audioSalle1.muted) {
                 // Si l'audio de la salle 1 est muet, on le rend audible et on mute celui de la salle 2
