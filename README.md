@@ -22,8 +22,8 @@
    h1 {
       font-size: 16px !important;  /* Ajuste la taille ici comme tu le souhaites */
       font-weight: bold;
-      color: #5B5B5B;  /* Facultatif : change la couleur si nécessaire */
-      /* #1c5b1b */
+      /* color: #5B5B5B; */ /* Facultatif : change la couleur si nécessaire */
+      color: #1c5b1b;
       margin: 0;  /* Empêche les marges par défaut entre les h1 */
       border: none;  /* Enlève les bordures */
    }
@@ -126,7 +126,7 @@
            audioActif = audioSalle2;  // Mémoriser l'audio actif
        }
    });
-   </script>
+  </script>
 
 </body>
 </html>
