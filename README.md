@@ -9,10 +9,13 @@
        text-align: center;
        padding: 10px;
    }
+   .video-container {
+      position: relative;
+      display: inline-block;
+   }
    video {
-       width: 100%;
-       max-width: 2000px;
-       video-align: center;
+      width: 100%;
+      max-width: 2000px;
    }
    button {
        margin: 0px;
