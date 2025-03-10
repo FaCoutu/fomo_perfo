@@ -138,21 +138,18 @@
 
     // Rendre le bouton visible en mode plein écran
     document.addEventListener("fullscreenchange", function() {
-        if (document.fullscreenElement) {
-            btnBascule.style.display = "block";
-        } else {
-            btnBascule.style.display = "block";
-        }
-    });
-
-    document.addEventListener("webkitfullscreenchange", function() {
-        if (document.webkitFullscreenElement) {
-            btnBascule.style.display = "block";
-        } else {
-            btnBascule.style.display = "block";
-        }
-    });
-
+       // Nous n'avons plus besoin de cacher ou d'afficher, car la règle CSS prend en charge cela
+       if (document.fullscreenElement) {
+           // Pas de changement, car l'affichage du bouton est géré par CSS
+       }
+   });
+   
+   document.addEventListener("webkitfullscreenchange", function() {
+       // Même logique que ci-dessus
+       if (document.webkitFullscreenElement) {
+           // Pas de changement, car l'affichage du bouton est géré par CSS
+       }
+   });
 
 
 </script>
