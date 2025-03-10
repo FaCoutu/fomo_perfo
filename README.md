@@ -41,7 +41,7 @@
    }
    .btn-video {
     position: absolute;
-    bottom: 20px; /* Ajuste la position verticale */
+    bottom: 40px; /* Ajuste la position verticale */
     left: 50%;
     transform: translateX(-50%);
     background-color: red;
@@ -51,7 +51,7 @@
     font-size: 14px;
     cursor: pointer;
     border-radius: 5px;
-    opacity: 0.8;
+    opacity: 50;
     transition: opacity 0.3s, background-color 0.3s;
    }
    .btn-video:hover {
