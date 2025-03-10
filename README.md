@@ -33,6 +33,30 @@
       margin-bottom: 0px;  /* Ajoute un espace après le premier titre */
       margin-top: 0px;  /* Ajoute un espace après le premier titre */  
    }
+   .video-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 2000px;
+   }
+   .btn-video {
+    position: absolute;
+    bottom: 20px; /* Ajuste la position verticale */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    opacity: 0.8;
+    transition: opacity 0.3s, background-color 0.3s;
+   }
+   .btn-video:hover {
+    opacity: 1;
+   }
    .btn-salle1 {
       background-color: #194f18;
       color: white;
@@ -41,6 +65,7 @@
       background-color: #433d69;
       color: white;
    }
+   
 </style>
 </head>
 <body>
@@ -49,10 +74,15 @@
 <h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
 
 <!-- Vidéo divisée en deux (les deux salles) -->
-<video id="video" controls autoplay>
-   <source src="https://dl.dropboxusercontent.com/scl/fi/vn856dku4ckgm35azhbz1/Fumee-Omnisciente-Mirage-Onirique02.mp4?rlkey=khuru1f6c5woeclemz1ai9rlz&st=pksoqe29&raw=1" type="video/mp4">    
-   Votre navigateur ne prend pas en charge la vidéo HTML5.
-</video>
+<div class="video-container">
+   <video id="video" controls autoplay>
+      <source src="https://dl.dropboxusercontent.com/scl/fi/vn856dku4ckgm35azhbz1/Fumee-Omnisciente-Mirage-Onirique02.mp4?rlkey=khuru1f6c5woeclemz1ai9rlz&st=pksoqe29&raw=1" type="video/mp4">    
+      Votre navigateur ne prend pas en charge la vidéo HTML5.
+   </video>
+
+   <!-- Bouton intégré à la vidéo -->
+   <button id="btnBascule" class="btn-video">Audio salle 2</button>
+</div>
 
 <!-- Pistes audio -->
 <audio id="audioSalle1" loop>
@@ -64,75 +94,71 @@
    Votre navigateur ne prend pas en charge l'audio.
 </audio>
 
-<!-- Boutons de contrôle -->
-<button id="btnBascule">Appuyer ici pour basculer entre l'audio de la première et de la seconde salle</button>
-
   <!-- Script JavaScript intégré -->
   <script>
-   var audioSalle1 = document.getElementById("audioSalle1");
-   var audioSalle2 = document.getElementById("audioSalle2");
-   var video = document.getElementById("video");
-   var btnBascule = document.getElementById("btnBascule");
-   
-   var audioActif = audioSalle2; // On commence avec l'audio de la Salle 2
-   btnBascule.textContent = "Audio salle 2"; // Texte initial
-   btnBascule.classList.add("btn-salle2"); // Couleur initiale (rouge)
-   
-   // Démarrage de la vidéo : on synchronise et joue l'audio actif
-   video.addEventListener("play", function() {
-       if (audioActif.paused) {
-           audioActif.currentTime = video.currentTime; // Synchroniser avec la vidéo
-           audioActif.play(); // Jouer uniquement l'audio actif
-       }
-   });
-   
-   // Mise en pause : on met aussi l'audio actif en pause
-   video.addEventListener("pause", function() {
-       audioActif.pause();
-   });
-   
-   // Synchroniser la position de l'audio avec la vidéo
-   video.addEventListener("timeupdate", function() {
-       if (!video.paused) {
-           audioActif.currentTime = video.currentTime;
-       }
-   });
-   
-   // Lorsqu'on cherche un moment précis dans la vidéo
-   video.addEventListener("seeked", function() {
-       audioActif.currentTime = video.currentTime;
-   });
-   
-   // Bouton pour basculer entre les pistes audio
-   btnBascule.addEventListener("click", function() {
-       if (audioActif === audioSalle1) {
-           audioSalle1.muted = true;
-           audioSalle2.muted = false;
-           audioActif = audioSalle2;
-           btnBascule.textContent = "Audio salle 2"; // Met à jour le texte du bouton
-   
-           // Mise à jour des couleurs
-           btnBascule.classList.remove("btn-salle1");
-           btnBascule.classList.add("btn-salle2");
-   
-       } else {
-           audioSalle1.muted = false;
-           audioSalle2.muted = true;
-           audioActif = audioSalle1;
-           btnBascule.textContent = "Audio salle 1"; // Met à jour le texte du bouton
-   
-           // Mise à jour des couleurs
-           btnBascule.classList.remove("btn-salle2");
-           btnBascule.classList.add("btn-salle1");
-       }
-   
-       // Synchroniser et jouer immédiatement l'audio actif
-       audioActif.currentTime = video.currentTime;
-       if (!video.paused) {
-           audioActif.play();
-       }
-   });
-</script>
+      var audioSalle1 = document.getElementById("audioSalle1");
+      var audioSalle2 = document.getElementById("audioSalle2");
+      var video = document.getElementById("video");
+      var btnBascule = document.getElementById("btnBascule");
+      
+      var audioActif = audioSalle2; // L'audio de la salle 2 est actif au départ
+      btnBascule.classList.add("btn-salle2"); // Couleur initiale rouge
+      
+      // Démarrage de la vidéo : on synchronise et joue l'audio actif
+      video.addEventListener("play", function() {
+          if (audioActif.paused) {
+              audioActif.currentTime = video.currentTime;
+              audioActif.play();
+          }
+      });
+      
+      // Pause vidéo = pause de l'audio actif
+      video.addEventListener("pause", function() {
+          audioActif.pause();
+      });
+      
+      // Synchroniser la position de l'audio avec la vidéo
+      video.addEventListener("timeupdate", function() {
+          if (!video.paused) {
+              audioActif.currentTime = video.currentTime;
+          }
+      });
+      
+      // Lorsqu'on cherche un moment précis dans la vidéo
+      video.addEventListener("seeked", function() {
+          audioActif.currentTime = video.currentTime;
+      });
+      
+      // Bascule de l'audio avec mise à jour du bouton
+      btnBascule.addEventListener("click", function() {
+          if (audioActif === audioSalle1) {
+              audioSalle1.muted = true;
+              audioSalle2.muted = false;
+              audioActif = audioSalle2;
+              btnBascule.textContent = "Audio salle 2";
+      
+              // Mise à jour des couleurs
+              btnBascule.classList.remove("btn-salle1");
+              btnBascule.classList.add("btn-salle2");
+      
+          } else {
+              audioSalle1.muted = false;
+              audioSalle2.muted = true;
+              audioActif = audioSalle1;
+              btnBascule.textContent = "Audio salle 1";
+      
+              // Mise à jour des couleurs
+              btnBascule.classList.remove("btn-salle2");
+              btnBascule.classList.add("btn-salle1");
+          }
+      
+          // Synchroniser et jouer immédiatement l'audio actif
+          audioActif.currentTime = video.currentTime;
+          if (!video.paused) {
+              audioActif.play();
+          }
+      });
+  </script>
 
 </body>
 </html>
