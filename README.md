@@ -78,6 +78,15 @@
 
             audioSalle1.pause();
             audioSalle2.pause();
+
+            // Restaure l'audio actif avant le déplacement
+            if (audioActif === audioSalle1) {
+                audioSalle1.muted = false;
+                audioSalle2.muted = true;
+            } else {
+                audioSalle1.muted = true;
+                audioSalle2.muted = false;
+            }
         });
 
         // Synchroniser la position de l'audio avec celle de la vidéo
