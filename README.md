@@ -34,11 +34,11 @@
       margin-top: 0px;  /* Ajoute un espace après le premier titre */  
    }
    .btn-salle1 {
-      background-color: blue;
+      background-color: #194f18;
       color: white;
    }
    .btn-salle2 {
-      background-color: red;
+      background-color: #433d69;
       color: white;
    }
 </style>
