@@ -23,7 +23,7 @@
    .btn-video {
        position: absolute;
        top: 10px;
-       left: 20px;
+       left: 40px;
        transform: translateX(-50%);
        background-color: #433d69;
        color: white;
@@ -55,7 +55,7 @@
    video:fullscreen + .btn-video {
        position: fixed;
        top: 10px;
-       left: 20px;
+       left: 40px;
        transform: translateX(-50%);
        z-index: 9999;
        display: block !important;
