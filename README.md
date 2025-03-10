@@ -65,6 +65,15 @@
       background-color: #433d69;
       color: white;
    }
+   /* Bouton visible en mode plein écran */
+   :fullscreen .btn-video,
+   ::-webkit-full-screen .btn-video { /* Pour Safari */
+       position: absolute;
+       bottom: 20px;
+       left: 50%;
+       transform: translateX(-50%);
+       z-index: 9999; /* S'assurer que le bouton est au-dessus */
+   }
    
 </style>
 </head>
@@ -158,7 +167,26 @@
               audioActif.play();
           }
       });
+      document.addEventListener("fullscreenchange", function() {
+          var btnBascule = document.getElementById("btnBascule");
+          if (document.fullscreenElement) {
+              // Si la vidéo est en plein écran, on affiche le bouton
+              btnBascule.style.display = "block";
+          } else {
+              // Quand on quitte le plein écran, le bouton reste visible normalement
+              btnBascule.style.display = "block";
+          }
+      });
+      
+      // Support pour les navigateurs Webkit (Safari)
+      document.addEventListener("webkitfullscreenchange", function() {
+          var btnBascule = document.getElementById("btnBascule");
+          if (document.webkitFullscreenElement) {
+              btnBascule.style.display = "block";
+          } else {
+              btnBascule.style.display = "block";
+          }
+      });
   </script>
-
 </body>
 </html>
