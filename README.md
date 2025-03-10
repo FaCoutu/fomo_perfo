@@ -53,9 +53,13 @@
             var audioSalle1 = document.getElementById("audioSalle1");
             var audioSalle2 = document.getElementById("audioSalle2");
 
+            // Variables pour mémoriser l'audio actif
+            var audioActif = audioSalle2;
+
             audioSalle1.play();
             audioSalle2.play();
             audioSalle1.muted = true;  // D'abord, on mute l'audio de la salle 1, donc seul l'audio de la salle 2 est audible
+            audioActif = audioSalle2;  // Mémoriser l'audio actif
         });
 
         document.getElementById("btnBascule").addEventListener("click", function() {
@@ -83,6 +87,14 @@
             var currentTime = video.currentTime;  // Temps actuel après la recherche
             audioSalle1.currentTime = currentTime;  // Synchroniser l'audio 1
             audioSalle2.currentTime = currentTime;  // Synchroniser l'audio 2
+            // Restaure l'audio actif avant le déplacement
+            if (audioActif === audioSalle1) {
+                audioSalle1.muted = false;
+                audioSalle2.muted = true;
+            } else {
+                audioSalle1.muted = true;
+                audioSalle2.muted = false;
+            }
         });
 
             // Bascule entre l'audio de la première et de la deuxième salle
@@ -90,10 +102,12 @@
                 // Si l'audio de la salle 1 est muet, on le rend audible et on mute celui de la salle 2
                 audioSalle1.muted = false;
                 audioSalle2.muted = true;
+                audioActif = audioSalle1;  // Mémoriser l'audio actif après bascule
             } else {
                 // Si l'audio de la salle 2 est muet, on le rend audible et on mute celui de la salle 1
                 audioSalle1.muted = true;
                 audioSalle2.muted = false;
+                audioActif = audioSalle2;  // Mémoriser l'audio actif après bascule
             }
         });
     </script>
