@@ -34,7 +34,7 @@
        border-radius: 5px;
        opacity: 0.8;
        transition: opacity 0.3s, background-color 0.3s;
-       z-index: 10;
+       z-index: 9999;
        text-align: left;
    }
 
@@ -48,6 +48,25 @@
 
    .btn-salle2 {
        background-color: #433d69;
+   }
+
+   /* Forcer l'affichage du bouton en mode plein écran */
+   video:-webkit-full-screen + .btn-video,
+   video:fullscreen + .btn-video {
+       position: fixed;
+       top: 10px;
+       left: 10%;
+       transform: translateX(-50%);
+       z-index: 9999;
+       display: block !important;
+       margin-top: 20px;
+   }
+
+   /* Rogner la vidéo pour laisser de l'espace pour le bouton */
+   video:-webkit-full-screen,
+   video:fullscreen {
+       object-fit: contain;  /* Permet de rogner la vidéo */
+       margin-top: 50px;     /* Ajoute de l'espace pour le bouton */
    }
 </style>
 </head>
