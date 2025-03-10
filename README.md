@@ -7,16 +7,16 @@
    body {
        font-family: Arial, sans-serif;
        text-align: center;
-       padding: 30px;
+       padding: 10px;
    }
    video {
        width: 120%;
-       max-width: 3000px;
+       max-width: 2000px;
        video-align: center;
    }
    button {
-       margin: 10px;
-       padding: 40px;
+       margin: 0px;
+       padding: 10px;
        font-size: 12px;
    }
    /* Changer la taille de la police pour les titres */
