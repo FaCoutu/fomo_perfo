@@ -35,6 +35,7 @@
        opacity: 0.8;
        transition: opacity 0.3s, background-color 0.3s;
        z-index: 10;
+       text-align: left;
    }
 
    .btn-video:hover {
@@ -58,6 +59,7 @@
        transform: translateX(-50%);
        z-index: 9999;
        display: block !important;
+       text-align: left;
    }
 </style>
 </head>
