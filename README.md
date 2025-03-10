@@ -50,10 +50,9 @@
         .btn-salle2 {
             background-color: #433d69;
         }
-        /* Masquer les lecteurs audio
         .audio-container iframe {
             display: none;
-        } */
+        }
     </style>
 </head>
 <body>
@@ -66,13 +65,11 @@
 </div>
 
 <div class="audio-container">
-    <!-- Audio Salle 1 (SoundCloud) -->
     <iframe id="audioSalle1" width="100%" height="166" scrolling="no" frameborder="no" 
-        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2051283100%3Fsecret_token%3Ds-6d0R4mFbF6v&auto_play=false&visual=false">
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2051283100%3Fsecret_token%3Ds-6d0R4mFbF6v&auto_play=false">
     </iframe>
-    <!-- Audio Salle 2 (SoundCloud) -->
     <iframe id="audioSalle2" width="100%" height="166" scrolling="no" frameborder="no" 
-        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1742214405%3Fsecret_token%3Ds-UuYn7gHeGzR&auto_play=false&visual=false">
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1742214405%3Fsecret_token%3Ds-UuYn7gHeGzR&auto_play=false">
     </iframe>
 </div>
 
@@ -84,18 +81,23 @@
     var player;
     
     // Initialisation des lecteurs SoundCloud
-    var scPlayerSalle1 = SC.Widget("audioSalle1");
-    var scPlayerSalle2 = SC.Widget("audioSalle2");
+    var scPlayerSalle1 = SC.Widget(document.getElementById("audioSalle1"));
+    var scPlayerSalle2 = SC.Widget(document.getElementById("audioSalle2"));
 
     var audioActif = scPlayerSalle2; // Par défaut, la salle de droite
 
-    // Désactiver la lecture automatique au chargement
-    scPlayerSalle1.bind(SC.Widget.Events.READY, function() {
+    function pauseAllAudio() {
         scPlayerSalle1.pause();
+        scPlayerSalle2.pause();
+    }
+
+    // Attendre que les lecteurs SoundCloud soient prêts
+    scPlayerSalle1.bind(SC.Widget.Events.READY, function() {
+        scPlayerSalle1.setVolume(100);
     });
 
     scPlayerSalle2.bind(SC.Widget.Events.READY, function() {
-        scPlayerSalle2.pause();
+        scPlayerSalle2.setVolume(100);
     });
 
     // Fonction d'initialisation de l'API YouTube
@@ -110,33 +112,30 @@
     // Quand l'état de la vidéo change (lecture, pause, etc.)
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING) {
-            if (audioActif) {
-                audioActif.play();
-            }
+            console.log("Vidéo en lecture, démarrage de l'audio.");
+            pauseAllAudio();
+            audioActif.play();
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
-            if (audioActif) {
-                audioActif.pause();
-            }
+            console.log("Vidéo en pause, arrêt de l'audio.");
+            audioActif.pause();
         }
     }
 
     // Bascule entre les salles audio
     btnBascule.addEventListener("click", function() {
+        pauseAllAudio();
         if (audioActif === scPlayerSalle1) {
-            audioActif.pause();
             audioActif = scPlayerSalle2;
             btnBascule.textContent = "Audio salle de droite";
             btnBascule.classList.remove("btn-salle1");
             btnBascule.classList.add("btn-salle2");
         } else {
-            audioActif.pause();
             audioActif = scPlayerSalle1;
             btnBascule.textContent = "Audio salle de gauche";
             btnBascule.classList.remove("btn-salle2");
             btnBascule.classList.add("btn-salle1");
         }
 
-        // Démarrer la lecture de l'audio s'il y a déjà une vidéo en cours
         if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
             audioActif.play();
         }
