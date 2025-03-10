@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLAY</title>
+    <title>Félix-Antoine Coutu</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,7 +23,7 @@
 </head>
 <body>
 
-    <h1>Fumée Omniscient, Mirage Onirique</h1>
+    <h1>Fumée Omnisciente, Mirage Onirique</h1>
 
     <h1>Résidence de création, janvier 2025, Bain Mathieu</h1>
 
