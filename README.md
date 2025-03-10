@@ -8,6 +8,8 @@
        font-family: Arial, sans-serif;
        text-align: center;
        padding: 10px;
+       margin: 0;
+       overflow: hidden; /* Empêche le débordement pendant le plein écran */
    }
 
    .video-container {
@@ -18,12 +20,13 @@
    video {
       width: 100%;
       max-width: 2000px;
+      display: block;
    }
 
    .btn-video {
-       position: absolute;
+       position: fixed;
        top: 10px;
-       left: 10%;
+       left: 50%;
        transform: translateX(-50%);
        background-color: #433d69;
        color: white;
@@ -35,7 +38,6 @@
        opacity: 0.8;
        transition: opacity 0.3s, background-color 0.3s;
        z-index: 9999;
-       text-align: left;
    }
 
    .btn-video:hover {
@@ -50,24 +52,14 @@
        background-color: #433d69;
    }
 
-   /* Forcer l'affichage du bouton en mode plein écran */
-   video:-webkit-full-screen + .btn-video,
-   video:fullscreen + .btn-video {
-       position: fixed;
-       top: 10px;
-       left: 10%;
-       transform: translateX(-50%);
-       z-index: 9999;
-       display: block !important;
-       margin-top: 20px;
-   }
-
-   /* Rogner la vidéo pour laisser de l'espace pour le bouton */
+   /* Style en mode plein écran */
    video:-webkit-full-screen,
    video:fullscreen {
-       object-fit: contain;  /* Permet de rogner la vidéo */
-       margin-top: 50px;     /* Ajoute de l'espace pour le bouton */
+       width: 100vw;
+       height: 100vh;
+       object-fit: cover;
    }
+
 </style>
 </head>
 <body>
@@ -144,39 +136,32 @@
         }
     });
 
-    // Fonction pour forcer le bouton en mode plein écran
-    function adjustButtonInFullscreen() {
-        btnBascule.style.zIndex = "9999"; // Force z-index élevé en mode plein écran
+    // Fonction pour forcer le plein écran
+    function toggleFullscreen() {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) { // Safari
+            video.webkitRequestFullscreen();
+        }
     }
 
-    // Fonction pour réinitialiser le bouton lorsque l'on quitte le plein écran
-    function resetButtonAfterFullscreen() {
-        btnBascule.style.zIndex = "10"; // Réinitialise le z-index lorsque l'on quitte le plein écran
-    }
+    // Ajouter un événement pour activer le plein écran en cliquant sur la vidéo
+    video.addEventListener("click", toggleFullscreen);
 
-    // Rendre le bouton visible et ajuster le z-index en mode plein écran
+    // Assurer la visibilité du bouton en mode plein écran
     document.addEventListener("fullscreenchange", function() {
         if (document.fullscreenElement) {
-            adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
+            btnBascule.style.display = "block";
         } else {
-            resetButtonAfterFullscreen();  // Réinitialisation du z-index
+            btnBascule.style.display = "block";  // Toujours visible
         }
     });
 
     document.addEventListener("webkitfullscreenchange", function() {
         if (document.webkitFullscreenElement) {
-            adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
+            btnBascule.style.display = "block";
         } else {
-            resetButtonAfterFullscreen();  // Réinitialisation du z-index
-        }
-    });
-
-    // L'utilisateur peut activer le plein écran manuellement en cliquant sur la vidéo
-    video.addEventListener("click", function() {
-        if (video.requestFullscreen) {
-            video.requestFullscreen();
-        } else if (video.webkitRequestFullscreen) { // Safari
-            video.webkitRequestFullscreen();
+            btnBascule.style.display = "block";  // Toujours visible
         }
     });
 
