@@ -66,33 +66,32 @@
     var audioSalle2 = document.getElementById("audioSalle2");
     var video = document.getElementById("video");
 
-    // Variable pour mémoriser l'audio actif (avant la pause)
-    var audioActif = null;
+    var audioActif = null; // Pour mémoriser l'audio actif avant la pause
 
-    // Lors du démarrage de la vidéo
+    // Lors du démarrage de la vidéo, commence avec l'audio de la Salle 2
     video.addEventListener("play", function() {
         audioSalle1.play();
         audioSalle2.play();
-        audioSalle1.muted = true;  // D'abord, mute l'audio de la salle 1
-        audioSalle2.muted = false; // L'audio de la salle 2 est actif
-        audioActif = audioSalle2;  // Mémoriser l'audio actif (Salle 2)
+        audioSalle1.muted = true;  // Mute l'audio de la Salle 1
+        audioSalle2.muted = false; // L'audio de la Salle 2 est actif
+        audioActif = audioSalle2;  // On mémorise l'audio actif (Salle 2)
     });
 
     // Lors de la mise en pause de la vidéo
     video.addEventListener("pause", function() {
-        // Mémoriser l'audio actif au moment de la pause
+        // Mémoriser l'audio actif avant de mettre en pause
         if (!audioSalle1.muted) {
-            audioActif = audioSalle1;  // Si l'audio de la salle 1 était actif
+            audioActif = audioSalle1; // Si l'audio de la salle 1 est actif
         } else {
-            audioActif = audioSalle2;  // Si l'audio de la salle 2 était actif
+            audioActif = audioSalle2; // Si l'audio de la salle 2 est actif
         }
 
-        // Mettre en pause les deux audios
+        // Mettre les deux audios en pause
         audioSalle1.pause();
         audioSalle2.pause();
     });
 
-    // Lors de la reprise de la vidéo (après pause)
+    // Lors de la reprise de la vidéo
     video.addEventListener("play", function() {
         if (audioActif) {
             audioActif.play();  // Reprendre l'audio actif
@@ -121,12 +120,12 @@
             // Si l'audio de la salle 1 est muet, on le rend audible et mute celui de la salle 2
             audioSalle1.muted = false;
             audioSalle2.muted = true;
-            audioActif = audioSalle1;  // Mémoriser l'audio actif
+            audioActif = audioSalle1;  // Mémoriser l'audio actif (Salle 1)
         } else {
             // Si l'audio de la salle 2 est muet, on le rend audible et mute celui de la salle 1
             audioSalle1.muted = true;
             audioSalle2.muted = false;
-            audioActif = audioSalle2;  // Mémoriser l'audio actif
+            audioActif = audioSalle2;  // Mémoriser l'audio actif (Salle 2)
         }
     });
 </script>
