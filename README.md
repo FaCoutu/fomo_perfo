@@ -36,18 +36,12 @@
       margin-bottom: 0px;  /* Ajoute un espace après le premier titre */
       margin-top: 0px;  /* Ajoute un espace après le premier titre */  
    }
-   .video-container {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    max-width: 2000px;
-   }
    .btn-video {
     position: absolute;
     bottom: 40px; /* Ajuste la position verticale */
     left: 50%;
     transform: translateX(-50%);
-    background-color: red;
+    background-color: #433d69;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -170,26 +164,22 @@
               audioActif.play();
           }
       });
-      document.addEventListener("fullscreenchange", function() {
-          var btnBascule = document.getElementById("btnBascule");
-          if (document.fullscreenElement) {
-              // Si la vidéo est en plein écran, on affiche le bouton
-              btnBascule.style.display = "block";
-          } else {
-              // Quand on quitte le plein écran, le bouton reste visible normalement
-              btnBascule.style.display = "block";
-          }
-      });
-      
-      // Support pour les navigateurs Webkit (Safari)
-      document.addEventListener("webkitfullscreenchange", function() {
-          var btnBascule = document.getElementById("btnBascule");
-          if (document.webkitFullscreenElement) {
-              btnBascule.style.display = "block";
-          } else {
-              btnBascule.style.display = "block";
-          }
-      });
+         // Rendre le bouton visible en mode plein écran
+        document.addEventListener("fullscreenchange", function() {
+            if (document.fullscreenElement) {
+                btnBascule.style.display = "block";
+            } else {
+                btnBascule.style.display = "block";
+            }
+        });
+
+        document.addEventListener("webkitfullscreenchange", function() {
+            if (document.webkitFullscreenElement) {
+                btnBascule.style.display = "block";
+            } else {
+                btnBascule.style.display = "block";
+            }
+        });
   </script>
 </body>
 </html>
