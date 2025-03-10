@@ -14,8 +14,8 @@
        max-width: 4000px;
    }
    button {
-       margin: 30px;
-       padding: 20px;
+       margin: 10px;
+       padding: 40px;
        font-size: 12px;
    }
    /* Changer la taille de la police pour les titres */
@@ -30,6 +30,8 @@
    /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
    .titre-1 {
       margin-bottom: 0px;  /* Ajoute un espace après le premier titre */
+      margin-top: 0px;  /* Ajoute un espace après le premier titre */
+      
    }
 </style>
 </head>
