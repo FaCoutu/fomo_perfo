@@ -24,6 +24,7 @@
             font-weight: bold;
             color: #333;  /* Couleur du texte */
             margin: 0;  /* Empêche les marges par défaut entre les h1 */
+            border: none;  /* Enlève les bordures */
         }
         /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
         .titre-1 {
