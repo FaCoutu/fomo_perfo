@@ -59,7 +59,7 @@
 
     <!-- Script JavaScript intégré -->
     <script>
-        var audioActif = null;  // Variable pour mémoriser l'audio actif
+        //var audioActif = null;  // Variable pour mémoriser l'audio actif
 
         // Lorsque la vidéo commence à jouer
         document.getElementById("video").addEventListener("play", function() {
