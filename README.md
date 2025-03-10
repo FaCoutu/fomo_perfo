@@ -65,8 +65,10 @@
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
     var video = document.getElementById("video");
+    var btnBascule = document.getElementById("btnBascule");
 
     var audioActif = audioSalle2; // On commence avec l'audio de la Salle 2
+    btnBascule.textContent = "Audio salle 2"; // Texte initial du bouton
 
     // Démarrage de la vidéo : on synchronise et joue l'audio actif
     video.addEventListener("play", function() {
@@ -94,15 +96,17 @@
     });
 
     // Bouton pour basculer entre les pistes audio
-    document.getElementById("btnBascule").addEventListener("click", function() {
+    btnBascule.addEventListener("click", function() {
         if (audioActif === audioSalle1) {
             audioSalle1.muted = true;
             audioSalle2.muted = false;
             audioActif = audioSalle2;
+            btnBascule.textContent = "Audio salle 2"; // Met à jour le texte du bouton
         } else {
             audioSalle1.muted = false;
             audioSalle2.muted = true;
             audioActif = audioSalle1;
+            btnBascule.textContent = "Audio salle 1"; // Met à jour le texte du bouton
         }
 
         // Synchroniser et jouer immédiatement l'audio actif
