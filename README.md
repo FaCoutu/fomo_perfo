@@ -84,6 +84,25 @@
 </audio>
 
 <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    var video = document.getElementById("video");
+    
+    // Fonction pour activer le mode plein écran
+    function goFullscreen() {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();  // Pour les navigateurs modernes
+        } else if (video.webkitRequestFullscreen) {
+            video.webkitRequestFullscreen();  // Pour Safari et anciens navigateurs Webkit
+        } else if (video.mozRequestFullScreen) {
+            video.mozRequestFullScreen();  // Pour Firefox
+        } else if (video.msRequestFullscreen) {
+            video.msRequestFullscreen();  // Pour Internet Explorer/Edge
+        }
+    }
+
+    // Activer le mode plein écran dès que la page est prête
+    goFullscreen();
+   });
     var video = document.getElementById("video");
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
