@@ -88,7 +88,7 @@
        audioSalle2.pause();
    });
 
-   // Lors de la reprise de la vidéo
+   // Lors de la reprise de la vidéo (après pause)
    video.addEventListener("play", function() {
        if (audioActif) {
            audioActif.play();  // Reprendre l'audio actif
@@ -101,6 +101,14 @@
        var currentTime = video.currentTime;
        audioSalle1.currentTime = currentTime;
        audioSalle2.currentTime = currentTime;
+   });
+
+   // Lorsqu'on se déplace dans la vidéo, on reprend l'audio actif
+   video.addEventListener("seeked", function() {
+       if (audioActif) {
+           audioActif.currentTime = video.currentTime;  // Synchroniser l'audio
+           audioActif.play();  // Relancer l'audio actif
+       }
    });
 
    // Bascule entre l'audio de la première et de la seconde salle
@@ -118,5 +126,6 @@
        }
    });
    </script>
+
 </body>
 </html>
