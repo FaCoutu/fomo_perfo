@@ -22,8 +22,8 @@
    h1 {
       font-size: 16px !important;  /* Ajuste la taille ici comme tu le souhaites */
       font-weight: bold;
-      /* color: #5B5B5B; */ /* Facultatif : change la couleur si nécessaire */
-      color: #1c5b1b;
+      color: #5B5B5B; /* Facultatif : change la couleur si nécessaire */
+      /* color: #1c5b1b; */
       margin: 0;  /* Empêche les marges par défaut entre les h1 */
       border: none;  /* Enlève les bordures */
    }
@@ -59,74 +59,74 @@
 
   <!-- Script JavaScript intégré -->
   <script>
-   var audioSalle1 = document.getElementById("audioSalle1");
-   var audioSalle2 = document.getElementById("audioSalle2");
-   var video = document.getElementById("video");
+    var audioSalle1 = document.getElementById("audioSalle1");
+    var audioSalle2 = document.getElementById("audioSalle2");
+    var video = document.getElementById("video");
 
-   // Variable pour mémoriser l'audio actif
-   var audioActif = null;
+    // Variable pour mémoriser l'audio actif (avant la pause)
+    var audioActif = null;
 
-   // Lors du démarrage de la vidéo
-   video.addEventListener("play", function() {
-       audioSalle1.play();
-       audioSalle2.play();
-       audioSalle1.muted = true;  // D'abord, mute l'audio de la salle 1
-       audioSalle2.muted = false; // L'audio de la salle 2 est actif
-       audioActif = audioSalle2;  // Mémoriser l'audio actif (Salle 2)
-   });
+    // Lors du démarrage de la vidéo
+    video.addEventListener("play", function() {
+        audioSalle1.play();
+        audioSalle2.play();
+        audioSalle1.muted = true;  // D'abord, mute l'audio de la salle 1
+        audioSalle2.muted = false; // L'audio de la salle 2 est actif
+        audioActif = audioSalle2;  // Mémoriser l'audio actif (Salle 2)
+    });
 
-   // Lors de la mise en pause de la vidéo
-   video.addEventListener("pause", function() {
-       // Mémoriser l'audio actif au moment de la pause
-       if (!audioSalle1.muted) {
-           audioActif = audioSalle1;
-       } else {
-           audioActif = audioSalle2;
-       }
+    // Lors de la mise en pause de la vidéo
+    video.addEventListener("pause", function() {
+        // Mémoriser l'audio actif au moment de la pause
+        if (!audioSalle1.muted) {
+            audioActif = audioSalle1;  // Si l'audio de la salle 1 était actif
+        } else {
+            audioActif = audioSalle2;  // Si l'audio de la salle 2 était actif
+        }
 
-       // Mettre en pause les deux audios
-       audioSalle1.pause();
-       audioSalle2.pause();
-   });
+        // Mettre en pause les deux audios
+        audioSalle1.pause();
+        audioSalle2.pause();
+    });
 
-   // Lors de la reprise de la vidéo (après pause)
-   video.addEventListener("play", function() {
-       if (audioActif) {
-           audioActif.play();  // Reprendre l'audio actif
-           audioActif.currentTime = video.currentTime;  // Synchroniser l'audio avec la vidéo
-       }
-   });
+    // Lors de la reprise de la vidéo (après pause)
+    video.addEventListener("play", function() {
+        if (audioActif) {
+            audioActif.play();  // Reprendre l'audio actif
+            audioActif.currentTime = video.currentTime;  // Synchroniser l'audio avec la vidéo
+        }
+    });
 
-   // Synchroniser la position de l'audio avec celle de la vidéo
-   video.addEventListener("timeupdate", function() {
-       var currentTime = video.currentTime;
-       audioSalle1.currentTime = currentTime;
-       audioSalle2.currentTime = currentTime;
-   });
+    // Synchroniser la position de l'audio avec celle de la vidéo
+    video.addEventListener("timeupdate", function() {
+        var currentTime = video.currentTime;
+        audioSalle1.currentTime = currentTime;
+        audioSalle2.currentTime = currentTime;
+    });
 
-   // Lorsqu'on se déplace dans la vidéo, on reprend l'audio actif
-   video.addEventListener("seeked", function() {
-       if (audioActif) {
-           audioActif.currentTime = video.currentTime;  // Synchroniser l'audio
-           audioActif.play();  // Relancer l'audio actif
-       }
-   });
+    // Lorsqu'on se déplace dans la vidéo, on reprend l'audio actif
+    video.addEventListener("seeked", function() {
+        if (audioActif) {
+            audioActif.currentTime = video.currentTime;  // Synchroniser l'audio
+            audioActif.play();  // Relancer l'audio actif
+        }
+    });
 
-   // Bascule entre l'audio de la première et de la seconde salle
-   document.getElementById("btnBascule").addEventListener("click", function() {
-       if (audioSalle1.muted) {
-           // Si l'audio de la salle 1 est muet, on le rend audible et mute celui de la salle 2
-           audioSalle1.muted = false;
-           audioSalle2.muted = true;
-           audioActif = audioSalle1;  // Mémoriser l'audio actif
-       } else {
-           // Si l'audio de la salle 2 est muet, on le rend audible et mute celui de la salle 1
-           audioSalle1.muted = true;
-           audioSalle2.muted = false;
-           audioActif = audioSalle2;  // Mémoriser l'audio actif
-       }
-   });
-  </script>
+    // Bascule entre l'audio de la première et de la seconde salle
+    document.getElementById("btnBascule").addEventListener("click", function() {
+        if (audioSalle1.muted) {
+            // Si l'audio de la salle 1 est muet, on le rend audible et mute celui de la salle 2
+            audioSalle1.muted = false;
+            audioSalle2.muted = true;
+            audioActif = audioSalle1;  // Mémoriser l'audio actif
+        } else {
+            // Si l'audio de la salle 2 est muet, on le rend audible et mute celui de la salle 1
+            audioSalle1.muted = true;
+            audioSalle2.muted = false;
+            audioActif = audioSalle2;  // Mémoriser l'audio actif
+        }
+    });
+</script>
 
 </body>
 </html>
