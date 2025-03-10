@@ -62,7 +62,7 @@
 </div>
 
 <audio id="audioSalle1" loop>
-    <source src="https://www.dropbox.com/scl/fi/xslc65agq0msywqp9w1px/FOMO_Audio_Perfo-res-Bain-Mathieu.mp3?rlkey=uecntb0ntbjg7dau3m46smpy8&st=lhe0s2ao&raw=1" type="audio/wav">
+    <source src="https://www.dropbox.com/scl/fi/xslc65agq0msywqp9w1px/FOMO_Audio_Perfo-res-Bain-Mathieu.mp3?rlkey=uecntb0ntbjg7dau3m46smpy8&st=lhe0s2ao&raw=1" type="audio/mp3">
 </audio>
 
 <audio id="audioSalle2" loop>
