@@ -22,7 +22,7 @@
 
    .btn-video {
        position: absolute;
-       top: -10%;
+       top: 10%;
        left: 10%;
        transform: translateX(-50%);
        background-color: #433d69;
@@ -53,8 +53,8 @@
    video:-webkit-full-screen + .btn-video,
    video:fullscreen + .btn-video {
        position: fixed;
-       top: -10px;
-       left: 10px;
+       top: 10%;
+       left: 10%;
        transform: translateX(-50%);
        z-index: 9999;
        display: block !important;
@@ -71,7 +71,7 @@
       Votre navigateur ne prend pas en charge la vidéo HTML5.
    </video>
 
-   <button id="btnBascule" class="btn-video">Audio salle 2</button>
+   <button id="btnBascule" class="btn-video">Audio salle de droite</button>
 </div>
 
 <audio id="audioSalle1" loop>
