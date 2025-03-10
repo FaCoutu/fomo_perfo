@@ -79,6 +79,7 @@
      
      var player;
      var lastSyncTime = 0;  // Variable pour suivre la dernière synchronisation
+     var isAudioPlaying = false; // Ajout d'une variable pour suivre l'état de l'audio
      
      // Fonction d'initialisation de l'API YouTube
      function onYouTubePlayerAPIReady() {
@@ -92,12 +93,14 @@
      // Quand l'état de la vidéo change (lecture, pause, etc.)
      function onPlayerStateChange(event) {
          if (event.data == YT.PlayerState.PLAYING) {
-             if (audioActif.paused) {
+             if (!isAudioPlaying) {
                  audioActif.currentTime = player.getCurrentTime();
                  audioActif.play();
+                 isAudioPlaying = true;  // Assurer que l'audio commence à jouer uniquement une fois
              }
          } else if (event.data == YT.PlayerState.PAUSED) {
              audioActif.pause();
+             isAudioPlaying = false;  // Mettre à jour l'état pour indiquer que l'audio est en pause
          }
      }
      
@@ -106,7 +109,7 @@
          if (player && player.getPlayerState() !== YT.PlayerState.PAUSED) {
              var currentTime = player.getCurrentTime();
      
-             // Synchroniser l'audio toutes les 100ms (ajustez cette valeur selon les besoins)
+             // Synchroniser l'audio toutes les 100ms si le temps a changé de plus de 0.1s
              if (Math.abs(currentTime - lastSyncTime) > 0.1) {
                  audioActif.currentTime = currentTime;
                  lastSyncTime = currentTime;  // Mettre à jour la dernière synchronisation
@@ -132,9 +135,14 @@
              btnBascule.classList.add("btn-salle1");
          }
      
-         audioActif.currentTime = player.getCurrentTime();
-         if (player.getPlayerState() !== YT.PlayerState.PAUSED) {
+         // Synchroniser l'audio avec la vidéo mais éviter de le redémarrer trop souvent
+         if (isAudioPlaying) {
+             audioActif.currentTime = player.getCurrentTime();
+         } else {
+             // Assurer que l'audio démarre au bon moment
+             audioActif.currentTime = player.getCurrentTime();
              audioActif.play();
+             isAudioPlaying = true;
          }
      });
      
