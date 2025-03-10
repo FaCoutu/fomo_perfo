@@ -78,12 +78,13 @@
     btnBascule.classList.add("btn-salle2");
 
     var player;
-    
+
     // Fonction d'initialisation de l'API YouTube
     function onYouTubePlayerAPIReady() {
         player = new YT.Player('video', {
             events: {
                 'onStateChange': onPlayerStateChange,
+                'onSeek': onPlayerSeek,  // Écoute le changement de position de la vidéo
             }
         });
     }
@@ -100,9 +101,14 @@
         }
     }
 
+    // Quand l'utilisateur déplace le curseur de la vidéo (seek)
+    function onPlayerSeek(event) {
+        audioActif.currentTime = player.getCurrentTime();  // Synchronise le temps de l'audio avec celui de la vidéo
+    }
+
     // Synchronisation de l'audio et de la vidéo en fonction du temps
     setInterval(function() {
-        if (player && !player.getPlayerState() == YT.PlayerState.PAUSED) {
+        if (player && player.getPlayerState() !== YT.PlayerState.PAUSED) {
             audioActif.currentTime = player.getCurrentTime();
         }
     }, 100);
