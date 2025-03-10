@@ -69,7 +69,7 @@
    :fullscreen .btn-video,
    ::-webkit-full-screen .btn-video { /* Pour Safari */
        position: absolute;
-       bottom: 20px;
+       bottom: 40px;
        left: 50%;
        transform: translateX(-50%);
        z-index: 9999; /* S'assurer que le bouton est au-dessus */
