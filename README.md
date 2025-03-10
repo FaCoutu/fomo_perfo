@@ -7,7 +7,7 @@
    body {
        font-family: Arial, sans-serif;
        text-align: center;
-       padding: 16px;
+       padding: 30px;
    }
    video {
        width: 100%;
