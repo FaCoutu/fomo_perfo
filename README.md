@@ -63,14 +63,19 @@
    }
 
    /* Forcer l'affichage du bouton en mode plein écran */
-   video:-webkit-full-screen + .btn-video,
-   video:fullscreen + .btn-video {
-       position: fixed;
+   /* On ajoute un wrapper pour gérer l'affichage du bouton */
+   .video-container.fullscreen .btn-video {
+       position: absolute;
        top: 10px;
        left: 10%;
        transform: translateX(-50%);
        z-index: 9999;
        display: block !important;
+   }
+   
+   /* Empêcher l'affichage du bouton en plein écran sans wrapper */
+   .btn-video {
+       display: none;
    }
 </style>
 </head>
@@ -100,6 +105,7 @@
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
+    var videoWrapper = document.getElementById("videoWrapper");
 
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
@@ -147,22 +153,29 @@
             audioActif.play();
         }
     });
-
-   // Fonction pour ajouter le z-index élevé en mode plein écran
-    function adjustButtonInFullscreen() {
-        btnBascule.style.zIndex = "9999"; // Ajoute un z-index élevé pour s'assurer que le bouton soit visible
-    }
-
-    // Rendre le bouton visible en mode plein écran
+   // Ajouter/retirer la classe fullscreen pour afficher le bouton en plein écran
     document.addEventListener("fullscreenchange", function() {
         if (document.fullscreenElement) {
-            adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
+            videoWrapper.classList.add("fullscreen");
+        } else {
+            videoWrapper.classList.remove("fullscreen");
         }
     });
 
     document.addEventListener("webkitfullscreenchange", function() {
         if (document.webkitFullscreenElement) {
-            adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
+            videoWrapper.classList.add("fullscreen");
+        } else {
+            videoWrapper.classList.remove("fullscreen");
+        }
+    });
+
+    // Pour activer le mode plein écran manuellement
+    video.addEventListener("dblclick", function() {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) { // Pour Safari
+            video.webkitRequestFullscreen();
         }
     });
 </script>
