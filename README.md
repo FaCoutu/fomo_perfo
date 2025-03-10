@@ -20,7 +20,7 @@
         }
         /* Règle CSS commune pour les h1 */
         h1 {
-            font-size: 32px !important;  /* Taille de la police des titres */
+            font-size: 16px !important;  /* Taille de la police des titres */
             font-weight: bold;
             color: #333;  /* Couleur du texte */
             margin: 0;  /* Empêche les marges par défaut entre les h1 */
