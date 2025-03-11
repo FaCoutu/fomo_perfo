@@ -173,15 +173,10 @@
         
         // Si la vidéo est en lecture, on synchronise et on joue l'audio
         if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-            // Synchroniser l'audio avec la nouvelle position de la vidéo
-            audioActif.currentTime = videoTime;
-            
-            // Rejouer l'audio si nécessaire, en s'assurant qu'il n'est pas en pause
-            if (audioActif.paused) {
-                audioActif.play().catch((error) => {
-                    console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
-                });
-            }
+            audioActif.currentTime = videoTime;  // Synchroniser l'audio avec la nouvelle position de la vidéo
+            audioActif.play().catch((error) => {
+                console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
+            });
         }
     });
 
