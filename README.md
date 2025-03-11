@@ -83,6 +83,7 @@
 
     var tolerance = 0.3; // Seuil de tolérance pour la resynchronisation
     var isSeeking = false; // Flag pour indiquer si on est en train de "buffer"
+    var bufferTime = 700; // Temps de buffer (700ms)
 
     function synchroniserAudio() {
         if (!isSeeking) { 
@@ -94,14 +95,16 @@
     }
 
     video.addEventListener("play", function () {
-        if (audioActif.paused) {
+        if (!isSeeking && audioActif.paused) {
             audioActif.currentTime = video.currentTime;
             audioActif.play();
         }
     });
 
     video.addEventListener("pause", function () {
-        audioActif.pause();
+        if (!isSeeking) {
+            audioActif.pause();
+        }
     });
 
     video.addEventListener("timeupdate", function () {
@@ -110,13 +113,19 @@
         }
     });
 
-    video.addEventListener("seeked", function () {
-        isSeeking = true;  // On commence le buffering
+    video.addEventListener("seeking", function () {
+        isSeeking = true;
+        video.pause(); // Pause temporaire pour éviter des saccades
+        audioActif.pause();
+    });
 
+    video.addEventListener("seeked", function () {
         setTimeout(function () {
-            audioActif.currentTime = video.currentTime; // Resynchronisation après le buffer
-            isSeeking = false;  // Fin du buffering
-        }, 500);  // Délai de 500ms avant de synchroniser
+            video.play();
+            audioActif.currentTime = video.currentTime;
+            audioActif.play();
+            isSeeking = false;
+        }, bufferTime); // Attente avant de reprendre la lecture
     });
 
     btnBascule.addEventListener("click", function () {
@@ -136,19 +145,14 @@
             btnBascule.classList.add("btn-salle1");
         }
 
-        isSeeking = true; // Éviter toute resynchronisation immédiate
-
-        setTimeout(function () {
-            audioActif.currentTime = video.currentTime;
-            isSeeking = false; // Reprise normale après le buffer
-            if (!video.paused) {
-                audioActif.play();
-            }
-        }, 500); // Buffer après le changement d’audio
+        // Mise à jour immédiate de l'audio, sans buffer
+        audioActif.currentTime = video.currentTime;
+        if (!video.paused) {
+            audioActif.play();
+        }
     });
 
 </script>
-
 
 </body>
 </html>
