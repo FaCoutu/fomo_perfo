@@ -101,31 +101,21 @@
     btnBascule.classList.add("btn-salle2");
 
     var isBuffering = false; // Suivi du buffering
+    var isAudioBuffering = false; // Suivi du buffering de l'audio
 
     function synchroniserAudio() {
         audioActif.currentTime = video.currentTime;
     }
 
     function attendreBufferEtJouer() {
-        if (!isBuffering) {
+        if (!isBuffering && !isAudioBuffering) {
             synchroniserAudio();
             audioActif.play();
+            video.play();
         }
     }
 
-    // **Démarrer la lecture**
-    video.addEventListener("play", function () {
-        if (audioActif.paused) {
-            attendreBufferEtJouer();
-        }
-    });
-
-    // **Pause vidéo = pause audio**
-    video.addEventListener("pause", function () {
-        audioActif.pause();
-    });
-
-    // **Détection du buffering**
+    // **Gestion du buffering vidéo**
     video.addEventListener("waiting", function () {
         isBuffering = true;
         audioActif.pause();
@@ -134,6 +124,28 @@
     video.addEventListener("canplaythrough", function () {
         isBuffering = false;
         attendreBufferEtJouer();
+    });
+
+    // **Gestion du buffering audio**
+    audioActif.addEventListener("waiting", function () {
+        isAudioBuffering = true;
+        video.pause();
+    });
+
+    audioActif.addEventListener("canplaythrough", function () {
+        isAudioBuffering = false;
+        attendreBufferEtJouer();
+    });
+
+    // **Lecture et pause synchronisées**
+    video.addEventListener("play", function () {
+        if (audioActif.paused) {
+            attendreBufferEtJouer();
+        }
+    });
+
+    video.addEventListener("pause", function () {
+        audioActif.pause();
     });
 
     // **Gestion du déplacement dans la vidéo**
@@ -149,7 +161,7 @@
     // **Changement de piste audio**
     btnBascule.addEventListener("click", function () {
         var nouvelleAudio = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
-        
+
         audioActif.pause(); // Arrêter l'ancien audio
         nouvelleAudio.currentTime = video.currentTime; // Synchroniser
         if (!video.paused && !isBuffering) {
@@ -160,8 +172,18 @@
         btnBascule.textContent = (audioActif === audioSalle1) ? "Audio salle de gauche" : "Audio salle de droite";
         btnBascule.classList.toggle("btn-salle1");
         btnBascule.classList.toggle("btn-salle2");
-    });
 
+        // **Ajout des écouteurs d'événements pour le nouvel audio**
+        audioActif.addEventListener("waiting", function () {
+            isAudioBuffering = true;
+            video.pause();
+        });
+
+        audioActif.addEventListener("canplaythrough", function () {
+            isAudioBuffering = false;
+            attendreBufferEtJouer();
+        });
+    });
 </script>
 
 </body>
