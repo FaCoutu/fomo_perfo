@@ -10,17 +10,16 @@
        padding: 10px;
    }
 
-   /* Changer la taille de la police pour les titres */
    h1 {
-      font-size: 16px !important;  /* Ajuste la taille ici comme tu le souhaites */
+      font-size: 16px !important;
       font-weight: bold;
-      color: #333;  /* Facultatif : change la couleur si nécessaire */
-      margin: 0;  /* Empêche les marges par défaut entre les h1 */
-      border: none;  /* Enlève les bordures */
+      color: #333;
+      margin: 0;
+      border: none;
    }
-   /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
+
    .titre-1 {
-       margin-bottom: 16px;  /* Ajoute un espace après le premier titre */
+       margin-bottom: 16px;
    }
 
    .video-container {
@@ -36,9 +35,9 @@
    .btn-video {
     position: absolute;
     top: 10px;
-    left: 10px; /* Alignement parfait en haut à gauche */
-    width: 150px; /* Taille fixe du bouton */
-    height: 30px; /* Hauteur fixe */
+    left: 10px;
+    width: 150px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -80,11 +79,11 @@
    <button id="btnBascule" class="btn-video">Audio salle de droite</button>
 </div>
 
-<audio id="audioSalle1" preload="none">
+<audio id="audioSalle1" preload="auto">
    <source src="https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1" type="audio/mp3">
 </audio>
 
-<audio id="audioSalle2" preload="none">
+<audio id="audioSalle2" preload="auto">
    <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1" type="audio/mp3">
 </audio>
 
@@ -97,10 +96,28 @@
    
    var audioActif = audioSalle2;
    btnBascule.classList.add("btn-salle2");
-   
-   // Désactiver le premier audio au démarrage
-   audioSalle1.src = ""; 
-   
+
+   // Initialisation de l'audio avec un petit tampon (quelques secondes)
+   function preloadAudio(audio) {
+      audio.currentTime = 0;
+      audio.play();
+      audio.pause();
+   }
+
+   // Initialisation de la vidéo avec un petit tampon (quelques secondes)
+   function preloadVideo(video) {
+      video.currentTime = 0;
+      video.play();
+      video.pause();
+   }
+
+   // Précharger la vidéo et l'audio lors du chargement de la page
+   window.addEventListener('load', function() {
+      preloadVideo(video);  // Précharge la vidéo
+      preloadAudio(audioSalle1);  // Précharge l'audio salle 1
+      preloadAudio(audioSalle2);  // Précharge l'audio salle 2
+   });
+
    function synchroniserAudio() {
        var diff = Math.abs(video.currentTime - audioActif.currentTime);
        if (diff > 0.3) {
@@ -108,7 +125,6 @@
        }
    }
    
-   // Gestion de la lecture et pause synchronisée
    video.addEventListener("play", function () {
        if (audioActif.src) {
            audioActif.currentTime = video.currentTime;
@@ -126,25 +142,23 @@
    
    // **BOUTON POUR CHANGER L'AUDIO**
    btnBascule.addEventListener("click", function () {
-    // Désactiver l'audio précédent (si nécessaire) tout en préchargeant le suivant
+    // Désactiver l'audio précédent (si nécessaire)
     if (audioActif.src) {
         audioActif.pause();
     }
 
-    // Précharger le nouvel audio
+    // Précharger le nouvel audio (en quelques secondes seulement)
     if (audioActif === audioSalle1) {
-        // Désactive l'audio de la salle 1
         audioActif = audioSalle2;
         audioActif.src = "https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1";
-        audioActif.load(); // Précharge le fichier audio de la salle 2
+        preloadAudio(audioActif);  // Précharge audio de la salle 2 (quelques secondes)
         btnBascule.textContent = "Audio salle de droite";
         btnBascule.classList.remove("btn-salle1");
         btnBascule.classList.add("btn-salle2");
     } else {
-        // Désactive l'audio de la salle 2
         audioActif = audioSalle1;
         audioActif.src = "https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1";
-        audioActif.load(); // Précharge le fichier audio de la salle 1
+        preloadAudio(audioActif);  // Précharge audio de la salle 1 (quelques secondes)
         btnBascule.textContent = "Audio salle de gauche";
         btnBascule.classList.remove("btn-salle2");
         btnBascule.classList.add("btn-salle1");
