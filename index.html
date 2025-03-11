@@ -165,9 +165,11 @@
         }
     });
 
-    // Synchroniser l'audio si l'utilisateur change la position de la vidéo (curseur)
+    // Fonction de synchronisation après un changement de position de la vidéo (seek)
     document.getElementById("video").addEventListener("seeked", function() {
-        syncAudio();
+        setTimeout(function() {
+            syncAudio();  // Attendre un petit délai avant de synchroniser après le seek
+        }, 500);  // 500 ms de délai pour permettre au buffer de se remplir
     });
 
     var tag = document.createElement('script');
