@@ -153,6 +153,7 @@
     }
 
     btnBascule.addEventListener("click", function () {
+        // Mute l'audio actif précédent
         if (audioActif === audioSalle1) {
             audioSalle1.muted = true;
             audioSalle2.muted = false;
@@ -169,6 +170,7 @@
             btnBascule.classList.add("btn-salle1");
         }
 
+        // Reprendre la lecture de l'audio sélectionné
         if (player.getPlayerState() == YT.PlayerState.PLAYING) {
             syncAudio();
         }
