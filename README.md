@@ -126,33 +126,35 @@
    
    // **BOUTON POUR CHANGER L'AUDIO**
    btnBascule.addEventListener("click", function () {
-       // Désactiver complètement l'audio actif
-       if (audioActif.src) {
-           audioActif.pause();
-           audioActif.src = ""; // Libère la mémoire
-       }
-   
-       // Basculer vers l'autre piste
-       if (audioActif === audioSalle1) {
-           audioActif = audioSalle2;
-           audioActif.src = "https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1";
-           btnBascule.textContent = "Audio salle de droite";
-           btnBascule.classList.remove("btn-salle1");
-           btnBascule.classList.add("btn-salle2");
-       } else {
-           audioActif = audioSalle1;
-           audioActif.src = "https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1";
-           btnBascule.textContent = "Audio salle de gauche";
-           btnBascule.classList.remove("btn-salle2");
-           btnBascule.classList.add("btn-salle1");
-       }
-   
-       // Synchroniser avec la vidéo immédiatement
-       if (!video.paused) {
-           audioActif.currentTime = video.currentTime;
-           audioActif.play();
-       }
-   });
+    // Désactiver complètement l'audio actif et éviter les délais
+    if (audioActif.src) {
+        audioActif.pause();
+        audioActif.src = ""; // Libère la mémoire et l'audio précédent
+    }
+
+    // Basculer vers l'autre piste audio
+    if (audioActif === audioSalle1) {
+        audioActif = audioSalle2;
+        audioActif.src = "https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1";
+        btnBascule.textContent = "Audio salle de droite";
+        btnBascule.classList.remove("btn-salle1");
+        btnBascule.classList.add("btn-salle2");
+    } else {
+        audioActif = audioSalle1;
+        audioActif.src = "https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1";
+        btnBascule.textContent = "Audio salle de gauche";
+        btnBascule.classList.remove("btn-salle2");
+        btnBascule.classList.add("btn-salle1");
+    }
+
+    // Avant de lire le nouvel audio, synchronise-le avec la vidéo
+    audioActif.currentTime = video.currentTime;
+
+    // Lancer immédiatement la lecture du nouvel audio sans délai
+    if (!video.paused) {
+        audioActif.play();
+    }
+});
 
 </script>
 
