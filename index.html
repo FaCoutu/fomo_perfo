@@ -100,48 +100,17 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
-    var isBuffering = false;
-    var isAudioBuffering = false;
-    var isSeeking = false;
+    var isSeeking = false; // Indique si on est en train de "buffer"
+    var bufferTime = 700; // Temps de buffer (700ms)
 
     function synchroniserAudio() {
         audioActif.currentTime = video.currentTime;
     }
 
-    function attendreEtJouer() {
-        if (!isBuffering && !isAudioBuffering) {
-            synchroniserAudio();
-            audioActif.play();
-            video.play();
-        }
-    }
-
-    // **Gestion du buffering vidéo**
-    video.addEventListener("waiting", function () {
-        isBuffering = true;
-        audioActif.pause();
-    });
-
-    video.addEventListener("canplaythrough", function () {
-        isBuffering = false;
-        attendreEtJouer();
-    });
-
-    // **Gestion du buffering audio**
-    audioActif.addEventListener("waiting", function () {
-        isAudioBuffering = true;
-        video.pause();
-    });
-
-    audioActif.addEventListener("canplaythrough", function () {
-        isAudioBuffering = false;
-        attendreEtJouer();
-    });
-
-    // **Lecture et pause synchronisées**
     video.addEventListener("play", function () {
         if (audioActif.paused) {
-            attendreEtJouer();
+            synchroniserAudio();
+            audioActif.play();
         }
     });
 
@@ -149,7 +118,6 @@
         audioActif.pause();
     });
 
-    // **Gestion du seeking (avance rapide, retour en arrière)**
     video.addEventListener("seeking", function () {
         isSeeking = true;
         audioActif.pause();
@@ -158,45 +126,26 @@
     video.addEventListener("seeked", function () {
         setTimeout(function () {
             synchroniserAudio();
-            attendreEtJouer();
+            audioActif.play();
             isSeeking = false;
-        }, 500); // Petit délai pour assurer la synchronisation
+        }, bufferTime);
     });
 
-    // **Changement de piste audio**
     btnBascule.addEventListener("click", function () {
         var nouvelleAudio = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
-
-        // **Supprimer les événements de l'ancien audio**
-        audioActif.removeEventListener("waiting", onAudioWaiting);
-        audioActif.removeEventListener("canplaythrough", onAudioCanPlay);
-
-        audioActif.pause();
-        nouvelleAudio.currentTime = video.currentTime;
-        audioActif = nouvelleAudio;
-
-        // **Réajouter les événements au nouvel audio**
-        audioActif.addEventListener("waiting", onAudioWaiting);
-        audioActif.addEventListener("canplaythrough", onAudioCanPlay);
-
+        
+        audioActif.pause(); // Arrêter l'ancien audio
+        nouvelleAudio.currentTime = video.currentTime; // Synchroniser
         if (!video.paused) {
-            attendreEtJouer();
+            nouvelleAudio.play();
         }
+        audioActif = nouvelleAudio;
 
         btnBascule.textContent = (audioActif === audioSalle1) ? "Audio salle de gauche" : "Audio salle de droite";
         btnBascule.classList.toggle("btn-salle1");
         btnBascule.classList.toggle("btn-salle2");
     });
 
-    function onAudioWaiting() {
-        isAudioBuffering = true;
-        video.pause();
-    }
-
-    function onAudioCanPlay() {
-        isAudioBuffering = false;
-        attendreEtJouer();
-    }
 </script>
 
 </body>
