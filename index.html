@@ -100,43 +100,59 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
-    var isSeeking = false; // Indique si on est en train de "buffer"
-    var bufferTime = 700; // Temps de buffer (700ms)
+    var isBuffering = false; // Suivi du buffering
 
     function synchroniserAudio() {
         audioActif.currentTime = video.currentTime;
     }
 
-    video.addEventListener("play", function () {
-        if (audioActif.paused) {
+    function attendreBufferEtJouer() {
+        if (!isBuffering) {
             synchroniserAudio();
             audioActif.play();
         }
+    }
+
+    // **Démarrer la lecture**
+    video.addEventListener("play", function () {
+        if (audioActif.paused) {
+            attendreBufferEtJouer();
+        }
     });
 
+    // **Pause vidéo = pause audio**
     video.addEventListener("pause", function () {
         audioActif.pause();
     });
 
+    // **Détection du buffering**
+    video.addEventListener("waiting", function () {
+        isBuffering = true;
+        audioActif.pause();
+    });
+
+    video.addEventListener("canplaythrough", function () {
+        isBuffering = false;
+        attendreBufferEtJouer();
+    });
+
+    // **Gestion du déplacement dans la vidéo**
     video.addEventListener("seeking", function () {
-        isSeeking = true;
+        isBuffering = true;
         audioActif.pause();
     });
 
     video.addEventListener("seeked", function () {
-        setTimeout(function () {
-            synchroniserAudio();
-            audioActif.play();
-            isSeeking = false;
-        }, bufferTime);
+        attendreBufferEtJouer();
     });
 
+    // **Changement de piste audio**
     btnBascule.addEventListener("click", function () {
         var nouvelleAudio = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
         
         audioActif.pause(); // Arrêter l'ancien audio
         nouvelleAudio.currentTime = video.currentTime; // Synchroniser
-        if (!video.paused) {
+        if (!video.paused && !isBuffering) {
             nouvelleAudio.play();
         }
         audioActif = nouvelleAudio;
