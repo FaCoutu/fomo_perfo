@@ -95,45 +95,73 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
+    var player;
     function onYouTubeIframeAPIReady() {
-        var player = new YT.Player('video', {
+        player = new YT.Player('video', {
             events: {
                 'onStateChange': onPlayerStateChange
             }
         });
+    }
 
-        function onPlayerStateChange(event) {
-            if (event.data == YT.PlayerState.PLAYING) {
-                if (audioActif.paused) {
-                    audioActif.play();
-                }
-            } else if (event.data == YT.PlayerState.PAUSED) {
-                audioActif.pause();
-            }
+    function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING) {
+            startSync();
+        } else if (event.data == YT.PlayerState.PAUSED) {
+            stopSync();
         }
+    }
 
-        btnBascule.addEventListener("click", function () {
-            if (audioActif === audioSalle1) {
-                audioSalle1.muted = true;
-                audioSalle2.muted = false;
-                audioActif = audioSalle2;
-                btnBascule.textContent = "Audio salle de droite";
-                btnBascule.classList.remove("btn-salle1");
-                btnBascule.classList.add("btn-salle2");
-            } else {
-                audioSalle1.muted = false;
-                audioSalle2.muted = true;
-                audioActif = audioSalle1;
-                btnBascule.textContent = "Audio salle de gauche";
-                btnBascule.classList.remove("btn-salle2");
-                btnBascule.classList.add("btn-salle1");
+    var syncInterval;
+    function startSync() {
+        if (!syncInterval) {
+            syncAudio();
+            syncInterval = setInterval(syncAudio, 500);
+        }
+    }
+
+    function stopSync() {
+        clearInterval(syncInterval);
+        syncInterval = null;
+        audioActif.pause();
+    }
+
+    function syncAudio() {
+        if (player && audioActif) {
+            var videoTime = player.getCurrentTime();
+            var audioDiff = Math.abs(videoTime - audioActif.currentTime);
+
+            if (audioDiff > 0.3) {
+                audioActif.currentTime = videoTime;
             }
 
-            if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+            if (player.getPlayerState() === YT.PlayerState.PLAYING && audioActif.paused) {
                 audioActif.play();
             }
-        });
+        }
     }
+
+    btnBascule.addEventListener("click", function () {
+        if (audioActif === audioSalle1) {
+            audioSalle1.muted = true;
+            audioSalle2.muted = false;
+            audioActif = audioSalle2;
+            btnBascule.textContent = "Audio salle de droite";
+            btnBascule.classList.remove("btn-salle1");
+            btnBascule.classList.add("btn-salle2");
+        } else {
+            audioSalle1.muted = false;
+            audioSalle2.muted = true;
+            audioActif = audioSalle1;
+            btnBascule.textContent = "Audio salle de gauche";
+            btnBascule.classList.remove("btn-salle2");
+            btnBascule.classList.add("btn-salle1");
+        }
+
+        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+            syncAudio();
+        }
+    });
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
