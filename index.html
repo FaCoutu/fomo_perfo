@@ -37,25 +37,26 @@
    }
 
    .btn-video {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      width: 150px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #433d69;
-      color: white;
-      font-size: 12px;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      border-radius: 3px;
-      opacity: 0.8;
-      transition: opacity 0.2s, background-color 0.3s;
-      z-index: 10;
-   }
+   position: absolute;
+   top: 10px; /* Placer le bouton en haut */
+   left: 50%; /* Centrer horizontalement */
+   transform: translateX(-50%); /* Ajuster pour un vrai centrage horizontal */
+   width: 150px;
+   height: 30px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: #433d69;
+   color: white;
+   font-size: 12px;
+   font-weight: bold;
+   border: none;
+   cursor: pointer;
+   border-radius: 3px;
+   opacity: 0.8;
+   transition: opacity 0.2s, background-color 0.3s;
+   z-index: 10;
+}
 
    .btn-video:hover {
        opacity: 1;
