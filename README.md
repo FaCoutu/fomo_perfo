@@ -80,11 +80,11 @@
    <button id="btnBascule" class="btn-video">Audio salle de droite</button>
 </div>
 
-<audio id="audioSalle1" loop>
+<audio id="audioSalle1" preload="none">
    <source src="https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1" type="audio/mp3">
 </audio>
 
-<audio id="audioSalle2" loop>
+<audio id="audioSalle2" preload="none">
    <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1" type="audio/mp3">
 </audio>
 
@@ -167,6 +167,31 @@
             audioActif.play();
         }
     });
+    btnBascule.addEventListener("click", function () {
+    // Désactiver complètement l'audio actif
+    audioActif.pause();
+    audioActif.src = ""; // Supprime la source pour économiser de la mémoire
+
+    if (audioActif === audioSalle1) {
+        audioActif = audioSalle2;
+        audioActif.src = "https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1"; // Recharge seulement l'audio actif
+        btnBascule.textContent = "Audio salle de droite";
+        btnBascule.classList.remove("btn-salle1");
+        btnBascule.classList.add("btn-salle2");
+    } else {
+        audioActif = audioSalle1;
+        audioActif.src = "https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1";
+        btnBascule.textContent = "Audio salle de gauche";
+        btnBascule.classList.remove("btn-salle2");
+        btnBascule.classList.add("btn-salle1");
+    }
+
+    // Synchroniser avec la vidéo
+    audioActif.currentTime = video.currentTime;
+    if (!video.paused) {
+        audioActif.play();
+    }
+});
 
 </script>
 
