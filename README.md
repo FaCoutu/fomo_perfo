@@ -1,151 +1,166 @@
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Félix-Antoine Coutu</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 10px;
-        }
-        .video-container {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-            max-width: 2000px;
-            height: 0;
-            padding-bottom: 56.25%;
-        }
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .btn-video {
-            position: absolute;
-            top: 10px;
-            left: 10%;
-            transform: translateX(-50%);
-            background-color: #433d69;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 5px;
-            opacity: 0.8;
-            transition: opacity 0.3s, background-color 0.3s;
-            z-index: 10;
-            text-align: left;
-        }
-        .btn-video:hover {
-            opacity: 1;
-        }
-        .btn-salle1 {
-            background-color: #194f18;
-        }
-        .btn-salle2 {
-            background-color: #433d69;
-        }
-        /* Masquer les lecteurs audio */
-        /*.audio-container iframe {
-            display: none;
-        }*/
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Félix-Antoine Coutu</title>
+<style>
+   body {
+       font-family: Arial, sans-serif;
+       text-align: center;
+       padding: 10px;
+   }
+
+   .video-container {
+      position: relative;
+      display: inline-block;
+   }
+
+   video {
+      width: 100%;
+      max-width: 2000px;
+   }
+
+   .btn-video {
+       position: absolute;
+       top: 10px;
+       left: 10%;
+       transform: translateX(-50%);
+       background-color: #433d69;
+       color: white;
+       padding: 10px 20px;
+       border: none;
+       font-size: 14px;
+       cursor: pointer;
+       border-radius: 5px;
+       opacity: 0.8;
+       transition: opacity 0.3s, background-color 0.3s;
+       z-index: 10;
+       text-align: left;
+   }
+
+   .btn-video:hover {
+       opacity: 1;
+   }
+
+   .btn-salle1 {
+       background-color: #194f18;
+   }
+
+   .btn-salle2 {
+       background-color: #433d69;
+   }
+</style>
 </head>
 <body>
 
 <h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
 
 <div class="video-container">
-    <iframe id="video" src="https://www.youtube.com/embed/fm00cFcoJM8?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    <button id="btnBascule" class="btn-video">Audio salle de droite</button>
+   <video id="video" controls>
+      <source src="https://dl.dropboxusercontent.com/scl/fi/vn856dku4ckgm35azhbz1/Fumee-Omnisciente-Mirage-Onirique02.mp4?rlkey=khuru1f6c5woeclemz1ai9rlz&st=pksoqe29&raw=1" type="video/mp4">    
+      Votre navigateur ne prend pas en charge la vidéo HTML5.
+   </video>
+
+   <button id="btnBascule" class="btn-video">Audio salle de droite</button>
 </div>
 
-<div class="audio-container">
-    <!-- Audio Salle 1 (SoundCloud) -->
-    <iframe id="audioSalle1" width="100%" height="166" scrolling="no" frameborder="no" 
-        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2051283100%3Fsecret_token%3Ds-6d0R4mFbF6v&auto_play=false&visual=false">
-    </iframe>
-    <!-- Audio Salle 2 (SoundCloud) -->
-    <iframe id="audioSalle2" width="100%" height="166" scrolling="no" frameborder="no" 
-        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1742214405%3Fsecret_token%3Ds-UuYn7gHeGzR&auto_play=false&visual=false">
-    </iframe>
-</div>
+<audio id="audioSalle1" loop>
+   <source src="https://www.dropbox.com/scl/fi/xslc65agq0msywqp9w1px/FOMO_Audio_Perfo-res-Bain-Mathieu.mp3?rlkey=uecntb0ntbjg7dau3m46smpy8&st=efsqsk9p&raw=1" type="audio/wav">
+</audio>
 
-<script src="https://www.youtube.com/iframe_api"></script>
-<script src="https://w.soundcloud.com/player/api.js"></script>
+<audio id="audioSalle2" loop>
+   <source src="audio_salle2.mp3" type="audio/mp3">
+</audio>
 
 <script>
+    var video = document.getElementById("video");
+    var audioSalle1 = document.getElementById("audioSalle1");
+    var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
-    var player;
-    
-    // Initialisation des lecteurs SoundCloud
-    var scPlayerSalle1 = SC.Widget("audioSalle1");
-    var scPlayerSalle2 = SC.Widget("audioSalle2");
 
-    var audioActif = scPlayerSalle2; // Par défaut, la salle de droite
+    var audioActif = audioSalle2;
+    btnBascule.classList.add("btn-salle2");
 
-    // Fonction d'initialisation de l'API YouTube
-    function onYouTubePlayerAPIReady() {
-        player = new YT.Player('video', {
-            events: {
-                'onStateChange': onPlayerStateChange
-            }
-        });
-    }
-
-    // Assurer que les lecteurs SoundCloud sont prêts avant d'envoyer play()
-    function playAudioIfReady() {
-        if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
+    video.addEventListener("play", function() {
+        if (audioActif.paused) {
+            audioActif.currentTime = video.currentTime;
             audioActif.play();
         }
-    }
-
-    // Vérifier quand les lecteurs SoundCloud sont prêts
-    scPlayerSalle1.bind(SC.Widget.Events.READY, function() {
-        console.log("Audio salle 1 prêt");
     });
 
-    scPlayerSalle2.bind(SC.Widget.Events.READY, function() {
-        console.log("Audio salle 2 prêt");
+    video.addEventListener("pause", function() {
+        audioActif.pause();
     });
 
-    // Quand l'état de la vidéo change (lecture, pause, etc.)
-    function onPlayerStateChange(event) {
-        if (event.data === YT.PlayerState.PLAYING) {
-            console.log("Vidéo en lecture");
-            playAudioIfReady();
-        } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-            console.log("Vidéo en pause ou terminée");
-            audioActif.pause();
+    video.addEventListener("timeupdate", function() {
+        if (!video.paused) {
+            audioActif.currentTime = video.currentTime;
         }
-    }
+    });
 
-    // Bascule entre les salles audio
+    video.addEventListener("seeked", function() {
+        audioActif.currentTime = video.currentTime;
+    });
+
     btnBascule.addEventListener("click", function() {
-        if (audioActif === scPlayerSalle1) {
-            audioActif.pause();
-            audioActif = scPlayerSalle2;
+        if (audioActif === audioSalle1) {
+            audioSalle1.muted = true;
+            audioSalle2.muted = false;
+            audioActif = audioSalle2;
             btnBascule.textContent = "Audio salle de droite";
             btnBascule.classList.remove("btn-salle1");
             btnBascule.classList.add("btn-salle2");
         } else {
-            audioActif.pause();
-            audioActif = scPlayerSalle1;
+            audioSalle1.muted = false;
+            audioSalle2.muted = true;
+            audioActif = audioSalle1;
             btnBascule.textContent = "Audio salle de gauche";
             btnBascule.classList.remove("btn-salle2");
             btnBascule.classList.add("btn-salle1");
         }
 
-        // Démarrer la lecture de l'audio si la vidéo est en cours de lecture
-        playAudioIfReady();
+        audioActif.currentTime = video.currentTime;
+        if (!video.paused) {
+            audioActif.play();
+        }
+    });
+
+    // Fonction pour forcer le bouton en mode plein écran
+    function adjustButtonInFullscreen() {
+        btnBascule.style.zIndex = "9999"; // Force z-index élevé en mode plein écran
+    }
+
+    // Fonction pour réinitialiser le bouton lorsque l'on quitte le plein écran
+    function resetButtonAfterFullscreen() {
+        btnBascule.style.zIndex = "10"; // Réinitialise le z-index lorsque l'on quitte le plein écran
+    }
+
+    // Rendre le bouton visible et ajuster le z-index en mode plein écran
+    document.addEventListener("fullscreenchange", function() {
+        if (document.fullscreenElement) {
+            adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
+        } else {
+            resetButtonAfterFullscreen();  // Réinitialisation du z-index
+        }
+    });
+
+    document.addEventListener("webkitfullscreenchange", function() {
+        if (document.webkitFullscreenElement) {
+            adjustButtonInFullscreen();  // Le bouton devient visible avec z-index élevé
+        } else {
+            resetButtonAfterFullscreen();  // Réinitialisation du z-index
+        }
+    });
+
+    // L'utilisateur peut activer le plein écran manuellement en cliquant sur la vidéo
+    video.addEventListener("click", function() {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) { // Safari
+            video.webkitRequestFullscreen();
+        }
     });
 
 </script>
-
 </body>
 </html>
