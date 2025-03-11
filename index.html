@@ -37,26 +37,26 @@
    }
 
    .btn-video {
-   position: absolute;
-   top: 10px; /* Placer le bouton en haut */
-   left: 50%; /* Centrer horizontalement */
-   transform: translateX(-50%); /* Ajuster pour un vrai centrage horizontal */
-   width: 150px;
-   height: 30px;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   background-color: #433d69;
-   color: white;
-   font-size: 12px;
-   font-weight: bold;
-   border: none;
-   cursor: pointer;
-   border-radius: 3px;
-   opacity: 0.8;
-   transition: opacity 0.2s, background-color 0.3s;
-   z-index: 10;
-}
+       position: absolute;
+       top: 10px; /* Placer le bouton en haut */
+       left: 50%; /* Centrer horizontalement */
+       transform: translateX(-50%); /* Ajuster pour un vrai centrage horizontal */
+       width: 150px;
+       height: 30px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       background-color: #433d69;
+       color: white;
+       font-size: 12px;
+       font-weight: bold;
+       border: none;
+       cursor: pointer;
+       border-radius: 3px;
+       opacity: 0.8;
+       transition: opacity 0.2s, background-color 0.3s;
+       z-index: 10;
+   }
 
    .btn-video:hover {
        opacity: 1;
@@ -170,9 +170,19 @@
             btnBascule.classList.add("btn-salle1");
         }
 
-        // Reprendre la lecture de l'audio sélectionné
+        // Vérification pour démarrer l'audio de la salle sélectionnée si la vidéo est en cours de lecture
         if (player.getPlayerState() == YT.PlayerState.PLAYING) {
             syncAudio();
+        }
+
+        // Assurez-vous que l'audio de la salle de droite commence à jouer
+        if (audioActif === audioSalle2 && audioSalle2.paused) {
+            audioSalle2.play();  // Démarrer l'audio de la salle de droite
+        }
+
+        // Assurez-vous que l'audio de la salle de gauche est en pause si la salle de droite est active
+        if (audioActif === audioSalle1 && audioSalle1.paused) {
+            audioSalle1.play();  // Démarrer l'audio de la salle de gauche si sélectionnée
         }
     });
 
