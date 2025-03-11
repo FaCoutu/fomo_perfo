@@ -166,11 +166,12 @@
     });
 
     // Fonction de synchronisation après un changement de position de la vidéo (seek)
-    document.getElementById("video").addEventListener("seeked", function() {
-        setTimeout(function() {
-        }, 1500);  // 500 ms de délai pour permettre au buffer de se remplir
-       syncAudio();  // Attendre un petit délai avant de synchroniser après le seek
-    });
+      document.getElementById("video").addEventListener("seeked", function() {
+       setTimeout(function() {
+        // Attendre un petit délai avant de synchroniser après le seek
+        syncAudio();  // Appeler la fonction syncAudio après 500 ms
+       }, 500);  // 500 ms de délai pour permettre au buffer de se remplir
+   });
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
