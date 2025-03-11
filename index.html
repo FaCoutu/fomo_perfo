@@ -141,7 +141,8 @@
 
             // Si la différence est plus importante que le seuil, réajuster
             if (audioDiff > syncThreshold) {
-                audioActif.currentTime = videoTime;
+                // Utilisation de seek pour déplacer la position de l'audio
+                audioActif.currentTime = videoTime; // "Seek" l'audio vers le même moment que la vidéo
             }
 
             // S'assurer que l'audio démarre si nécessaire
