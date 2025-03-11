@@ -75,7 +75,7 @@
 
 <div class="video-container">
    <iframe id="video" 
-      src="https://www.youtube.com/embed/fm00cFcoJM8?enablejsapi=1&modestbranding=1&rel=0&controls=0&disablekb=1" 
+      src="https://www.youtube.com/embed/fm00cFcoJM8?enablejsapi=1&modestbranding=1&rel=0" 
       frameborder="0" 
       allowfullscreen>
    </iframe>
