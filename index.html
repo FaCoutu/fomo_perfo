@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -6,17 +5,16 @@
 <title>Félix-Antoine Coutu</title>
 <style>
    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #433d69;
-      padding: 10px;
+       font-family: Arial, sans-serif;
+       text-align: center;
+       padding: 10px;
    }
 
    /* Changer la taille de la police pour les titres */
    h1 {
-      font-size: variable !important;  /* Ajuste la taille ici comme tu le souhaites */
+      font-size: 16px !important;  /* Ajuste la taille ici comme tu le souhaites */
       font-weight: bold;
-      color: Grey;  /* Facultatif : change la couleur si nécessaire */
+      color: #333;  /* Facultatif : change la couleur si nécessaire */
       margin: 0;  /* Empêche les marges par défaut entre les h1 */
       border: none;  /* Enlève les bordures */
    }
@@ -36,25 +34,24 @@
    }
 
    .btn-video {
-       position: absolute;
-       top: 10px;
-       left: 50%;
-       transform: translateX(-50%);
-       width: 150px;
-       height: 30px;
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       background-color: #433d69;
-       color: white;
-       font-size: 12px;
-       font-weight: bold;
-       border: none;
-       cursor: pointer;
-       border-radius: 3px;
-       opacity: 0.8;
-       transition: opacity 0.2s, background-color 0.3s;
-       z-index: 10;
+    position: absolute;
+    top: 10px;
+    left: 10px; /* Alignement parfait en haut à gauche */
+    width: 150px; /* Taille fixe du bouton */
+    height: 30px; /* Hauteur fixe */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #433d69;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    opacity: 0.8;
+    transition: opacity 0.2s, background-color 0.3s;
+    z-index: 10;
    }
 
    .btn-video:hover {
@@ -100,50 +97,75 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
-    var isSeeking = false; // Indique si on est en train de "buffer"
+    var tolerance = 0.3; // Seuil de tolérance pour la resynchronisation
+    var isSeeking = false; // Flag pour indiquer si on est en train de "buffer"
     var bufferTime = 700; // Temps de buffer (700ms)
 
     function synchroniserAudio() {
-        audioActif.currentTime = video.currentTime;
+        if (!isSeeking) { 
+            var diff = Math.abs(video.currentTime - audioActif.currentTime);
+            if (diff > tolerance) {
+                audioActif.currentTime = video.currentTime;
+            }
+        }
     }
 
     video.addEventListener("play", function () {
-        if (audioActif.paused) {
-            synchroniserAudio();
+        if (!isSeeking && audioActif.paused) {
+            audioActif.currentTime = video.currentTime;
             audioActif.play();
         }
     });
 
     video.addEventListener("pause", function () {
-        audioActif.pause();
+        if (!isSeeking) {
+            audioActif.pause();
+        }
+    });
+
+    video.addEventListener("timeupdate", function () {
+        if (!video.paused && !isSeeking) {
+            synchroniserAudio();
+        }
     });
 
     video.addEventListener("seeking", function () {
         isSeeking = true;
+        video.pause(); // Pause temporaire pour éviter des saccades
         audioActif.pause();
     });
 
     video.addEventListener("seeked", function () {
         setTimeout(function () {
-            synchroniserAudio();
+            video.play();
+            audioActif.currentTime = video.currentTime;
             audioActif.play();
             isSeeking = false;
-        }, bufferTime);
+        }, bufferTime); // Attente avant de reprendre la lecture
     });
 
     btnBascule.addEventListener("click", function () {
-        var nouvelleAudio = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
-        
-        audioActif.pause(); // Arrêter l'ancien audio
-        nouvelleAudio.currentTime = video.currentTime; // Synchroniser
-        if (!video.paused) {
-            nouvelleAudio.play();
+        if (audioActif === audioSalle1) {
+            audioSalle1.muted = true;
+            audioSalle2.muted = false;
+            audioActif = audioSalle2;
+            btnBascule.textContent = "Audio salle de droite";
+            btnBascule.classList.remove("btn-salle1");
+            btnBascule.classList.add("btn-salle2");
+        } else {
+            audioSalle1.muted = false;
+            audioSalle2.muted = true;
+            audioActif = audioSalle1;
+            btnBascule.textContent = "Audio salle de gauche";
+            btnBascule.classList.remove("btn-salle2");
+            btnBascule.classList.add("btn-salle1");
         }
-        audioActif = nouvelleAudio;
 
-        btnBascule.textContent = (audioActif === audioSalle1) ? "Audio salle de gauche" : "Audio salle de droite";
-        btnBascule.classList.toggle("btn-salle1");
-        btnBascule.classList.toggle("btn-salle2");
+        // Mise à jour immédiate de l'audio, sans buffer
+        audioActif.currentTime = video.currentTime;
+        if (!video.paused) {
+            audioActif.play();
+        }
     });
 
 </script>
