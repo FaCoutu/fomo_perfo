@@ -37,26 +37,26 @@
    }
 
    .btn-video {
-       position: absolute;
-       top: 10px; /* Placer le bouton en haut */
-       left: 50%; /* Centrer horizontalement */
-       transform: translateX(-50%); /* Ajuster pour un vrai centrage horizontal */
-       width: 150px;
-       height: 30px;
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       background-color: #433d69;
-       color: white;
-       font-size: 12px;
-       font-weight: bold;
-       border: none;
-       cursor: pointer;
-       border-radius: 3px;
-       opacity: 0.8;
-       transition: opacity 0.2s, background-color 0.3s;
-       z-index: 10;
-   }
+   position: absolute;
+   top: 10px; /* Placer le bouton en haut */
+   left: 50%; /* Centrer horizontalement */
+   transform: translateX(-50%); /* Ajuster pour un vrai centrage horizontal */
+   width: 150px;
+   height: 30px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: #433d69;
+   color: white;
+   font-size: 12px;
+   font-weight: bold;
+   border: none;
+   cursor: pointer;
+   border-radius: 3px;
+   opacity: 0.8;
+   transition: opacity 0.2s, background-color 0.3s;
+   z-index: 10;
+}
 
    .btn-video:hover {
        opacity: 1;
@@ -141,8 +141,8 @@
 
             // Si la différence est plus importante que le seuil, réajuster
             if (audioDiff > syncThreshold) {
-                // Utilisation de seek pour déplacer la position de l'audio
-                audioActif.currentTime = videoTime; // "Seek" l'audio vers le même moment que la vidéo
+                // Utiliser seek() pour repositionner l'audio
+                audioActif.currentTime = videoTime;
             }
 
             // S'assurer que l'audio démarre si nécessaire
@@ -153,36 +153,24 @@
     }
 
     btnBascule.addEventListener("click", function () {
-        // Mute l'audio actif précédent
         if (audioActif === audioSalle1) {
-            audioSalle1.muted = true;
-            audioSalle2.muted = false;
+            audioSalle1.pause(); // Mettre l'audio de la salle 1 en pause
+            audioSalle2.play();  // Lancer l'audio de la salle 2
             audioActif = audioSalle2;
             btnBascule.textContent = "Audio salle de droite";
             btnBascule.classList.remove("btn-salle1");
             btnBascule.classList.add("btn-salle2");
         } else {
-            audioSalle1.muted = false;
-            audioSalle2.muted = true;
+            audioSalle2.pause(); // Mettre l'audio de la salle 2 en pause
+            audioSalle1.play();  // Lancer l'audio de la salle 1
             audioActif = audioSalle1;
             btnBascule.textContent = "Audio salle de gauche";
             btnBascule.classList.remove("btn-salle2");
             btnBascule.classList.add("btn-salle1");
         }
 
-        // Vérification pour démarrer l'audio de la salle sélectionnée si la vidéo est en cours de lecture
         if (player.getPlayerState() == YT.PlayerState.PLAYING) {
             syncAudio();
-        }
-
-        // Assurez-vous que l'audio de la salle de droite commence à jouer
-        if (audioActif === audioSalle2 && audioSalle2.paused) {
-            audioSalle2.play();  // Démarrer l'audio de la salle de droite
-        }
-
-        // Assurez-vous que l'audio de la salle de gauche est en pause si la salle de droite est active
-        if (audioActif === audioSalle1 && audioSalle1.paused) {
-            audioSalle1.play();  // Démarrer l'audio de la salle de gauche si sélectionnée
         }
     });
 
