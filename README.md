@@ -81,11 +81,11 @@
 </div>
 
 <audio id="audioSalle1" loop>
-   <source src="https://www.dropbox.com/scl/fi/xslc65agq0msywqp9w1px/FOMO_Audio_Perfo-res-Bain-Mathieu.mp3?rlkey=uecntb0ntbjg7dau3m46smpy8&st=efsqsk9p&raw=1" type="audio/wav">
+   <source src="https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1" type="audio/mp3">
 </audio>
 
 <audio id="audioSalle2" loop>
-   <source src="audio_salle2.mp3" type="audio/mp3">
+   <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1" type="audio/mp3">
 </audio>
 
 <script>
