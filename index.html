@@ -100,75 +100,50 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
-    var tolerance = 0.2; // Seuil de tolérance pour la resynchronisation
-    var isSeeking = false; // Flag pour indiquer si on est en train de "buffer"
-    var bufferTime = 2000; // Temps de buffer (700ms)
+    var isSeeking = false; // Indique si on est en train de "buffer"
+    var bufferTime = 700; // Temps de buffer (700ms)
 
     function synchroniserAudio() {
-        if (!isSeeking) { 
-            var diff = Math.abs(video.currentTime - audioActif.currentTime);
-            if (diff > tolerance) {
-                audioActif.currentTime = video.currentTime;
-            }
-        }
+        audioActif.currentTime = video.currentTime;
     }
 
     video.addEventListener("play", function () {
-        if (!isSeeking && audioActif.paused) {
-            audioActif.currentTime = video.currentTime;
+        if (audioActif.paused) {
+            synchroniserAudio();
             audioActif.play();
         }
     });
 
     video.addEventListener("pause", function () {
-        if (!isSeeking) {
-            audioActif.pause();
-        }
-    });
-
-    video.addEventListener("timeupdate", function () {
-        if (!video.paused && !isSeeking) {
-            synchroniserAudio();
-        }
+        audioActif.pause();
     });
 
     video.addEventListener("seeking", function () {
         isSeeking = true;
-        video.pause(); // Pause temporaire pour éviter des saccades
         audioActif.pause();
     });
 
     video.addEventListener("seeked", function () {
         setTimeout(function () {
-            video.play();
-            audioActif.currentTime = video.currentTime;
+            synchroniserAudio();
             audioActif.play();
             isSeeking = false;
-        }, bufferTime); // Attente avant de reprendre la lecture
+        }, bufferTime);
     });
 
     btnBascule.addEventListener("click", function () {
-        if (audioActif === audioSalle1) {
-            audioSalle1.muted = true;
-            audioSalle2.muted = false;
-            audioActif = audioSalle2;
-            btnBascule.textContent = "Audio salle de droite";
-            btnBascule.classList.remove("btn-salle1");
-            btnBascule.classList.add("btn-salle2");
-        } else {
-            audioSalle1.muted = false;
-            audioSalle2.muted = true;
-            audioActif = audioSalle1;
-            btnBascule.textContent = "Audio salle de gauche";
-            btnBascule.classList.remove("btn-salle2");
-            btnBascule.classList.add("btn-salle1");
-        }
-
-        // Mise à jour immédiate de l'audio, sans buffer
-        audioActif.currentTime = video.currentTime;
+        var nouvelleAudio = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
+        
+        audioActif.pause(); // Arrêter l'ancien audio
+        nouvelleAudio.currentTime = video.currentTime; // Synchroniser
         if (!video.paused) {
-            audioActif.play();
+            nouvelleAudio.play();
         }
+        audioActif = nouvelleAudio;
+
+        btnBascule.textContent = (audioActif === audioSalle1) ? "Audio salle de gauche" : "Audio salle de droite";
+        btnBascule.classList.toggle("btn-salle1");
+        btnBascule.classList.toggle("btn-salle2");
     });
 
 </script>
