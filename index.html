@@ -100,44 +100,35 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
-    var isBuffering = false; // Suivi du buffering
-    var isAudioBuffering = false; // Suivi du buffering de l'audio
+    var isAudioBuffering = false;
 
     function synchroniserAudio() {
         audioActif.currentTime = video.currentTime;
     }
 
     function attendreBufferEtJouer() {
-        if (!isBuffering && !isAudioBuffering) {
+        if (!isAudioBuffering) {
             synchroniserAudio();
             audioActif.play();
-            video.play();
         }
     }
 
-    // **Gestion du buffering vidéo**
-    video.addEventListener("waiting", function () {
-        isBuffering = true;
-        audioActif.pause();
-    });
-
-    video.addEventListener("canplaythrough", function () {
-        isBuffering = false;
-        attendreBufferEtJouer();
-    });
-
     // **Gestion du buffering audio**
-    audioActif.addEventListener("waiting", function () {
+    function onAudioWaiting() {
         isAudioBuffering = true;
         video.pause();
-    });
+    }
 
-    audioActif.addEventListener("canplaythrough", function () {
+    function onAudioCanPlay() {
         isAudioBuffering = false;
         attendreBufferEtJouer();
-    });
+    }
 
-    // **Lecture et pause synchronisées**
+    // **Ajout des écouteurs d’événements sur l'audio actif**
+    audioActif.addEventListener("waiting", onAudioWaiting);
+    audioActif.addEventListener("canplaythrough", onAudioCanPlay);
+
+    // **Lecture/Pause synchronisée**
     video.addEventListener("play", function () {
         if (audioActif.paused) {
             attendreBufferEtJouer();
@@ -148,9 +139,20 @@
         audioActif.pause();
     });
 
+    // **Gestion du buffering vidéo**
+    video.addEventListener("waiting", function () {
+        isAudioBuffering = true;
+        audioActif.pause();
+    });
+
+    video.addEventListener("canplaythrough", function () {
+        isAudioBuffering = false;
+        attendreBufferEtJouer();
+    });
+
     // **Gestion du déplacement dans la vidéo**
     video.addEventListener("seeking", function () {
-        isBuffering = true;
+        isAudioBuffering = true;
         audioActif.pause();
     });
 
@@ -162,28 +164,27 @@
     btnBascule.addEventListener("click", function () {
         var nouvelleAudio = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
 
+        // **Supprimer les événements de l'ancien audio**
+        audioActif.removeEventListener("waiting", onAudioWaiting);
+        audioActif.removeEventListener("canplaythrough", onAudioCanPlay);
+
         audioActif.pause(); // Arrêter l'ancien audio
         nouvelleAudio.currentTime = video.currentTime; // Synchroniser
-        if (!video.paused && !isBuffering) {
+
+        if (!video.paused && !isAudioBuffering) {
             nouvelleAudio.play();
         }
         audioActif = nouvelleAudio;
 
+        // **Ajouter les événements sur le nouvel audio**
+        audioActif.addEventListener("waiting", onAudioWaiting);
+        audioActif.addEventListener("canplaythrough", onAudioCanPlay);
+
         btnBascule.textContent = (audioActif === audioSalle1) ? "Audio salle de gauche" : "Audio salle de droite";
         btnBascule.classList.toggle("btn-salle1");
         btnBascule.classList.toggle("btn-salle2");
-
-        // **Ajout des écouteurs d'événements pour le nouvel audio**
-        audioActif.addEventListener("waiting", function () {
-            isAudioBuffering = true;
-            video.pause();
-        });
-
-        audioActif.addEventListener("canplaythrough", function () {
-            isAudioBuffering = false;
-            attendreBufferEtJouer();
-        });
     });
+
 </script>
 
 </body>
