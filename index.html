@@ -90,7 +90,7 @@
 </audio>
 
 <audio id="audioSalle2" loop>
-   <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0g2a5t0b6kquxjgoav4&st=15anchfs&raw=1" type="audio/mp3">
+   <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1" type="audio/mp3">
 </audio>
 
 <script>
@@ -119,12 +119,10 @@
     }
 
     var syncInterval;
-    var syncThreshold = 0.5; // Seuil de différence avant de resynchroniser (en secondes)
-
     function startSync() {
         if (!syncInterval) {
             syncAudio();
-            syncInterval = setInterval(syncAudio, 1000); // Synchronisation toutes les 1 seconde
+            syncInterval = setInterval(syncAudio, 10000);
         }
     }
 
@@ -139,13 +137,10 @@
             var videoTime = player.getCurrentTime();
             var audioDiff = Math.abs(videoTime - audioActif.currentTime);
 
-            // Si la différence est plus importante que le seuil, réajuster
-            if (audioDiff > syncThreshold) {
-                // Utiliser seek() pour repositionner l'audio
+            if (audioDiff > 0.1) {
                 audioActif.currentTime = videoTime;
             }
 
-            // S'assurer que l'audio démarre si nécessaire
             if (player.getPlayerState() === YT.PlayerState.PLAYING && audioActif.paused) {
                 audioActif.play();
             }
@@ -154,15 +149,15 @@
 
     btnBascule.addEventListener("click", function () {
         if (audioActif === audioSalle1) {
-            audioSalle1.pause(); // Mettre l'audio de la salle 1 en pause
-            audioSalle2.play();  // Lancer l'audio de la salle 2
+            audioSalle1.muted = true;
+            audioSalle2.muted = false;
             audioActif = audioSalle2;
             btnBascule.textContent = "Audio salle de droite";
             btnBascule.classList.remove("btn-salle1");
             btnBascule.classList.add("btn-salle2");
         } else {
-            audioSalle2.pause(); // Mettre l'audio de la salle 2 en pause
-            audioSalle1.play();  // Lancer l'audio de la salle 1
+            audioSalle1.muted = false;
+            audioSalle2.muted = true;
             audioActif = audioSalle1;
             btnBascule.textContent = "Audio salle de gauche";
             btnBascule.classList.remove("btn-salle2");
