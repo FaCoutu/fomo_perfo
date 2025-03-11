@@ -40,13 +40,13 @@
        transform: translateX(-50%);
        background-color: #433d69;
        color: white;
-       padding: 10px 20px;
+       padding: 5px 10px;
        border: none;
-       font-size: 14px;
+       font-size: 12px;
        cursor: pointer;
-       border-radius: 5px;
+       border-radius: 3px;
        opacity: 0.8;
-       transition: opacity 0.3s, background-color 0.3s;
+       transition: opacity 0.2s, background-color 0.3s;
        z-index: 10;
        text-align: left;
    }
