@@ -100,38 +100,48 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
+    var isBuffering = false;
     var isAudioBuffering = false;
+    var isSeeking = false;
 
     function synchroniserAudio() {
         audioActif.currentTime = video.currentTime;
     }
 
-    function attendreBufferEtJouer() {
-        if (!isAudioBuffering) {
+    function attendreEtJouer() {
+        if (!isBuffering && !isAudioBuffering) {
             synchroniserAudio();
             audioActif.play();
+            video.play();
         }
     }
 
+    // **Gestion du buffering vidéo**
+    video.addEventListener("waiting", function () {
+        isBuffering = true;
+        audioActif.pause();
+    });
+
+    video.addEventListener("canplaythrough", function () {
+        isBuffering = false;
+        attendreEtJouer();
+    });
+
     // **Gestion du buffering audio**
-    function onAudioWaiting() {
+    audioActif.addEventListener("waiting", function () {
         isAudioBuffering = true;
         video.pause();
-    }
+    });
 
-    function onAudioCanPlay() {
+    audioActif.addEventListener("canplaythrough", function () {
         isAudioBuffering = false;
-        attendreBufferEtJouer();
-    }
+        attendreEtJouer();
+    });
 
-    // **Ajout des écouteurs d’événements sur l'audio actif**
-    audioActif.addEventListener("waiting", onAudioWaiting);
-    audioActif.addEventListener("canplaythrough", onAudioCanPlay);
-
-    // **Lecture/Pause synchronisée**
+    // **Lecture et pause synchronisées**
     video.addEventListener("play", function () {
         if (audioActif.paused) {
-            attendreBufferEtJouer();
+            attendreEtJouer();
         }
     });
 
@@ -139,25 +149,18 @@
         audioActif.pause();
     });
 
-    // **Gestion du buffering vidéo**
-    video.addEventListener("waiting", function () {
-        isAudioBuffering = true;
-        audioActif.pause();
-    });
-
-    video.addEventListener("canplaythrough", function () {
-        isAudioBuffering = false;
-        attendreBufferEtJouer();
-    });
-
-    // **Gestion du déplacement dans la vidéo**
+    // **Gestion du seeking (avance rapide, retour en arrière)**
     video.addEventListener("seeking", function () {
-        isAudioBuffering = true;
+        isSeeking = true;
         audioActif.pause();
     });
 
     video.addEventListener("seeked", function () {
-        attendreBufferEtJouer();
+        setTimeout(function () {
+            synchroniserAudio();
+            attendreEtJouer();
+            isSeeking = false;
+        }, 500); // Petit délai pour assurer la synchronisation
     });
 
     // **Changement de piste audio**
@@ -168,23 +171,32 @@
         audioActif.removeEventListener("waiting", onAudioWaiting);
         audioActif.removeEventListener("canplaythrough", onAudioCanPlay);
 
-        audioActif.pause(); // Arrêter l'ancien audio
-        nouvelleAudio.currentTime = video.currentTime; // Synchroniser
-
-        if (!video.paused && !isAudioBuffering) {
-            nouvelleAudio.play();
-        }
+        audioActif.pause();
+        nouvelleAudio.currentTime = video.currentTime;
         audioActif = nouvelleAudio;
 
-        // **Ajouter les événements sur le nouvel audio**
+        // **Réajouter les événements au nouvel audio**
         audioActif.addEventListener("waiting", onAudioWaiting);
         audioActif.addEventListener("canplaythrough", onAudioCanPlay);
+
+        if (!video.paused) {
+            attendreEtJouer();
+        }
 
         btnBascule.textContent = (audioActif === audioSalle1) ? "Audio salle de gauche" : "Audio salle de droite";
         btnBascule.classList.toggle("btn-salle1");
         btnBascule.classList.toggle("btn-salle2");
     });
 
+    function onAudioWaiting() {
+        isAudioBuffering = true;
+        video.pause();
+    }
+
+    function onAudioCanPlay() {
+        isAudioBuffering = false;
+        attendreEtJouer();
+    }
 </script>
 
 </body>
