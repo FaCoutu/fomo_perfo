@@ -90,7 +90,7 @@
 </audio>
 
 <audio id="audioSalle2" loop>
-   <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0g2a5t0b6kquxjgoav4&st=15anchfs&raw=1" type="audio/mp3">
+   <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1" type="audio/mp3">
 </audio>
 
 <script>
@@ -112,41 +112,19 @@
 
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING) {
-            startSync();
+            syncAudio();  // Synchroniser immédiatement dès que la vidéo commence
         } else if (event.data == YT.PlayerState.PAUSED) {
-            stopSync();
+            stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause
         }
     }
 
-    var syncInterval;
-    var syncThreshold = 0.5; // Seuil de différence avant de resynchroniser (en secondes)
-
-    function startSync() {
-        if (!syncInterval) {
-            syncAudio();
-            syncInterval = setInterval(syncAudio, 1000); // Synchronisation toutes les 1 seconde
-        }
-    }
-
-    function stopSync() {
-        clearInterval(syncInterval);
-        syncInterval = null;
-        audioActif.pause();
-    }
-
+    // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
     function syncAudio() {
         if (player && audioActif) {
             var videoTime = player.getCurrentTime();
-            var audioDiff = Math.abs(videoTime - audioActif.currentTime);
+            audioActif.currentTime = videoTime;  // Ajuster l'audio à la vidéo
 
-            // Si la différence est plus importante que le seuil, réajuster
-            if (audioDiff > syncThreshold) {
-                audioActif.currentTime = videoTime;
-            }
-
-            // S'assurer que l'audio démarre si nécessaire
-            if (player.getPlayerState() === YT.PlayerState.PLAYING && audioActif.paused) {
-                console.log("Lecture de l'audio");
+            if (audioActif.paused) {
                 audioActif.play().catch((error) => {
                     console.log("Erreur lors de la lecture de l'audio: ", error);
                 });
@@ -154,34 +132,42 @@
         }
     }
 
+    function stopSync() {
+        audioActif.pause();  // Arrêter l'audio lorsque la vidéo est mise en pause
+    }
+
+    // Changement de salle au clic du bouton
     btnBascule.addEventListener("click", function () {
         if (audioActif === audioSalle1) {
-            // Mettre l'audio de la salle 1 en pause avant de changer
-            audioSalle1.pause();
-            audioSalle2.currentTime = 0; // Réinitialiser l'audio de la salle 2
+            audioSalle1.pause();  // Mettre en pause l'audio actuel
+            audioSalle2.currentTime = 0;  // Réinitialiser l'audio de la salle 2
+            audioActif = audioSalle2;
             audioSalle2.play().catch((error) => {
                 console.log("Erreur lors de la lecture de l'audio de la salle 2: ", error);
-            });  // Lancer l'audio de la salle 2
-            audioActif = audioSalle2;
+            });
             btnBascule.textContent = "Audio salle de droite";
             btnBascule.classList.remove("btn-salle1");
             btnBascule.classList.add("btn-salle2");
         } else {
-            // Mettre l'audio de la salle 2 en pause avant de changer
-            audioSalle2.pause();
-            audioSalle1.currentTime = 0; // Réinitialiser l'audio de la salle 1
+            audioSalle2.pause();  // Mettre en pause l'audio actuel
+            audioSalle1.currentTime = 0;  // Réinitialiser l'audio de la salle 1
+            audioActif = audioSalle1;
             audioSalle1.play().catch((error) => {
                 console.log("Erreur lors de la lecture de l'audio de la salle 1: ", error);
-            });  // Lancer l'audio de la salle 1
-            audioActif = audioSalle1;
+            });
             btnBascule.textContent = "Audio salle de gauche";
             btnBascule.classList.remove("btn-salle2");
             btnBascule.classList.add("btn-salle1");
         }
 
         if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-            syncAudio();
+            syncAudio();  // Synchroniser l'audio avec la vidéo lorsque la salle change
         }
+    });
+
+    // Synchroniser l'audio si l'utilisateur change la position de la vidéo (curseur)
+    document.getElementById("video").addEventListener("seeked", function() {
+        syncAudio();
     });
 
     var tag = document.createElement('script');
