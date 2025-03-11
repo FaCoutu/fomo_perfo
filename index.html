@@ -138,9 +138,11 @@
 
     // Changement de salle au clic du bouton
     btnBascule.addEventListener("click", function () {
+        audioActif.pause();  // Mettre en pause l'audio actuel avant de changer
+        audioActif.currentTime = 0;  // Réinitialiser l'audio avant de changer la salle
+
         if (audioActif === audioSalle1) {
-            audioSalle1.pause();  // Mettre en pause l'audio actuel
-            audioSalle2.currentTime = 0;  // Réinitialiser l'audio de la salle 2
+            audioSalle1.currentTime = 0;  // Réinitialiser l'audio de la salle 1
             audioActif = audioSalle2;
             audioSalle2.play().catch((error) => {
                 console.log("Erreur lors de la lecture de l'audio de la salle 2: ", error);
@@ -149,8 +151,7 @@
             btnBascule.classList.remove("btn-salle1");
             btnBascule.classList.add("btn-salle2");
         } else {
-            audioSalle2.pause();  // Mettre en pause l'audio actuel
-            audioSalle1.currentTime = 0;  // Réinitialiser l'audio de la salle 1
+            audioSalle2.currentTime = 0;  // Réinitialiser l'audio de la salle 2
             audioActif = audioSalle1;
             audioSalle1.play().catch((error) => {
                 console.log("Erreur lors de la lecture de l'audio de la salle 1: ", error);
@@ -160,16 +161,20 @@
             btnBascule.classList.add("btn-salle1");
         }
 
+        // Synchroniser l'audio avec la vidéo après le changement
         if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-            syncAudio();  // Synchroniser l'audio avec la vidéo lorsque la salle change
+            syncAudio();
         }
     });
 
     // Synchroniser l'audio si l'utilisateur change la position de la vidéo (curseur)
     document.getElementById("video").addEventListener("seeked", function() {
-        setTimeout(function() {
-            syncAudio();  // Synchroniser l'audio après un délai pour améliorer la synchronisation
-        }, 1500);  // Le délai de 300ms permet de laisser le temps à la vidéo de s'ajuster
+        audioActif.pause();  // Mettre l'audio en pause avant de changer de position
+        var videoTime = player.getCurrentTime();
+        audioActif.currentTime = videoTime;  // Synchroniser l'audio avec la nouvelle position de la vidéo
+        audioActif.play().catch((error) => {
+            console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
+        });
     });
 
     var tag = document.createElement('script');
