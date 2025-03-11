@@ -126,31 +126,34 @@
    
    // **BOUTON POUR CHANGER L'AUDIO**
    btnBascule.addEventListener("click", function () {
-    // Désactiver complètement l'audio actif et éviter les délais
+    // Désactiver l'audio précédent (si nécessaire) tout en préchargeant le suivant
     if (audioActif.src) {
         audioActif.pause();
-        audioActif.src = ""; // Libère la mémoire et l'audio précédent
     }
 
-    // Basculer vers l'autre piste audio
+    // Précharger le nouvel audio
     if (audioActif === audioSalle1) {
+        // Désactive l'audio de la salle 1
         audioActif = audioSalle2;
         audioActif.src = "https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1";
+        audioActif.load(); // Précharge le fichier audio de la salle 2
         btnBascule.textContent = "Audio salle de droite";
         btnBascule.classList.remove("btn-salle1");
         btnBascule.classList.add("btn-salle2");
     } else {
+        // Désactive l'audio de la salle 2
         audioActif = audioSalle1;
         audioActif.src = "https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1";
+        audioActif.load(); // Précharge le fichier audio de la salle 1
         btnBascule.textContent = "Audio salle de gauche";
         btnBascule.classList.remove("btn-salle2");
         btnBascule.classList.add("btn-salle1");
     }
 
-    // Avant de lire le nouvel audio, synchronise-le avec la vidéo
+    // Synchroniser l'audio avec la vidéo
     audioActif.currentTime = video.currentTime;
 
-    // Lancer immédiatement la lecture du nouvel audio sans délai
+    // Reprendre la lecture immédiatement
     if (!video.paused) {
         audioActif.play();
     }
