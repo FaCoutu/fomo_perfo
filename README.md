@@ -1,4 +1,3 @@
-
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -11,48 +10,50 @@
        padding: 10px;
    }
 
-   /* Changer la taille de la police pour les titres */
    h1 {
-      font-size: 16px !important;  /* Ajuste la taille ici comme tu le souhaites */
+      font-size: 16px !important;
       font-weight: bold;
-      color: #333;  /* Facultatif : change la couleur si nécessaire */
-      margin: 0;  /* Empêche les marges par défaut entre les h1 */
-      border: none;  /* Enlève les bordures */
+      color: #333;
+      margin: 0;
+      border: none;
    }
-   /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
+
    .titre-1 {
-       margin-bottom: 16px;  /* Ajoute un espace après le premier titre */
+       margin-bottom: 16px;
    }
 
    .video-container {
       position: relative;
       display: inline-block;
-   }
-
-   video {
       width: 100%;
       max-width: 2000px;
+      aspect-ratio: 16 / 9;
+   }
+
+   iframe {
+      width: 100%;
+      height: 100%;
    }
 
    .btn-video {
-    position: absolute;
-    top: 10px;
-    left: 10px; /* Alignement parfait en haut à gauche */
-    width: 150px; /* Taille fixe du bouton */
-    height: 30px; /* Hauteur fixe */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #433d69;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    border-radius: 3px;
-    opacity: 0.8;
-    transition: opacity 0.2s, background-color 0.3s;
-    z-index: 10;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 150px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #433d69;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      border-radius: 3px;
+      opacity: 0.8;
+      transition: opacity 0.2s, background-color 0.3s;
+      z-index: 10;
    }
 
    .btn-video:hover {
@@ -73,10 +74,7 @@
 <h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
 
 <div class="video-container">
-   <video id="video" controls>
-      <source src="https://dl.dropboxusercontent.com/scl/fi/vn856dku4ckgm35azhbz1/Fumee-Omnisciente-Mirage-Onirique02.mp4?rlkey=khuru1f6c5woeclemz1ai9rlz&st=pksoqe29&raw=1" type="video/mp4">    
-      Votre navigateur ne prend pas en charge la vidéo HTML5.
-   </video>
+   <iframe id="video" src="https://www.youtube.com/embed/fm00cFcoJM8?enablejsapi=1" frameborder="0" allowfullscreen></iframe>
 
    <button id="btnBascule" class="btn-video">Audio salle de droite</button>
 </div>
@@ -90,7 +88,6 @@
 </audio>
 
 <script>
-    var video = document.getElementById("video");
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
@@ -98,77 +95,50 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
-    var tolerance = 0.3; // Seuil de tolérance pour la resynchronisation
-    var isSeeking = false; // Flag pour indiquer si on est en train de "buffer"
-    var bufferTime = 700; // Temps de buffer (700ms)
+    function onYouTubeIframeAPIReady() {
+        var player = new YT.Player('video', {
+            events: {
+                'onStateChange': onPlayerStateChange
+            }
+        });
 
-    function synchroniserAudio() {
-        if (!isSeeking) { 
-            var diff = Math.abs(video.currentTime - audioActif.currentTime);
-            if (diff > tolerance) {
-                audioActif.currentTime = video.currentTime;
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                if (audioActif.paused) {
+                    audioActif.play();
+                }
+            } else if (event.data == YT.PlayerState.PAUSED) {
+                audioActif.pause();
             }
         }
+
+        btnBascule.addEventListener("click", function () {
+            if (audioActif === audioSalle1) {
+                audioSalle1.muted = true;
+                audioSalle2.muted = false;
+                audioActif = audioSalle2;
+                btnBascule.textContent = "Audio salle de droite";
+                btnBascule.classList.remove("btn-salle1");
+                btnBascule.classList.add("btn-salle2");
+            } else {
+                audioSalle1.muted = false;
+                audioSalle2.muted = true;
+                audioActif = audioSalle1;
+                btnBascule.textContent = "Audio salle de gauche";
+                btnBascule.classList.remove("btn-salle2");
+                btnBascule.classList.add("btn-salle1");
+            }
+
+            if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+                audioActif.play();
+            }
+        });
     }
 
-    video.addEventListener("play", function () {
-        if (!isSeeking && audioActif.paused) {
-            audioActif.currentTime = video.currentTime;
-            audioActif.play();
-        }
-    });
-
-    video.addEventListener("pause", function () {
-        if (!isSeeking) {
-            audioActif.pause();
-        }
-    });
-
-    video.addEventListener("timeupdate", function () {
-        if (!video.paused && !isSeeking) {
-            synchroniserAudio();
-        }
-    });
-
-    video.addEventListener("seeking", function () {
-        isSeeking = true;
-        video.pause(); // Pause temporaire pour éviter des saccades
-        audioActif.pause();
-    });
-
-    video.addEventListener("seeked", function () {
-        setTimeout(function () {
-            video.play();
-            audioActif.currentTime = video.currentTime;
-            audioActif.play();
-            isSeeking = false;
-        }, bufferTime); // Attente avant de reprendre la lecture
-    });
-
-    btnBascule.addEventListener("click", function () {
-        if (audioActif === audioSalle1) {
-            audioSalle1.muted = true;
-            audioSalle2.muted = false;
-            audioActif = audioSalle2;
-            btnBascule.textContent = "Audio salle de droite";
-            btnBascule.classList.remove("btn-salle1");
-            btnBascule.classList.add("btn-salle2");
-        } else {
-            audioSalle1.muted = false;
-            audioSalle2.muted = true;
-            audioActif = audioSalle1;
-            btnBascule.textContent = "Audio salle de gauche";
-            btnBascule.classList.remove("btn-salle2");
-            btnBascule.classList.add("btn-salle1");
-        }
-
-        // Mise à jour immédiate de l'audio, sans buffer
-        audioActif.currentTime = video.currentTime;
-        if (!video.paused) {
-            audioActif.play();
-        }
-    });
-
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 </script>
 
 </body>
