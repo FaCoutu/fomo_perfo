@@ -100,9 +100,9 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
-    var tolerance = 0.3; // Seuil de tolérance pour la resynchronisation
+    var tolerance = 0.2; // Seuil de tolérance pour la resynchronisation
     var isSeeking = false; // Flag pour indiquer si on est en train de "buffer"
-    var bufferTime = 700; // Temps de buffer (700ms)
+    var bufferTime = 2000; // Temps de buffer (700ms)
 
     function synchroniserAudio() {
         if (!isSeeking) { 
