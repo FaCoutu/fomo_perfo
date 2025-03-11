@@ -89,109 +89,70 @@
 </audio>
 
 <script>
-    var video = document.getElementById("video");
-    var audioSalle1 = document.getElementById("audioSalle1");
-    var audioSalle2 = document.getElementById("audioSalle2");
-    var btnBascule = document.getElementById("btnBascule");
 
-    var audioActif = audioSalle2;
-    btnBascule.classList.add("btn-salle2");
-
-    var tolerance = 0.3; // Seuil de tolérance pour la resynchronisation
-    var isSeeking = false; // Flag pour indiquer si on est en train de "buffer"
-    var bufferTime = 700; // Temps de buffer (700ms)
-
-    function synchroniserAudio() {
-        if (!isSeeking) { 
-            var diff = Math.abs(video.currentTime - audioActif.currentTime);
-            if (diff > tolerance) {
-                audioActif.currentTime = video.currentTime;
-            }
-        }
-    }
-
-    video.addEventListener("play", function () {
-        if (!isSeeking && audioActif.paused) {
-            audioActif.currentTime = video.currentTime;
-            audioActif.play();
-        }
-    });
-
-    video.addEventListener("pause", function () {
-        if (!isSeeking) {
-            audioActif.pause();
-        }
-    });
-
-    video.addEventListener("timeupdate", function () {
-        if (!video.paused && !isSeeking) {
-            synchroniserAudio();
-        }
-    });
-
-    video.addEventListener("seeking", function () {
-        isSeeking = true;
-        video.pause(); // Pause temporaire pour éviter des saccades
-        audioActif.pause();
-    });
-
-    video.addEventListener("seeked", function () {
-        setTimeout(function () {
-            video.play();
-            audioActif.currentTime = video.currentTime;
-            audioActif.play();
-            isSeeking = false;
-        }, bufferTime); // Attente avant de reprendre la lecture
-    });
-
-    btnBascule.addEventListener("click", function () {
-        if (audioActif === audioSalle1) {
-            audioSalle1.muted = true;
-            audioSalle2.muted = false;
-            audioActif = audioSalle2;
-            btnBascule.textContent = "Audio salle de droite";
-            btnBascule.classList.remove("btn-salle1");
-            btnBascule.classList.add("btn-salle2");
-        } else {
-            audioSalle1.muted = false;
-            audioSalle2.muted = true;
-            audioActif = audioSalle1;
-            btnBascule.textContent = "Audio salle de gauche";
-            btnBascule.classList.remove("btn-salle2");
-            btnBascule.classList.add("btn-salle1");
-        }
-
-        // Mise à jour immédiate de l'audio, sans buffer
-        audioActif.currentTime = video.currentTime;
-        if (!video.paused) {
-            audioActif.play();
-        }
-    });
-    btnBascule.addEventListener("click", function () {
-    // Désactiver complètement l'audio actif
-    audioActif.pause();
-    audioActif.src = ""; // Supprime la source pour économiser de la mémoire
-
-    if (audioActif === audioSalle1) {
-        audioActif = audioSalle2;
-        audioActif.src = "https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1"; // Recharge seulement l'audio actif
-        btnBascule.textContent = "Audio salle de droite";
-        btnBascule.classList.remove("btn-salle1");
-        btnBascule.classList.add("btn-salle2");
-    } else {
-        audioActif = audioSalle1;
-        audioActif.src = "https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1";
-        btnBascule.textContent = "Audio salle de gauche";
-        btnBascule.classList.remove("btn-salle2");
-        btnBascule.classList.add("btn-salle1");
-    }
-
-    // Synchroniser avec la vidéo
-    audioActif.currentTime = video.currentTime;
-    if (!video.paused) {
-        audioActif.play();
-    }
-});
+   var video = document.getElementById("video");
+   var audioSalle1 = document.getElementById("audioSalle1");
+   var audioSalle2 = document.getElementById("audioSalle2");
+   var btnBascule = document.getElementById("btnBascule");
+   
+   var audioActif = audioSalle2;
+   btnBascule.classList.add("btn-salle2");
+   
+   // Désactiver le premier audio au démarrage
+   audioSalle1.src = ""; 
+   
+   function synchroniserAudio() {
+       var diff = Math.abs(video.currentTime - audioActif.currentTime);
+       if (diff > 0.3) {
+           audioActif.currentTime = video.currentTime;
+       }
+   }
+   
+   // Gestion de la lecture et pause synchronisée
+   video.addEventListener("play", function () {
+       if (audioActif.src) {
+           audioActif.currentTime = video.currentTime;
+           audioActif.play();
+       }
+   });
+   
+   video.addEventListener("pause", function () {
+       if (audioActif.src) {
+           audioActif.pause();
+       }
+   });
+   
+   video.addEventListener("timeupdate", synchroniserAudio);
+   
+   // **BOUTON POUR CHANGER L'AUDIO**
+   btnBascule.addEventListener("click", function () {
+       // Désactiver complètement l'audio actif
+       if (audioActif.src) {
+           audioActif.pause();
+           audioActif.src = ""; // Libère la mémoire
+       }
+   
+       // Basculer vers l'autre piste
+       if (audioActif === audioSalle1) {
+           audioActif = audioSalle2;
+           audioActif.src = "https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1";
+           btnBascule.textContent = "Audio salle de droite";
+           btnBascule.classList.remove("btn-salle1");
+           btnBascule.classList.add("btn-salle2");
+       } else {
+           audioActif = audioSalle1;
+           audioActif.src = "https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1";
+           btnBascule.textContent = "Audio salle de gauche";
+           btnBascule.classList.remove("btn-salle2");
+           btnBascule.classList.add("btn-salle1");
+       }
+   
+       // Synchroniser avec la vidéo immédiatement
+       if (!video.paused) {
+           audioActif.currentTime = video.currentTime;
+           audioActif.play();
+       }
+   });
 
 </script>
 
