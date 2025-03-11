@@ -36,7 +36,7 @@
    .btn-video {
        position: absolute;
        top: 10px;
-       left: 10%;
+       left: 5%;
        transform: translateX(-50%);
        background-color: #433d69;
        color: white;
