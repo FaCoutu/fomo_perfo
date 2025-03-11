@@ -169,7 +169,7 @@
     document.getElementById("video").addEventListener("seeked", function() {
         setTimeout(function() {
             syncAudio();  // Synchroniser l'audio après un délai pour améliorer la synchronisation
-        }, 300);  // Le délai de 300ms permet de laisser le temps à la vidéo de s'ajuster
+        }, 1500);  // Le délai de 300ms permet de laisser le temps à la vidéo de s'ajuster
     });
 
     var tag = document.createElement('script');
