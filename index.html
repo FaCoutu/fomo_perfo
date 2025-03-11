@@ -148,26 +148,36 @@
     }
 
     btnBascule.addEventListener("click", function () {
-        if (audioActif === audioSalle1) {
-            audioSalle1.muted = true;
-            audioSalle2.muted = false;
-            audioActif = audioSalle2;
-            btnBascule.textContent = "Audio salle de droite";
-            btnBascule.classList.remove("btn-salle1");
-            btnBascule.classList.add("btn-salle2");
-        } else {
-            audioSalle1.muted = false;
-            audioSalle2.muted = true;
-            audioActif = audioSalle1;
-            btnBascule.textContent = "Audio salle de gauche";
-            btnBascule.classList.remove("btn-salle2");
-            btnBascule.classList.add("btn-salle1");
-        }
-
-        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-            syncAudio();
-        }
-    });
+       // Désactiver le son du premier audio, activer le second
+       if (audioActif === audioSalle1) {
+           audioSalle1.muted = true;
+           audioSalle2.muted = false;
+           audioActif = audioSalle2;
+           btnBascule.textContent = "Audio salle de droite";
+           btnBascule.classList.remove("btn-salle1");
+           btnBascule.classList.add("btn-salle2");
+       } else {
+           audioSalle1.muted = false;
+           audioSalle2.muted = true;
+           audioActif = audioSalle1;
+           btnBascule.textContent = "Audio salle de gauche";
+           btnBascule.classList.remove("btn-salle2");
+           btnBascule.classList.add("btn-salle1");
+       }
+   
+       // Lecture de l'audio uniquement après une interaction de l'utilisateur
+       if (audioActif.paused) {
+           audioActif.play().catch(function (error) {
+               console.error("Erreur de lecture audio:", error);
+               alert("Impossible de lire l'audio sur ce navigateur ou appareil.");
+           });
+       }
+   
+       // Synchronisation avec la vidéo si elle est en lecture
+       if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+           syncAudio();
+       }
+   });
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
