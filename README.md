@@ -34,21 +34,24 @@
    }
 
    .btn-video {
-       position: absolute;
-       top: 10px;
-       left: 60px;
-       transform: translateX(-50%);
-       background-color: #433d69;
-       color: white;
-       padding: 5px 10px;
-       border: none;
-       font-size: 12px;
-       cursor: pointer;
-       border-radius: 3px;
-       opacity: 0.8;
-       transition: opacity 0.2s, background-color 0.3s;
-       z-index: 10;
-       text-align: left;
+    position: absolute;
+    top: 10px;
+    left: 10px; /* Alignement parfait en haut à gauche */
+    width: 150px; /* Taille fixe du bouton */
+    height: 30px; /* Hauteur fixe */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #433d69;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    opacity: 0.8;
+    transition: opacity 0.2s, background-color 0.3s;
+    z-index: 10;
    }
 
    .btn-video:hover {
