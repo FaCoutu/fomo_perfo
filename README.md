@@ -81,13 +81,15 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
-    // Seuil de tolérance pour la resynchronisation
-    var tolerance = 0.3;
+    var tolerance = 0.3; // Seuil de tolérance pour la resynchronisation
+    var isSeeking = false; // Flag pour indiquer si on est en train de "buffer"
 
     function synchroniserAudio() {
-        var diff = Math.abs(video.currentTime - audioActif.currentTime);
-        if (diff > tolerance) {
-            audioActif.currentTime = video.currentTime;
+        if (!isSeeking) { 
+            var diff = Math.abs(video.currentTime - audioActif.currentTime);
+            if (diff > tolerance) {
+                audioActif.currentTime = video.currentTime;
+            }
         }
     }
 
@@ -103,13 +105,18 @@
     });
 
     video.addEventListener("timeupdate", function () {
-        if (!video.paused) {
+        if (!video.paused && !isSeeking) {
             synchroniserAudio();
         }
     });
 
     video.addEventListener("seeked", function () {
-        audioActif.currentTime = video.currentTime;
+        isSeeking = true;  // On commence le buffering
+
+        setTimeout(function () {
+            audioActif.currentTime = video.currentTime; // Resynchronisation après le buffer
+            isSeeking = false;  // Fin du buffering
+        }, 500);  // Délai de 500ms avant de synchroniser
     });
 
     btnBascule.addEventListener("click", function () {
@@ -129,13 +136,19 @@
             btnBascule.classList.add("btn-salle1");
         }
 
-        audioActif.currentTime = video.currentTime;
-        if (!video.paused) {
-            audioActif.play();
-        }
+        isSeeking = true; // Éviter toute resynchronisation immédiate
+
+        setTimeout(function () {
+            audioActif.currentTime = video.currentTime;
+            isSeeking = false; // Reprise normale après le buffer
+            if (!video.paused) {
+                audioActif.play();
+            }
+        }, 500); // Buffer après le changement d’audio
     });
 
 </script>
+
 
 </body>
 </html>
