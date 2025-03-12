@@ -172,24 +172,20 @@
     document.getElementById("video").addEventListener("seeked", function() {
     var videoTime = player.getCurrentTime();
 
-       // Mettre la vidéo en pause immédiatement après le seek
+       // Mettre la vidéo et l'audio en pause immédiatement après un seek
        player.pauseVideo();
-   
-       // Mettre aussi l'audio en pause
        audioActif.pause();
    
-       // Attendre 1500ms avant de synchroniser et rejouer la vidéo et l'audio
-       setTimeout(function() {
-           audioActif.currentTime = videoTime; // Synchroniser l’audio avec la vidéo
-           
-           // Si la vidéo était en lecture avant le seek, la relancer
-           player.playVideo();
-           
-           // Rejouer l’audio
-           audioActif.play().catch((error) => {
-               console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
-           });
-       }, 1500); // 1500ms d’attente avant la reprise
+       // Définir la nouvelle position audio
+       audioActif.currentTime = videoTime;
+   
+       // Attendre que l’audio soit prêt avant de relancer la vidéo
+       audioActif.oncanplay = function() {
+           setTimeout(function() {
+               audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
+               player.playVideo();
+           }, 1500); // Attendre 1500ms avant de rejouer
+       };
    });
 
     var tag = document.createElement('script');
