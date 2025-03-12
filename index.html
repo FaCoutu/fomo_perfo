@@ -174,21 +174,29 @@
     // Synchroniser l'audio si l'utilisateur change la position de la vidéo (curseur)
     document.getElementById("video").addEventListener("seeked", function() {
     var videoTime = player.getCurrentTime();
-    
+
        // Si la vidéo est en lecture, on attend que l'audio soit prêt
        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-           // Attendre que l'audio soit prêt à être joué
-           audioActif.addEventListener('canplay', function() {
-               // Synchroniser l'audio avec la vidéo après que l'audio soit prêt
-               if (audioActif.currentTime !== videoTime) {
-                   audioActif.currentTime = videoTime;  // Synchroniser l'audio avec la vidéo
-               }
+           // Mettre la vidéo en pause temporairement
+           player.pauseVideo();
    
-               // Lire l'audio une fois prêt
-               audioActif.play().catch((error) => {
-                   console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
-               });
-           }, { once: true }); // L'événement 'canplay' est écouté une seule fois
+           // Attendre 500ms, puis reprendre la vidéo
+           setTimeout(function() {
+               player.playVideo();  // Relancer la vidéo après 500ms
+   
+               // Attendre que l'audio soit prêt à être joué
+               audioActif.addEventListener('canplay', function() {
+                   // Synchroniser l'audio avec la vidéo après que l'audio soit prêt
+                   if (audioActif.currentTime !== videoTime) {
+                       audioActif.currentTime = videoTime;  // Synchroniser l'audio avec la vidéo
+                   }
+   
+                   // Lire l'audio une fois prêt
+                   audioActif.play().catch((error) => {
+                       console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
+                   });
+               }, { once: true }); // L'événement 'canplay' est écouté une seule fois
+           }, 500); // Attendre 500ms
        }
    });
 
