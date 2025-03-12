@@ -170,16 +170,27 @@
 
     // Synchroniser l'audio si l'utilisateur change la position de la vidéo (curseur)
     document.getElementById("video").addEventListener("seeked", function() {
-        var videoTime = player.getCurrentTime();
-        
-        // Si la vidéo est en lecture, on synchronise et on joue l'audio
-        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-            audioActif.currentTime = videoTime;  // Synchroniser l'audio avec la nouvelle position de la vidéo
-            audioActif.play().catch((error) => {
-                console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
-            });
-        }
-    });
+    var videoTime = player.getCurrentTime();
+
+       // Mettre la vidéo en pause immédiatement après le seek
+       player.pauseVideo();
+   
+       // Mettre aussi l'audio en pause
+       audioActif.pause();
+   
+       // Attendre 1500ms avant de synchroniser et rejouer la vidéo et l'audio
+       setTimeout(function() {
+           audioActif.currentTime = videoTime; // Synchroniser l’audio avec la vidéo
+           
+           // Si la vidéo était en lecture avant le seek, la relancer
+           player.playVideo();
+           
+           // Rejouer l’audio
+           audioActif.play().catch((error) => {
+               console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
+           });
+       }, 1500); // 1500ms d’attente avant la reprise
+   });
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
