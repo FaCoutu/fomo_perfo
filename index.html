@@ -139,60 +139,47 @@
 
     // Changement de salle au clic du bouton
     btnBascule.addEventListener("click", function () {
-    audioActif.pause();  // Mettre en pause l'audio actuel avant de changer
-    audioActif.currentTime = 0;  // Réinitialiser l'audio avant de changer la salle
+        audioActif.pause();  // Mettre en pause l'audio actuel avant de changer
+        audioActif.currentTime = 0;  // Réinitialiser l'audio avant de changer la salle
 
-       // Attendre que l'audio soit prêt à être joué avant de synchroniser
-       audioActif.addEventListener('canplay', function() {
-           setTimeout(function() { // Buffer de 500ms avant la synchronisation
-               if (audioActif === audioSalle1) {
-                   audioSalle1.currentTime = 0;  // Réinitialiser l'audio de la salle 1
-                   audioActif = audioSalle2;
-                   audioSalle2.play().catch((error) => {
-                       console.log("Erreur lors de la lecture de l'audio de la salle 2: ", error);
-                   });
-                   btnBascule.textContent = "Audio salle de droite";
-                   btnBascule.classList.remove("btn-salle1");
-                   btnBascule.classList.add("btn-salle2");
-               } else {
-                   audioSalle2.currentTime = 0;  // Réinitialiser l'audio de la salle 2
-                   audioActif = audioSalle1;
-                   audioSalle1.play().catch((error) => {
-                       console.log("Erreur lors de la lecture de l'audio de la salle 1: ", error);
-                   });
-                   btnBascule.textContent = "Audio salle de gauche";
-                   btnBascule.classList.remove("btn-salle2");
-                   btnBascule.classList.add("btn-salle1");
-               }
-   
-               // Synchroniser l'audio avec la vidéo après le changement
-               if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-                   syncAudio();
-               }
-           }, 500); // Attendre 500ms avant la synchronisation
-       }, { once: true }); // L'événement 'canplay' est écouté une seule fois
-   });
-   
-   // Synchroniser l'audio si l'utilisateur change la position de la vidéo (curseur)
-   document.getElementById("video").addEventListener("seeked", function() {
-       var videoTime = player.getCurrentTime();
-   
-       if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-           // Attendre que l'audio soit prêt à être joué
-           audioActif.addEventListener('canplay', function() {
-               setTimeout(function() { // Buffer de 500ms avant la synchronisation
-                   if (audioActif.currentTime !== videoTime) {
-                       audioActif.currentTime = videoTime;  // Synchroniser l'audio avec la vidéo
-                   }
-   
-                   // Lire l'audio une fois prêt
-                   audioActif.play().catch((error) => {
-                       console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
-                   });
-               }, 500); // Attendre 500ms avant la synchronisation
-           }, { once: true }); // L'événement 'canplay' est écouté une seule fois
-       }
-   });
+        if (audioActif === audioSalle1) {
+            audioSalle1.currentTime = 0;  // Réinitialiser l'audio de la salle 1
+            audioActif = audioSalle2;
+            audioSalle2.play().catch((error) => {
+                console.log("Erreur lors de la lecture de l'audio de la salle 2: ", error);
+            });
+            btnBascule.textContent = "Audio salle de droite";
+            btnBascule.classList.remove("btn-salle1");
+            btnBascule.classList.add("btn-salle2");
+        } else {
+            audioSalle2.currentTime = 0;  // Réinitialiser l'audio de la salle 2
+            audioActif = audioSalle1;
+            audioSalle1.play().catch((error) => {
+                console.log("Erreur lors de la lecture de l'audio de la salle 1: ", error);
+            });
+            btnBascule.textContent = "Audio salle de gauche";
+            btnBascule.classList.remove("btn-salle2");
+            btnBascule.classList.add("btn-salle1");
+        }
+
+        // Synchroniser l'audio avec la vidéo après le changement
+        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+            syncAudio();
+        }
+    });
+
+    // Synchroniser l'audio si l'utilisateur change la position de la vidéo (curseur)
+    document.getElementById("video").addEventListener("seeked", function() {
+        var videoTime = player.getCurrentTime();
+        
+        // Si la vidéo est en lecture, on synchronise et on joue l'audio
+        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+            audioActif.currentTime = videoTime;  // Synchroniser l'audio avec la nouvelle position de la vidéo
+            audioActif.play().catch((error) => {
+                console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
+            });
+        }
+    });
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
