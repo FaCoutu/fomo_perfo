@@ -36,50 +36,50 @@
    }
 
    .btn-video {
-       position: absolute;
-       op: 10px;
-       left: 50%;
-       transform: translateX(-50%);
-       display: flex;
-       width: 200px;
-       height: 40px;
-       border: none;
-       border-radius: 3px;
-       overflow: hidden;
-       cursor: pointer;
-       opacity: 0.8;
-       transition: opacity 0.2s, background-color 0.3s;
-       z-index: 10;
-       font-size: 12px;
-       font-weight: bold;
-       text-align: center;
+      position: absolute;
+      top: 10px;  /* Déplace le bouton en haut de la vidéo */
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      width: 200px;
+      height: 40px;
+      border: none;
+      border-radius: 3px;
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s, background-color 0.3s;
+      z-index: 10;
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      background-color: transparent;  /* Assure qu'il n'y a pas de fond blanc */
    }
 
    .btn-video:hover {
-       opacity: 1;
+      opacity: 1;
    }
    
    .btn-section {
-       flex: 1;
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       color: white;
-       opacity: 0.8;
-       border-radius: 3px;
-       transition: background-color 0.3s;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.8;
+      border-radius: 3px;
+      transition: background-color 0.3s;
    }
    .btn-salle1 .left {
-       background-color: #194f18;
+      background-color: #194f18;
    }
    .btn-salle1 .right {
-       background-color: grey;
+      background-color: grey;
    }
    .btn-salle2 .left {
-       background-color: grey;
+      background-color: grey;
    }
    .btn-salle2 .right {
-       background-color: #433d69;
+      background-color: #433d69;
    }
 </style>
 </head>
