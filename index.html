@@ -116,7 +116,6 @@
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
-   
 
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
@@ -134,6 +133,14 @@
             }
         }
     }
+
+    // Précharger les fichiers audio et vidéo dès le chargement de la page
+    window.addEventListener('load', function() {
+        // Assurez-vous que les fichiers sont préchargés dans le cache
+        video.load();
+        audioSalle1.load();
+        audioSalle2.load();
+    });
 
     video.addEventListener("play", function () {
         if (!isSeeking && audioActif.paused) {
@@ -163,24 +170,8 @@
     });
 
     video.addEventListener("seeked", function () {
-       function onBufferingEnd() {
-           synchroniserAudio();
-           if (wasPlaying) {
-               video.play();
-               audioActif.play();
-           }
-           isSeeking = false;
-           video.removeEventListener("canplaythrough", onBufferingEnd);
-       }
-   
-       isSeeking = true;
-       video.addEventListener("canplaythrough", onBufferingEnd);
-    });
-
-    video.addEventListener("seeked", function () {
         function onBufferingEnd() {
             synchroniserAudio();
-
             // **Forcer une pause de 1000ms avant de rejouer**
             setTimeout(function () {
                 if (wasPlaying) {
@@ -188,7 +179,7 @@
                     audioActif.play();
                 }
                 isSeeking = false;
-            }, buffeTime);
+            }, bufferTime);
 
             video.removeEventListener("canplaythrough", onBufferingEnd);
         }
@@ -197,14 +188,6 @@
         video.addEventListener("canplaythrough", onBufferingEnd);
     });
 
-    // Nouvelle logique pour vérifier si la vidéo est en cours de chargement
-    /*video.addEventListener("canplay", function () {
-        // Lorsque la vidéo est prête à être lue, démarre l'audio
-        if (!video.paused) {
-            audioActif.play();
-        }
-    });
-   */
     video.addEventListener("canplaythrough", function () {
         // Charger la vidéo en entier avant de démarrer la lecture
         if (!video.paused) {
@@ -212,7 +195,6 @@
         }
     });
 
-    // Empêcher l'audio de jouer lorsque la vidéo est en cours de chargement
     video.addEventListener("waiting", function () {
         audioActif.pause();  // Met l'audio en pause si la vidéo est en cours de chargement
     });
@@ -227,27 +209,30 @@
         nouvelleAudio.currentTime = video.currentTime;
         audioActif = nouvelleAudio;
 
-        // **3. Reprise uniquement si la vidéo est en lecture**
-        if (!video.paused) {
-            audioActif.play();
-        }
+        // **3. Écouter l'événement canplay de l'audio avant de synchroniser et jouer**
+        nouvelleAudio.addEventListener('canplay', function() {
+            if (!video.paused) {
+                audioActif.play();
+                synchroniserAudio();
+            }
+        });
 
-         // **4. Mise à jour de l'affichage du bouton**
-         if (audioActif === audioSalle1) {
-             // Si audioSalle1 est actif, affiche les textes liés à la classe btn-salle1
-             btnBascule.classList.add("btn-salle1");
-             btnBascule.classList.remove("btn-salle2");
-         
-             btnBascule.children[0].textContent = "Salle 1 ON";
-             btnBascule.children[1].textContent = "Off";
-         } else {
-             // Si audioSalle2 est actif, affiche les textes liés à la classe btn-salle2
-             btnBascule.classList.add("btn-salle2");
-             btnBascule.classList.remove("btn-salle1");
-         
-             btnBascule.children[0].textContent = "Off";
-             btnBascule.children[1].textContent = "Salle 2 ON";
-         }
+        // **4. Mise à jour de l'affichage du bouton**
+        if (audioActif === audioSalle1) {
+            // Si audioSalle1 est actif, affiche les textes liés à la classe btn-salle1
+            btnBascule.classList.add("btn-salle1");
+            btnBascule.classList.remove("btn-salle2");
+        
+            btnBascule.children[0].textContent = "Audio salle 1 on";
+            btnBascule.children[1].textContent = "Audio salle 2 off";
+        } else {
+            // Si audioSalle2 est actif, affiche les textes liés à la classe btn-salle2
+            btnBascule.classList.add("btn-salle2");
+            btnBascule.classList.remove("btn-salle1");
+        
+            btnBascule.children[0].textContent = "Audio salle 1 off";
+            btnBascule.children[1].textContent = "Audio salle 2 on";
+        }
     });
 </script>
 
