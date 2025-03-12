@@ -102,7 +102,7 @@
     var tolerance = 0.3; // Tolérance de désynchronisation
     var isSeeking = false; // Flag de buffer
     var bufferTime = 1000; // Délai avant reprise après un seek
-   var wasPlaying = false; // Mémorise si la vidéo était en lecture avant le seek
+    var wasPlaying = false; // Mémorise si la vidéo était en lecture avant le seek
 
     function synchroniserAudio() {
         if (!isSeeking) { 
@@ -152,6 +152,26 @@
    
        isSeeking = true;
        video.addEventListener("canplaythrough", onBufferingEnd);
+    });
+
+    video.addEventListener("seeked", function () {
+        function onBufferingEnd() {
+            synchroniserAudio();
+
+            // **Forcer une pause de 1000ms avant de rejouer**
+            setTimeout(function () {
+                if (wasPlaying) {
+                    video.play();
+                    audioActif.play();
+                }
+                isSeeking = false;
+            }, buffeTime);
+
+            video.removeEventListener("canplaythrough", onBufferingEnd);
+        }
+
+        isSeeking = true;
+        video.addEventListener("canplaythrough", onBufferingEnd);
     });
 
     btnBascule.addEventListener("click", function () {
