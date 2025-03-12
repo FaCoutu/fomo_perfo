@@ -36,36 +36,35 @@
    }
 
    .btn-video {
-       position: absolute;
-       top: 10px;
-       left: 50%;
-       transform: translateX(-50%);
-       width: 150px;
-       height: 30px;
+       display: flex;
+       width: 200px;
+       height: 40px;
+       border: none;
+       border-radius: 5px;
+       overflow: hidden;
+       cursor: pointer;
+       font-size: 12px;
+       font-weight: bold;
+       text-align: center;
+   }
+   .btn-section {
+       flex: 1;
        display: flex;
        align-items: center;
        justify-content: center;
-       background-color: #433d69;
        color: white;
-       font-size: 12px;
-       font-weight: bold;
-       border: none;
-       cursor: pointer;
-       border-radius: 3px;
-       opacity: 0.8;
-       transition: opacity 0.2s, background-color 0.3s;
-       z-index: 10;
+       transition: background-color 0.3s;
    }
-
-   .btn-video:hover {
-       opacity: 1;
-   }
-
-   .btn-salle1 {
+   .btn-salle1 .left {
        background-color: #194f18;
    }
-
-   .btn-salle2 {
+   .btn-salle1 .right {
+       background-color: grey;
+   }
+   .btn-salle2 .left {
+       background-color: grey;
+   }
+   .btn-salle2 .right {
        background-color: #433d69;
    }
 </style>
@@ -80,7 +79,10 @@
       Votre navigateur ne prend pas en charge la vidéo HTML5.
    </video>
 
-   <button id="btnBascule" class="btn-video">Audio salle de droite</button>
+   <button id="btnBascule" class="btn-video btn-salle2">
+    <div class="btn-section left">Audio salle 1 off</div>
+    <div class="btn-section right">Audio salle 2 on</div>
+</button>
 </div>
 
 <audio id="audioSalle1" loop>
@@ -96,6 +98,7 @@
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
+   
 
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
@@ -123,7 +126,8 @@
 
     video.addEventListener("pause", function () {
         if (!isSeeking) {
-            audioActif.pause();
+            audioSalle1.pause();
+            audioSalle2.pause();
         }
     });
 
@@ -207,6 +211,14 @@
         btnBascule.textContent = (audioActif === audioSalle1) ? "Audio salle de gauche" : "Audio salle de droite";
         btnBascule.classList.toggle("btn-salle1");
         btnBascule.classList.toggle("btn-salle2");
+        
+        if (btnBascule.classList.contains("btn-salle1")) {
+            btnBascule.children[0].textContent = "Audio salle 1 on";
+            btnBascule.children[1].textContent = "Audio salle 2 off";
+        } else {
+            btnBascule.children[0].textContent = "Audio salle 1 off";
+            btnBascule.children[1].textContent = "Audio salle 2 on";
+        }
     });
 </script>
 
