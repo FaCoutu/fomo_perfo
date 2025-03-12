@@ -103,6 +103,8 @@
     btnBascule.classList.add("btn-salle2");
 
     var player;
+    var lastSeekTime = 0;  // Variable pour stocker la dernière position du seek
+
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
             events: {
@@ -116,6 +118,35 @@
             syncAudio();  // Synchroniser immédiatement dès que la vidéo commence
         } else if (event.data == YT.PlayerState.PAUSED) {
             stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause
+        } else if (event.data == YT.PlayerState.ENDED) {
+            stopSync();  // Arrêter l'audio si la vidéo se termine
+        }
+
+        // Vérifie si l'utilisateur a changé la position de la vidéo
+        if (event.data == YT.PlayerState.PLAYING) {
+            var videoTime = player.getCurrentTime();
+            if (Math.abs(videoTime - lastSeekTime) > 0.1) {  // Si la position change significativement
+                lastSeekTime = videoTime;
+
+                // Mettre la vidéo et l'audio en pause immédiatement après un seek
+                player.pauseVideo();
+                audioActif.pause();
+
+                // Définir la nouvelle position audio
+                audioActif.currentTime = videoTime;
+
+                // Attendre que l’audio soit prêt avant de relancer la vidéo
+                audioActif.oncanplay = function() {
+                    audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
+
+                    // Synchroniser l'audio et la vidéo après un délai
+                    setTimeout(function() {
+                        syncAudio();  // Synchroniser
+                        player.playVideo();  // Reprendre la vidéo
+                    }, 3000);  // Délai de 3000ms avant de reprendre la vidéo
+                    audioActif.oncanplay = null;
+                };
+            }
         }
     }
 
