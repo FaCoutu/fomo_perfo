@@ -181,10 +181,9 @@
    
        // Attendre que l’audio soit prêt avant de relancer la vidéo
        audioActif.oncanplay = function() {
-           setTimeout(function() {
-               audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
-               player.playVideo();
-           }, 0); // Attendre 1500ms avant de rejouer
+           audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
+           player.playVideo();  // Redémarrer immédiatement la vidéo avec l'audio
+           audioActif.oncanplay = null; // Nettoyer l'événement pour éviter des déclenchements multiples
        };
    });
 
