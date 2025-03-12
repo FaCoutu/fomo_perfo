@@ -34,62 +34,42 @@
    }
 
    .btn-video {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      width: 240px;
-      height: 40px;
-      border: none;
-      border-radius: 3px;
-      overflow: hidden;
-      cursor: pointer;
-      opacity: 0.8;
-      transition: opacity 0.2s, background-color 0.3s;
-      z-index: 10;
-      font-size: 12px;
-      font-weight: bold;
-      text-align: center;
-      background-color: transparent;
+       position: absolute;
+       top: 10px;
+       left: 50%;
+       transform: translateX(-50%);
+       width: 150px;
+       height: 30px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       background-color: #433d69;
+       color: white;
+       font-size: 12px;
+       font-weight: bold;
+       border: none;
+       cursor: pointer;
+       border-radius: 3px;
+       opacity: 0.8;
+       transition: opacity 0.2s, background-color 0.3s;
+       z-index: 10;
    }
 
    .btn-video:hover {
-      opacity: 1;
+       opacity: 1;
    }
 
-   .btn-section {
-      flex: 1;
-      display: flex;
-      width: 120px;
-      height: 40px;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.8;
-      border-radius: 3px;
-      transition: background-color 0.3s;
+   .btn-salle1 {
+       background-color: #194f18;
    }
 
-   .btn-salle1 .left {
-      background-color: grey;
+   .btn-salle2 {
+       background-color: #433d69;
    }
 
-   .btn-salle1 .right {
-      background-color: #433d69;
-   }
-
-   .btn-salle2 .left {
-      background-color: #433d69;
-   }
-
-   .btn-salle2 .right {
-      background-color: grey;
-   }
-
-   .btn-container {
-    display: flex;
-    flex-direction: column;  /* Change l'alignement pour une disposition verticale */
-    align-items: center;  /* Centre les boutons sur l'axe horizontal */
+   .btn-disabled {
+       opacity: 0.5;
+       pointer-events: none;
    }
 </style>
 </head>
@@ -103,16 +83,8 @@
       Votre navigateur ne prend pas en charge la vidéo HTML5.
    </video>
 
-   <div class="btn-container">
-      <button id="btnSalle1" class="btn-video btn-salle1">
-         <div class="btn-section left">Audio Salle 1</div>
-         <div class="btn-section right">Off</div>
-      </button>
-      <button id="btnSalle2" class="btn-video btn-salle2">
-         <div class="btn-section left">Off</div>
-         <div class="btn-section right">Audio Salle 2</div>
-      </button>
-   </div>
+   <button id="btnSalle1" class="btn-video btn-salle1 btn-disabled">Offe</button>
+   <button id="btnSalle2" class="btn-video btn-salle2">Audio salle de droite</button>
 </div>
 
 <audio id="audioSalle1" preload="auto" loop>
@@ -129,6 +101,8 @@
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnSalle1 = document.getElementById("btnSalle1");
     var btnSalle2 = document.getElementById("btnSalle2");
+
+    btnSalle1.classList.remove("btn-disabled");
 
     var audioActif = audioSalle2;
     var tolerance = 0.3;
@@ -215,15 +189,10 @@
             audioSalle1.play();
             synchroniserAudio();
 
-            btnSalle1.classList.add("btn-salle1");
-            btnSalle1.classList.remove("btn-salle2");
-            btnSalle1.children[0].textContent = "Audio Salle 1";
-            btnSalle1.children[1].textContent = "Off";
-
-            btnSalle2.classList.add("btn-salle2");
-            btnSalle2.classList.remove("btn-salle1");
-            btnSalle2.children[0].textContent = "Off";
-            btnSalle2.children[1].textContent = "Audio Salle 2";
+            btnSalle1.classList.remove("btn-disabled");
+            btnSalle2.classList.add("btn-disabled");
+            btnSalle1.textContent = "Audio salle de gauche";
+            btnSalle2.textContent = "Off";
         }
     });
 
@@ -236,15 +205,10 @@
             audioSalle2.play();
             synchroniserAudio();
 
-            btnSalle2.classList.add("btn-salle2");
-            btnSalle2.classList.remove("btn-salle1");
-            btnSalle2.children[0].textContent = "Audio Salle 2";
-            btnSalle2.children[1].textContent = "Off";
-
-            btnSalle1.classList.add("btn-salle1");
-            btnSalle1.classList.remove("btn-salle2");
-            btnSalle1.children[0].textContent = "Off";
-            btnSalle1.children[1].textContent = "Audio Salle 1";
+            btnSalle2.classList.remove("btn-disabled");
+            btnSalle1.classList.add("btn-disabled");
+            btnSalle1.textContent = "Off";
+            btnSalle2.textContent = "Audio salle de droite";
         }
     });
 </script>
