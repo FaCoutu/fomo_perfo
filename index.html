@@ -12,17 +12,15 @@
       padding: 10px;
    }
 
-   /* Changer la taille de la police pour les titres */
    h1 {
-      font-size: variable !important;  /* Ajuste la taille ici comme tu le souhaites */
+      font-size: variable !important;
       font-weight: bold;
-      color: Grey;  /* Facultatif : change la couleur si nécessaire */
-      margin: 0;  /* Empêche les marges par défaut entre les h1 */
-      border: none;  /* Enlève les bordures */
+      color: Grey;
+      margin: 0;
+      border: none;
    }
-   /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
    .titre-1 {
-       margin-bottom: 16px;  /* Ajoute un espace après le premier titre */
+       margin-bottom: 16px;
    }
 
    .video-container {
@@ -37,7 +35,7 @@
 
    .btn-video {
       position: absolute;
-      top: 10px;  /* Déplace le bouton en haut de la vidéo */
+      top: 10px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -53,13 +51,13 @@
       font-size: 12px;
       font-weight: bold;
       text-align: center;
-      background-color: transparent;  /* Assure qu'il n'y a pas de fond blanc */
+      background-color: transparent;
    }
 
    .btn-video:hover {
       opacity: 1;
    }
-   
+
    .btn-section {
       flex: 1;
       display: flex;
@@ -71,21 +69,27 @@
       border-radius: 3px;
       transition: background-color 0.3s;
    }
+
    .btn-salle1 .left {
-      /*background-color: #194f18;*/
       background-color: grey;
    }
+
    .btn-salle1 .right {
-      /*background-color: grey;*/
       background-color: #433d69;
    }
+
    .btn-salle2 .left {
-      /*background-color: grey;*/
       background-color: #433d69;
    }
+
    .btn-salle2 .right {
-      /*background-color: #433d69;*/
-      background-color: grey
+      background-color: grey;
+   }
+
+   .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
    }
 </style>
 </head>
@@ -99,10 +103,16 @@
       Votre navigateur ne prend pas en charge la vidéo HTML5.
    </video>
 
-   <button id="btnBascule" class="btn-video btn-salle2">
-      <div class="btn-section left">off</div>
-      <div class="btn-section right">Audio Salle 2</div>
-   </button>
+   <div class="btn-container">
+      <button id="btnSalle1" class="btn-video btn-salle1">
+         <div class="btn-section left">Audio Salle 1</div>
+         <div class="btn-section right">Off</div>
+      </button>
+      <button id="btnSalle2" class="btn-video btn-salle2">
+         <div class="btn-section left">Off</div>
+         <div class="btn-section right">Audio Salle 2</div>
+      </button>
+   </div>
 </div>
 
 <audio id="audioSalle1" preload="auto" loop>
@@ -117,18 +127,17 @@
     var video = document.getElementById("video");
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
-    var btnBascule = document.getElementById("btnBascule");
+    var btnSalle1 = document.getElementById("btnSalle1");
+    var btnSalle2 = document.getElementById("btnSalle2");
 
     var audioActif = audioSalle2;
-    btnBascule.classList.add("btn-salle2");
-
-    var tolerance = 0.3; // Tolérance de désynchronisation
-    var isSeeking = false; // Flag de buffer
-    var bufferTime = 1000; // Délai avant reprise après un seek
-    var wasPlaying = false; // Mémorise si la vidéo était en lecture avant le seek
+    var tolerance = 0.3;
+    var isSeeking = false;
+    var bufferTime = 1000;
+    var wasPlaying = false;
 
     function synchroniserAudio() {
-        if (!isSeeking) { 
+        if (!isSeeking) {
             var diff = Math.abs(video.currentTime - audioActif.currentTime);
             if (diff > tolerance) {
                 audioActif.currentTime = video.currentTime;
@@ -136,9 +145,7 @@
         }
     }
 
-    // Précharger les fichiers audio et vidéo dès le chargement de la page
     window.addEventListener('load', function() {
-        // Assurez-vous que les fichiers sont préchargés dans le cache
         video.load();
         audioSalle1.load();
         audioSalle2.load();
@@ -166,7 +173,7 @@
 
     video.addEventListener("seeking", function () {
         isSeeking = true;
-        wasPlaying = !video.paused; // Enregistre l'état de lecture avant le seek
+        wasPlaying = !video.paused;
         video.pause();
         audioActif.pause();
     });
@@ -174,7 +181,6 @@
     video.addEventListener("seeked", function () {
         function onBufferingEnd() {
             synchroniserAudio();
-            // **Forcer une pause de 1000ms avant de rejouer**
             setTimeout(function () {
                 if (wasPlaying) {
                     video.play();
@@ -191,49 +197,54 @@
     });
 
     video.addEventListener("canplaythrough", function () {
-        // Charger la vidéo en entier avant de démarrer la lecture
         if (!video.paused) {
             audioActif.play();
         }
     });
 
     video.addEventListener("waiting", function () {
-        audioActif.pause();  // Met l'audio en pause si la vidéo est en cours de chargement
+        audioActif.pause();
     });
 
-    btnBascule.addEventListener("click", function () {
-        var nouvelleAudio = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
+    // Bouton Salle 1
+    btnSalle1.addEventListener("click", function () {
+        if (audioActif !== audioSalle1) {
+            audioActif.pause();
+            audioSalle1.currentTime = video.currentTime;
+            audioActif = audioSalle1;
+            audioSalle1.play();
+            synchroniserAudio();
 
-        // **1. Pause de l'ancien audio**
-        audioActif.pause();
+            btnSalle1.classList.add("btn-salle1");
+            btnSalle1.classList.remove("btn-salle2");
+            btnSalle1.children[0].textContent = "Audio Salle 1";
+            btnSalle1.children[1].textContent = "Off";
 
-        // **2. Synchronisation immédiate**
-        nouvelleAudio.currentTime = video.currentTime;
-        audioActif = nouvelleAudio;
+            btnSalle2.classList.add("btn-salle2");
+            btnSalle2.classList.remove("btn-salle1");
+            btnSalle2.children[0].textContent = "Off";
+            btnSalle2.children[1].textContent = "Audio Salle 2";
+        }
+    });
 
-        // **3. Écouter l'événement canplay de l'audio avant de synchroniser et jouer**
-        nouvelleAudio.addEventListener('canplay', function() {
-            if (!video.paused) {
-                audioActif.play();
-                synchroniserAudio();
-            }
-        });
+    // Bouton Salle 2
+    btnSalle2.addEventListener("click", function () {
+        if (audioActif !== audioSalle2) {
+            audioActif.pause();
+            audioSalle2.currentTime = video.currentTime;
+            audioActif = audioSalle2;
+            audioSalle2.play();
+            synchroniserAudio();
 
-        // **4. Mise à jour de l'affichage du bouton**
-        if (audioActif === audioSalle1) {
-            // Si audioSalle1 est actif, affiche les textes liés à la classe btn-salle1
-            btnBascule.classList.add("btn-salle1");
-            btnBascule.classList.remove("btn-salle2");
-        
-            btnBascule.children[0].textContent = "Audio Salle 1";
-            btnBascule.children[1].textContent = "Off";
-        } else {
-            // Si audioSalle2 est actif, affiche les textes liés à la classe btn-salle2
-            btnBascule.classList.add("btn-salle2");
-            btnBascule.classList.remove("btn-salle1");
-        
-            btnBascule.children[0].textContent = "Off";
-            btnBascule.children[1].textContent = "Audio Salle 2";
+            btnSalle2.classList.add("btn-salle2");
+            btnSalle2.classList.remove("btn-salle1");
+            btnSalle2.children[0].textContent = "Audio Salle 2";
+            btnSalle2.children[1].textContent = "Off";
+
+            btnSalle1.classList.add("btn-salle1");
+            btnSalle1.classList.remove("btn-salle2");
+            btnSalle1.children[0].textContent = "Off";
+            btnSalle1.children[1].textContent = "Audio Salle 1";
         }
     });
 </script>
