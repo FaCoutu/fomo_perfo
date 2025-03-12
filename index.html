@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -171,4 +172,21 @@
 
     // Synchroniser l'audio si l'utilisateur change la position de la vidéo (curseur)
     document.getElementById("video").addEventListener("seeked", function() {
-        va
+        var videoTime = player.getCurrentTime();
+        
+        // Si la vidéo est en lecture, on synchronise et on joue l'audio
+        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+            audioActif.currentTime = videoTime;  // Synchroniser l'audio avec la nouvelle position de la vidéo
+            audioActif.play().catch((error) => {
+                console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
+            });
+        }
+    });
+
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+</script>
+</body>
+</html>
