@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Félix-Antoine Coutu</title>
+<title>F-A Coutu_F.O.M.O.</title>
 <style>
    body {
       font-family: Arial, sans-serif;
@@ -98,8 +98,8 @@
    </video>
 
    <button id="btnBascule" class="btn-video btn-salle2">
-      <div class="btn-section left">Audio salle 1 off</div>
-      <div class="btn-section right">Audio salle 2 on</div>
+      <div class="btn-section left">off</div>
+      <div class="btn-section right">Salle 2 ON</div>
    </button>
 </div>
 
@@ -238,15 +238,15 @@
              btnBascule.classList.add("btn-salle1");
              btnBascule.classList.remove("btn-salle2");
          
-             btnBascule.children[0].textContent = "Audio salle 1 on";
-             btnBascule.children[1].textContent = "Audio salle 2 off";
+             btnBascule.children[0].textContent = "Salle 1 ON";
+             btnBascule.children[1].textContent = "Off";
          } else {
              // Si audioSalle2 est actif, affiche les textes liés à la classe btn-salle2
              btnBascule.classList.add("btn-salle2");
              btnBascule.classList.remove("btn-salle1");
          
-             btnBascule.children[0].textContent = "Audio salle 1 off";
-             btnBascule.children[1].textContent = "Audio salle 2 on";
+             btnBascule.children[0].textContent = "Off";
+             btnBascule.children[1].textContent = "Salle 2 ON";
          }
     });
 </script>
