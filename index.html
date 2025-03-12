@@ -112,6 +112,22 @@
         });
     }
 
+    document.getElementById("video").addEventListener("seeked", function() {
+    var videoTime = player.getCurrentTime();
+    
+       // Si la vidéo est en lecture, synchroniser immédiatement l'audio et jouer
+       if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+           // Vérifier si l'audio est déjà en train de jouer, sinon commencer
+           if (audioActif.currentTime !== videoTime) {
+               audioActif.currentTime = videoTime;  // Synchroniser l'audio avec la vidéo
+           }
+   
+           audioActif.play().catch((error) => {
+               console.log("Erreur lors de la lecture de l'audio après le seek: ", error);
+           });
+       }
+    });
+
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING) {
             syncAudio();  // Synchroniser immédiatement dès que la vidéo commence
