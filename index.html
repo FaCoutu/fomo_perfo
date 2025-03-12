@@ -99,7 +99,7 @@
 
    <button id="btnBascule" class="btn-video btn-salle2">
       <div class="btn-section left">off</div>
-      <div class="btn-section right">Salle 2 ON</div>
+      <div class="btn-section right">Audio Salle 2</div>
    </button>
 </div>
 
@@ -223,15 +223,15 @@
             btnBascule.classList.add("btn-salle1");
             btnBascule.classList.remove("btn-salle2");
         
-            btnBascule.children[0].textContent = "Audio salle 1 on";
-            btnBascule.children[1].textContent = "Audio salle 2 off";
+            btnBascule.children[0].textContent = "Audio Salle 1";
+            btnBascule.children[1].textContent = "Off";
         } else {
             // Si audioSalle2 est actif, affiche les textes liés à la classe btn-salle2
             btnBascule.classList.add("btn-salle2");
             btnBascule.classList.remove("btn-salle1");
         
-            btnBascule.children[0].textContent = "Audio salle 1 off";
-            btnBascule.children[1].textContent = "Audio salle 2 on";
+            btnBascule.children[0].textContent = "Off";
+            btnBascule.children[1].textContent = "Audio Salle 2";
         }
     });
 </script>
