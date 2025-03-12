@@ -199,34 +199,6 @@
         }
     });
 
-    // Synchroniser l'audio si l'utilisateur change la position de la vidéo (curseur)
-    document.getElementById("video").addEventListener("seeked", function() {
-    var videoTime = player.getCurrentTime();
-
-       // Mettre la vidéo et l'audio en pause immédiatement après un seek
-       player.pauseVideo();
-       audioActif.pause();
-   
-       // Définir la nouvelle position audio
-       audioActif.currentTime = videoTime;
-   
-       // Attendre que l’audio soit prêt avant de relancer la vidéo
-       audioActif.oncanplay = function() {
-           // Commencer à jouer l'audio
-           audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
-   
-           // Ajouter un délai avant de synchroniser
-           setTimeout(function() {
-               // Synchroniser l'audio et la vidéo
-               syncAudio();  
-               
-               // Commencer à jouer la vidéo après le délai
-               //player.playVideo();
-           }, 3000); // Délai de 3000ms avant de reprendre la vidéo
-           audioActif.oncanplay = null; // Nettoyer l'événement pour éviter les déclenchements multiples
-       };
-   });
-
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
