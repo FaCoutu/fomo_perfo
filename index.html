@@ -175,6 +175,19 @@
         video.addEventListener("canplaythrough", onBufferingEnd);
     });
 
+    // Nouvelle logique pour vérifier si la vidéo est en cours de chargement
+    video.addEventListener("canplay", function () {
+        // Lorsque la vidéo est prête à être lue, démarre l'audio
+        if (!video.paused) {
+            audioActif.play();
+        }
+    });
+
+    // Empêcher l'audio de jouer lorsque la vidéo est en cours de chargement
+    video.addEventListener("waiting", function () {
+        audioActif.pause();  // Met l'audio en pause si la vidéo est en cours de chargement
+    });
+
     btnBascule.addEventListener("click", function () {
         var nouvelleAudio = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
 
