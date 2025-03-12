@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Félix-Antoine Coutu</title>
+<title>F-A Coutu_FOMO</title>
 <style>
    body {
       font-family: Arial, sans-serif;
@@ -75,7 +76,7 @@
 <h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
 
 <div class="video-container">
-   <video id="video" controls controlsList="nofullscreen">
+   <video id="video" controls>
       <source src="https://dl.dropboxusercontent.com/scl/fi/vn856dku4ckgm35azhbz1/Fumee-Omnisciente-Mirage-Onirique02.mp4?rlkey=khuru1f6c5woeclemz1ai9rlz&st=pksoqe29&raw=1" type="video/mp4">    
       Votre navigateur ne prend pas en charge la vidéo HTML5.
    </video>
@@ -100,10 +101,9 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
-    var tolerance = 0.3; // Tolérance de désynchronisation
-    var isSeeking = false; // Flag de buffer
-    var bufferTime = 1000; // Délai avant reprise après un seek
-    var wasPlaying = false; // Mémorise si la vidéo était en lecture avant le seek
+    var tolerance = 0.3; // Seuil de tolérance pour la resynchronisation
+    var isSeeking = false; // Flag pour indiquer si on est en train de "buffer"
+    var bufferTime = 700; // Temps de buffer (700ms)
 
     function synchroniserAudio() {
         if (!isSeeking) { 
@@ -116,7 +116,7 @@
 
     video.addEventListener("play", function () {
         if (!isSeeking && audioActif.paused) {
-            synchroniserAudio();
+            audioActif.currentTime = video.currentTime;
             audioActif.play();
         }
     });
@@ -135,79 +135,43 @@
 
     video.addEventListener("seeking", function () {
         isSeeking = true;
-        wasPlaying = !video.paused; // Enregistre l'état de lecture avant le seek
-        video.pause();
+        video.pause(); // Pause temporaire pour éviter des saccades
         audioActif.pause();
     });
 
     video.addEventListener("seeked", function () {
-       function onBufferingEnd() {
-           synchroniserAudio();
-           if (wasPlaying) {
-               video.play();
-               audioActif.play();
-           }
-           isSeeking = false;
-           video.removeEventListener("canplaythrough", onBufferingEnd);
-       }
-   
-       isSeeking = true;
-       video.addEventListener("canplaythrough", onBufferingEnd);
-    });
-
-    video.addEventListener("seeked", function () {
-        function onBufferingEnd() {
-            synchroniserAudio();
-
-            // **Forcer une pause de 1000ms avant de rejouer**
-            setTimeout(function () {
-                if (wasPlaying) {
-                    video.play();
-                    audioActif.play();
-                }
-                isSeeking = false;
-            }, buffeTime);
-
-            video.removeEventListener("canplaythrough", onBufferingEnd);
-        }
-
-        isSeeking = true;
-        video.addEventListener("canplaythrough", onBufferingEnd);
-    });
-
-    // Nouvelle logique pour vérifier si la vidéo est en cours de chargement
-    video.addEventListener("canplay", function () {
-        // Lorsque la vidéo est prête à être lue, démarre l'audio
-        if (!video.paused) {
+        setTimeout(function () {
+            video.play();
+            audioActif.currentTime = video.currentTime;
             audioActif.play();
-        }
-    });
-
-    // Empêcher l'audio de jouer lorsque la vidéo est en cours de chargement
-    video.addEventListener("waiting", function () {
-        audioActif.pause();  // Met l'audio en pause si la vidéo est en cours de chargement
+            isSeeking = false;
+        }, bufferTime); // Attente avant de reprendre la lecture
     });
 
     btnBascule.addEventListener("click", function () {
-        var nouvelleAudio = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
+        if (audioActif === audioSalle1) {
+            audioSalle1.muted = true;
+            audioSalle2.muted = false;
+            audioActif = audioSalle2;
+            btnBascule.textContent = "Audio salle de droite";
+            btnBascule.classList.remove("btn-salle1");
+            btnBascule.classList.add("btn-salle2");
+        } else {
+            audioSalle1.muted = false;
+            audioSalle2.muted = true;
+            audioActif = audioSalle1;
+            btnBascule.textContent = "Audio salle de gauche";
+            btnBascule.classList.remove("btn-salle2");
+            btnBascule.classList.add("btn-salle1");
+        }
 
-        // **1. Pause de l'ancien audio**
-        audioActif.pause();
-
-        // **2. Synchronisation immédiate**
-        nouvelleAudio.currentTime = video.currentTime;
-        audioActif = nouvelleAudio;
-
-        // **3. Reprise uniquement si la vidéo est en lecture**
+        // Mise à jour immédiate de l'audio, sans buffer
+        audioActif.currentTime = video.currentTime;
         if (!video.paused) {
             audioActif.play();
         }
-
-        // **4. Mise à jour de l'affichage du bouton**
-        btnBascule.textContent = (audioActif === audioSalle1) ? "Audio salle de gauche" : "Audio salle de droite";
-        btnBascule.classList.toggle("btn-salle1");
-        btnBascule.classList.toggle("btn-salle2");
     });
+
 </script>
 
 </body>
