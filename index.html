@@ -194,8 +194,15 @@
     });
 
     // Nouvelle logique pour vérifier si la vidéo est en cours de chargement
-    video.addEventListener("canplay", function () {
+    /*video.addEventListener("canplay", function () {
         // Lorsque la vidéo est prête à être lue, démarre l'audio
+        if (!video.paused) {
+            audioActif.play();
+        }
+    });
+   */
+    video.addEventListener("canplaythrough", function () {
+        // Charger la vidéo en entier avant de démarrer la lecture
         if (!video.paused) {
             audioActif.play();
         }
