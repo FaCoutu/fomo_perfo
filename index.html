@@ -12,15 +12,17 @@
       padding: 10px;
    }
 
+   /* Changer la taille de la police pour les titres */
    h1 {
-      font-size: variable !important;
+      font-size: variable !important;  /* Ajuste la taille ici comme tu le souhaites */
       font-weight: bold;
-      color: Grey;
-      margin: 0;
-      border: none;
+      color: Grey;  /* Facultatif : change la couleur si nécessaire */
+      margin: 0;  /* Empêche les marges par défaut entre les h1 */
+      border: none;  /* Enlève les bordures */
    }
+   /* Si tu veux ajouter des espacements spécifiques entre les deux titres */
    .titre-1 {
-       margin-bottom: 16px;
+       margin-bottom: 16px;  /* Ajoute un espace après le premier titre */
    }
 
    .video-container {
@@ -33,56 +35,63 @@
       max-width: 2000px;
    }
 
-   .btn-container {
-       display: flex; /* Utilisation de flexbox pour afficher les boutons côte à côte */
-       justify-content: center; /* Centrer les boutons horizontalement */
-       gap: 160px; /* Espacement entre les boutons */
-       margin-top: 10px; /* Espacement entre la vidéo et les boutons */
-   }
-
    .btn-video {
-       position: absolute;
-       top: 10px;
-       left: 50%;
-       transform: translateX(-50%);
-       width: 150px;
-       height: 30px;
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       background-color: #433d69;
-       color: white;
-       font-size: 12px;
-       font-weight: bold;
-       border: none;
-       cursor: pointer;
-       border-radius: 3px;
-       opacity: 0.8;
-       transition: opacity 0.2s, background-color 0.3s;
-       z-index: 10;
+      position: absolute;
+      top: 10px;  /* Déplace le bouton en haut de la vidéo */
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      width: 240px;
+      height: 40px;
+      border: none;
+      border-radius: 3px;
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s, background-color 0.3s;
+      z-index: 10;
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      background-color: transparent;  /* Assure qu'il n'y a pas de fond blanc */
    }
 
    .btn-video:hover {
-       opacity: 1;
+      opacity: 1;
    }
-
-   .btn-salle1 {
-       background-color: #194f18;
+   
+   .btn-section {
+      flex: 1;
+      display: flex;
+      width: 120px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.8;
+      border-radius: 3px;
+      transition: background-color 0.3s;
    }
-
-   .btn-salle2 {
-       background-color: #433d69;
+   .btn-salle1 .left {
+      /*background-color: #194f18;*/
+      background-color: grey;
    }
-
-   .btn-disabled {
-       opacity: 0.5;
-       pointer-events: none;
+   .btn-salle1 .right {
+      /*background-color: grey;*/
+      background-color: #433d69;
+   }
+   .btn-salle2 .left {
+      /*background-color: grey;*/
+      background-color: #433d69;
+   }
+   .btn-salle2 .right {
+      /*background-color: #433d69;*/
+      background-color: grey
    }
 </style>
 </head>
 <body>
 
-<h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
+<h1 class="titre-1">Utiliser le bouton pour basculer entre l'audio de la Salle de gauche et celle de droite</h1>
 
 <div class="video-container">
    <video id="video" controls controlsList="nofullscreen" preload="auto">
@@ -90,10 +99,10 @@
       Votre navigateur ne prend pas en charge la vidéo HTML5.
    </video>
 
-   <div class="btn-container">
-      <button id="btnSalle1" class="btn-video1 btn-salle1">Audio salle de gauche</button>
-      <button id="btnSalle2" class="btn-video2 btn-salle2 btn-disabled">Audio salle de droite</button>
-   </div>
+   <button id="btnBascule" class="btn-video btn-salle2">
+      <div class="btn-section left">off</div>
+      <div class="btn-section right">Audio Salle 2</div>
+   </button>
 </div>
 
 <audio id="audioSalle1" preload="auto" loop>
@@ -108,11 +117,10 @@
     var video = document.getElementById("video");
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
-    var btnSalle1 = document.getElementById("btnSalle1");
-    var btnSalle2 = document.getElementById("btnSalle2");
+    var btnBascule = document.getElementById("btnBascule");
 
     var audioActif = audioSalle2;
-    btnSalle1.classList.remove("btn-disabled");
+    btnBascule.classList.add("btn-salle2");
 
     var tolerance = 0.3; // Tolérance de désynchronisation
     var isSeeking = false; // Flag de buffer
@@ -214,16 +222,18 @@
         // **4. Mise à jour de l'affichage du bouton**
         if (audioActif === audioSalle1) {
             // Si audioSalle1 est actif, affiche les textes liés à la classe btn-salle1
-            btnSalle1.classList.remove("btn-disabled");
-            btnSalle2.classList.add("btn-disabled");
-            btnSalle1.textContent = "Audio salle de gauche";
-            btnSalle2.textContent = "Off";
+            btnBascule.classList.add("btn-salle1");
+            btnBascule.classList.remove("btn-salle2");
+        
+            btnBascule.children[0].textContent = "Audio Salle 1";
+            btnBascule.children[1].textContent = "Off";
         } else {
             // Si audioSalle2 est actif, affiche les textes liés à la classe btn-salle2
-            btnSalle2.classList.remove("btn-disabled");
-            btnSalle1.classList.add("btn-disabled");
-            btnSalle1.textContent = "Off";
-            btnSalle2.textContent = "Audio salle de droite";
+            btnBascule.classList.add("btn-salle2");
+            btnBascule.classList.remove("btn-salle1");
+        
+            btnBascule.children[0].textContent = "Off";
+            btnBascule.children[1].textContent = "Audio Salle 2";
         }
     });
 </script>
