@@ -140,14 +140,18 @@
     });
 
     video.addEventListener("seeked", function () {
-        setTimeout(function () {
-            synchroniserAudio();
-            if (wasPlaying) { 
-                video.play();
-                audioActif.play();
-            }
-            isSeeking = false;
-        }, bufferTime);
+       function onBufferingEnd() {
+           synchroniserAudio();
+           if (wasPlaying) {
+               video.play();
+               audioActif.play();
+           }
+           isSeeking = false;
+           video.removeEventListener("canplaythrough", onBufferingEnd);
+       }
+   
+       isSeeking = true;
+       video.addEventListener("canplaythrough", onBufferingEnd);
     });
 
     btnBascule.addEventListener("click", function () {
