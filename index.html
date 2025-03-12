@@ -99,9 +99,9 @@
     var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
-    var tolerance = 0.3; // Seuil de tolérance pour la resynchronisation
-    var isSeeking = false; // Flag pour indiquer si on est en train de "buffer"
-    var bufferTime = 700; // Temps de buffer (700ms)
+    var tolerance = 0.3; // Tolérance de désynchronisation
+    var isSeeking = false; // Flag de buffer
+    var bufferTime = 500; // Délai avant reprise après un seek
 
     function synchroniserAudio() {
         if (!isSeeking) { 
@@ -114,7 +114,7 @@
 
     video.addEventListener("play", function () {
         if (!isSeeking && audioActif.paused) {
-            audioActif.currentTime = video.currentTime;
+            synchroniserAudio();
             audioActif.play();
         }
     });
@@ -133,43 +133,39 @@
 
     video.addEventListener("seeking", function () {
         isSeeking = true;
-        video.pause(); // Pause temporaire pour éviter des saccades
+        video.pause();
         audioActif.pause();
     });
 
     video.addEventListener("seeked", function () {
         setTimeout(function () {
+            synchroniserAudio();
             video.play();
-            audioActif.currentTime = video.currentTime;
             audioActif.play();
             isSeeking = false;
-        }, bufferTime); // Attente avant de reprendre la lecture
+        }, bufferTime);
     });
 
     btnBascule.addEventListener("click", function () {
-        if (audioActif === audioSalle1) {
-            audioSalle1.muted = true;
-            audioSalle2.muted = false;
-            audioActif = audioSalle2;
-            btnBascule.textContent = "Audio salle de droite";
-            btnBascule.classList.remove("btn-salle1");
-            btnBascule.classList.add("btn-salle2");
-        } else {
-            audioSalle1.muted = false;
-            audioSalle2.muted = true;
-            audioActif = audioSalle1;
-            btnBascule.textContent = "Audio salle de gauche";
-            btnBascule.classList.remove("btn-salle2");
-            btnBascule.classList.add("btn-salle1");
-        }
+        var nouvelleAudio = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
 
-        // Mise à jour immédiate de l'audio, sans buffer
-        audioActif.currentTime = video.currentTime;
+        // **1. Pause de l'ancien audio**
+        audioActif.pause();
+
+        // **2. Synchronisation immédiate**
+        nouvelleAudio.currentTime = video.currentTime;
+        audioActif = nouvelleAudio;
+
+        // **3. Reprise uniquement si la vidéo est en lecture**
         if (!video.paused) {
             audioActif.play();
         }
-    });
 
+        // **4. Mise à jour de l'affichage du bouton**
+        btnBascule.textContent = (audioActif === audioSalle1) ? "Audio salle de gauche" : "Audio salle de droite";
+        btnBascule.classList.toggle("btn-salle1");
+        btnBascule.classList.toggle("btn-salle2");
+    });
 </script>
 
 </body>
