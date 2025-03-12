@@ -207,18 +207,22 @@
             audioActif.play();
         }
 
-        // **4. Mise à jour de l'affichage du bouton**
-        btnBascule.textContent = (audioActif === audioSalle1) ? "Audio salle de gauche" : "Audio salle de droite";
-        btnBascule.classList.toggle("btn-salle1");
-        btnBascule.classList.toggle("btn-salle2");
-        
-        if (btnBascule.classList.contains("btn-salle1")) {
-            btnBascule.children[0].textContent = "Audio salle 1 on";
-            btnBascule.children[1].textContent = "Audio salle 2 off";
-        } else {
-            btnBascule.children[0].textContent = "Audio salle 1 off";
-            btnBascule.children[1].textContent = "Audio salle 2 on";
-        }
+         // **4. Mise à jour de l'affichage du bouton**
+         if (audioActif === audioSalle1) {
+             // Si audioSalle1 est actif, affiche les textes liés à la classe btn-salle1
+             btnBascule.classList.add("btn-salle1");
+             btnBascule.classList.remove("btn-salle2");
+         
+             btnBascule.children[0].textContent = "Audio salle 1 on";
+             btnBascule.children[1].textContent = "Audio salle 2 off";
+         } else {
+             // Si audioSalle2 est actif, affiche les textes liés à la classe btn-salle2
+             btnBascule.classList.add("btn-salle2");
+             btnBascule.classList.remove("btn-salle1");
+         
+             btnBascule.children[0].textContent = "Audio salle 1 off";
+             btnBascule.children[1].textContent = "Audio salle 2 on";
+         }
     });
 </script>
 
