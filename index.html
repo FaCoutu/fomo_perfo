@@ -175,16 +175,16 @@
        // Mettre la vidéo et l'audio en pause immédiatement après un seek
        player.pauseVideo();
        audioActif.pause();
-   
+       
        // Définir la nouvelle position audio
        audioActif.currentTime = videoTime;
-   
+       
        // Attendre que l’audio soit prêt avant de relancer la vidéo
        audioActif.oncanplay = function() {
            audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
            player.playVideo();  // Redémarrer immédiatement la vidéo avec l'audio
+           syncAudio();  // Assure que l'audio reste synchronisé après un seek
            audioActif.oncanplay = null; // Nettoyer l'événement pour éviter des déclenchements multiples
-           syncAudio();
        };
    });
 
