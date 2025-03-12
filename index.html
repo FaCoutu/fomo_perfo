@@ -33,6 +33,13 @@
       max-width: 2000px;
    }
 
+   .btn-container {
+       display: flex; /* Utilisation de flexbox pour afficher les boutons côte à côte */
+       justify-content: center; /* Centrer les boutons horizontalement */
+       gap: 10px; /* Espacement entre les boutons */
+       margin-top: 10px; /* Espacement entre la vidéo et les boutons */
+   }
+
    .btn-video {
        position: absolute;
        top: 10px;
@@ -83,8 +90,10 @@
       Votre navigateur ne prend pas en charge la vidéo HTML5.
    </video>
 
-   <button id="btnSalle1" class="btn-video btn-salle1 btn-disabled">Offe</button>
-   <button id="btnSalle2" class="btn-video btn-salle2">Audio salle de droite</button>
+   <div class="btn-container">
+      <button id="btnSalle1" class="btn-video btn-salle1">Audio salle de gauche</button>
+      <button id="btnSalle2" class="btn-video btn-salle2 btn-disabled">Audio salle de droite</button>
+   </div>
 </div>
 
 <audio id="audioSalle1" preload="auto" loop>
