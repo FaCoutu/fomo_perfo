@@ -36,23 +36,37 @@
    }
 
    .btn-video {
+       position: absolute;
+       op: 10px;
+       left: 50%;
+       transform: translateX(-50%);
        display: flex;
        width: 200px;
        height: 40px;
        border: none;
-       border-radius: 5px;
+       border-radius: 3px;
        overflow: hidden;
        cursor: pointer;
+       opacity: 0.8;
+       transition: opacity 0.2s, background-color 0.3s;
+       z-index: 10;
        font-size: 12px;
        font-weight: bold;
        text-align: center;
    }
+
+   .btn-video:hover {
+       opacity: 1;
+   }
+   
    .btn-section {
        flex: 1;
        display: flex;
        align-items: center;
        justify-content: center;
        color: white;
+       opacity: 0;
+       border-radius: 3px;
        transition: background-color 0.3s;
    }
    .btn-salle1 .left {
