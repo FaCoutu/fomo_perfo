@@ -185,7 +185,8 @@
            player.playVideo();  // Redémarrer immédiatement la vidéo avec l'audio
            
            // Ajouter un léger délai avant de synchroniser à nouveau l'audio
-           setTimeout(syncAudio, 3000); // Délai de 500ms (modifiable)
+           setTimeout(audioActif, 2000); // Délai de 500ms (modifiable)
+           audioActif.currentTime = videoTime;
    
            audioActif.oncanplay = null; // Nettoyer l'événement pour éviter des déclenchements multiples
        };
