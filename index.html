@@ -184,6 +184,7 @@
            audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
            player.playVideo();  // Redémarrer immédiatement la vidéo avec l'audio
            audioActif.oncanplay = null; // Nettoyer l'événement pour éviter des déclenchements multiples
+           syncAudio();
        };
    });
 
