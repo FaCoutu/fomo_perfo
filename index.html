@@ -143,12 +143,13 @@
     }
 
     function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING) {
-            syncAudio();  
-        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
-            stopSync();
-        }
-    }
+       if (event.data == YT.PlayerState.PLAYING) {
+           console.log("Vidéo en lecture, tentative de lecture de l'audio...");
+           syncAudio(true);
+       } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+           stopSync();
+       }
+   }
 
     function onPlaybackRateChange(event) {
         syncAudio(); // Synchronise l'audio si la vitesse de lecture change
@@ -173,6 +174,7 @@
             var videoTime = player.getCurrentTime();
             var adjustedVideoTime = videoTime + (offsetMs / 1000);
             audioActif.play().catch(error => console.log("Erreur audio :", error));
+            audioActif.pause().catch(error => console.log("Erreur audio :", error));
 
             // Force la synchronisation uniquement si un seek est détecté
             if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 0.5) {
