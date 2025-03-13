@@ -147,8 +147,8 @@
             return;
         }
 
-        if (event.data == YT.PlayerState.PLAYING || event.data == YT.PlayerState.BUFFERING) {
-            // Si l'état est "PLAYING" ou "BUFFERING", on synchronise l'audio
+        if (event.data == YT.PlayerState.PLAYING) {
+            // Si l'état est "PLAYING", on synchronise l'audio
             setTimeout(syncAudio, 0);  // Appeler syncAudio après un petit délai
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
             // Si l'état est "PAUSED" ou "ENDED", on arrête la synchronisation
