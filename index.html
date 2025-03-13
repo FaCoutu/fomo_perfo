@@ -135,35 +135,10 @@
    function onYouTubeIframeAPIReady() {
        player = new YT.Player('video', {
            events: {
-               //'onStateChange': onPlayerStateChange,
-               'onStateChange': () => {
-                  // Ajout des événements pour détecter un seek manuel
-                   player.getIframe().addEventListener("YT.PlayerState.PLAYING", onSeeking);
-                   player.getIframe().addEventListener("YT.PlayerState.PAUSED", onSeeked);
+               onStateChange': onPlayerStateChange,
                }
-               /*'onReady': () => {
-                   // Ajout des événements pour détecter un seek manuel
-                   player.getIframe().addEventListener("seeking", onSeeking);
-                   player.getIframe().addEventListener("seeked", onSeeked);
-               }*/
            }
        });
-   }
-   
-   function onSeeking() {
-       console.log("Détection d'un déplacement manuel du curseur...");
-       isSeeking = true; // Activer le flag du seek manuel
-       player.pauseVideo(); // Mettre en pause la vidéo
-       audioActif.pause(); // Mettre en pause l'audio
-   }
-   
-   function onSeeked() {
-       if (isSeeking) {
-           console.log("Seek terminé, resynchronisation...");
-           syncAudio(true); // Forcer la synchronisation
-           player.pauseVideo(); // Relancer la vidéo
-           isSeeking = false; // Réinitialiser le flag
-       }
    }
    
    function onPlayerStateChange(event) {
@@ -184,17 +159,22 @@
    
    function syncAudio(force = false) {
        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
-           var videoTime = player.getCurrentTime();
-           var adjustedVideoTime = videoTime + (offsetMs / 1000);
-   
-           if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 0.5) {
-               console.log("Sync forcée, mise à jour du temps audio...");
-               audioActif.pause();
-               audioActif.currentTime = adjustedVideoTime;
-               setTimeout(() => {
-                   audioActif.play().catch(error => console.log("Erreur audio :", error));
-               }, 100);
-           }
+           console.log("Début du buffering...");
+           
+           // Ajouter un délai avant d'obtenir getCurrentTime() pour stabiliser la valeur
+           setTimeout(() => {
+               var videoTime = player.getCurrentTime();
+               var adjustedVideoTime = videoTime + (offsetMs / 1000);
+       
+               if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 0.5) {
+                   console.log("Sync forcée, mise à jour du temps audio...");
+                   audioActif.pause();
+                   audioActif.currentTime = adjustedVideoTime;
+                   setTimeout(() => {
+                       audioActif.play().catch(error => console.log("Erreur audio :", error));
+                   }, 100);
+               }
+           }, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
        }
    }
    
