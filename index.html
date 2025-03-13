@@ -103,7 +103,6 @@
     btnBascule.classList.add("btn-salle2");
 
     var player;
-    var lastSeekTime = 0;  // Variable pour stocker la dernière position du seek
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
@@ -117,7 +116,6 @@
         if (event.data == YT.PlayerState.PLAYING) {
             syncAudio();  // Synchroniser immédiatement dès que la vidéo commence
             var videoTime = player.getCurrentTime();
-            if (Math.abs(videoTime - lastSeekTime) > 0.1) {  // Si la position change significativement
                 lastSeekTime = videoTime;
 
                 // Mettre la vidéo et l'audio en pause immédiatement après un seek
