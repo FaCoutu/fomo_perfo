@@ -130,12 +130,8 @@
                 // Attendre que l’audio soit prêt avant de relancer la vidéo
                 audioActif.oncanplay = function() {
                     audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
-
-                    // Synchroniser l'audio et la vidéo après un délai
-                    setTimeout(function() {
-                        syncAudio();  // Synchroniser
-                        player.playVideo();  // Reprendre la vidéo
-                    }, 3000);  // Délai de 3000ms avant de reprendre la vidéo
+                    syncAudio();  // Synchroniser
+                    player.playVideo();  // Reprendre la vidéo
                     audioActif.oncanplay = null;
                 };
             }
