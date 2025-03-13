@@ -20,6 +20,10 @@
       border: none;
    }
 
+   .titre-1 {
+       margin-bottom: 16px;
+   }
+
    .video-container {
       position: relative;
       display: inline-block;
@@ -33,9 +37,9 @@
       height: 100%;
    }
 
-   .btn-video {
+    .btn-video {
       position: absolute;
-      top: 10px;
+      top: 10px;  /* Déplace le bouton en haut de la vidéo */
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -43,47 +47,88 @@
       height: 34px;
       border: none;
       border-radius: 3px;
+      overflow: hidden;
       cursor: pointer;
       opacity: 0.8;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, background-color 0.3s;
       z-index: 10;
       font-size: 12px;
       font-weight: bold;
-      background-color: transparent;
+      text-align: center;
+      background-color: transparent;  /* Assure qu'il n'y a pas de fond blanc */
    }
 
    .btn-video:hover {
       opacity: 1;
    }
+   
+   .btn-section {
+      flex: 1;
+      display: flex;
+      width: 120px;
+      height: 28px;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.8;
+      border-radius: 3px;
+      transition: background-color 0.3s;
+      color: Black;
+   }
+   .btn-section.left {
+      margin-right: 28px; /* Ajoute un espace entre les deux sections */
+   }
+   .btn-salle1 .left {
+      background-color: grey;
+      /*color: Black;*/
+   }
+   .btn-salle1 .right {
+      background-color: #433d69;
+      /*color: Black;*/
+   }
+   .btn-salle2 .left {
+      background-color: #433d69;
+      /*color: Black;*/
+   }
+   .btn-salle2 .right {
+      background-color: grey;
+      /*color: Black;*/
+   }
 </style>
 </head>
 <body>
 
-<h1>Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
+<h1 class="titre-1">Fumée Omnisciente, Mirage Onirique | Résidence de création, janvier 2025, Bain Mathieu</h1>
 
 <div class="video-container">
    <iframe id="video" 
       src="https://www.youtube.com/embed/fm00cFcoJM8?enablejsapi=1&modestbranding=1&rel=0" 
       frameborder="0">
    </iframe>
-   <button id="btnBascule" class="btn-video">Changer d'Audio</button>
+
+   <button id="btnBascule" class="btn-video btn-salle2">
+      <div class="btn-section left">off</div>
+      <div class="btn-section right">Audio Salle 2</div>
+   </button>
 </div>
 
 <audio id="audioSalle1" loop>
-   <source src="https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?raw=1" type="audio/mp3">
+   <source src="https://www.dropbox.com/scl/fi/ur8dl9pxqmyqqcgq63a2l/FOMO_Audio_Perfo-res-Bain-Mathieu_DRUM.mp3?rlkey=oendf779ij0ijz57i5z65vb8h&st=wya35hdc&raw=1" type="audio/mp3">
 </audio>
 
 <audio id="audioSalle2" loop>
-   <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?raw=1" type="audio/mp3">
+   <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1" type="audio/mp3">
 </audio>
 
 <script>
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
+
     var audioActif = audioSalle2;
+    btnBascule.classList.add("btn-salle2");
+
     var player;
-    
+
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
             events: {
@@ -94,42 +139,66 @@
 
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING) {
-            syncAudio();
+            syncAudio();  // Synchroniser immédiatement dès que la vidéo commence
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
-            stopAudio();
+            stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
         }
     }
+
+    // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
+    let lastSyncTime = 0;  // Enregistrer l'heure de la dernière synchronisation
+    let syncInterval = 200;  // Temps d'intervalle entre les synchronisations (en ms)
 
     function syncAudio() {
-        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
-            audioActif.currentTime = player.getCurrentTime();
-            if (audioActif.paused) {
-                audioActif.play().catch(error => console.log("Erreur audio:", error));
-            }
-        }
-    }
+       if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) { // Vérifie si la vidéo est en lecture
+           var videoTime = player.getCurrentTime();
+           var currentTime = Date.now();
+           
+           if (currentTime - lastSyncTime >= syncInterval) {
+               audioActif.currentTime = videoTime;
+               if (audioActif.paused) {
+                   audioActif.play().catch((error) => {
+                       console.log("Erreur lors de la lecture de l'audio: ", error);
+                   });
+               }
+               lastSyncTime = currentTime;
+           }
+       }
+   }
 
-    function stopAudio() {
-        audioActif.pause();
-    }
+    function stopSync() {
+       clearInterval(syncInterval);  // Arrêter la synchronisation
+       audioActif.pause();  // Mettre l’audio en pause
+   }
 
-    btnBascule.addEventListener("click", function () {
-        if (!player) return;
-        var isPlaying = player.getPlayerState() == YT.PlayerState.PLAYING;
-        player.pauseVideo();
-        audioActif.pause();
-        
-        audioActif = (audioActif === audioSalle1) ? audioSalle2 : audioSalle1;
-        audioActif.load();
-        audioActif.currentTime = player.getCurrentTime();
+   // Changement de salle au clic du bouton
+   btnBascule.addEventListener("click", function () {
+    // Met en pause l'audio actuel
+    audioActif.pause();
 
-        if (isPlaying) {
-            setTimeout(() => {
-                audioActif.play().catch(error => console.log("Erreur audio:", error));
-                player.playVideo();
-            }, 100);
-        }
-    });
+       // Change l'audio actif
+       if (audioActif === audioSalle1) {
+           audioActif = audioSalle2;
+           btnBascule.classList.remove("btn-salle1");
+           btnBascule.classList.add("btn-salle2");
+           btnBascule.children[0].textContent = "Off";
+           btnBascule.children[1].textContent = "Audio Salle 2";
+       } else {
+           audioActif = audioSalle1;
+           btnBascule.classList.remove("btn-salle2");
+           btnBascule.classList.add("btn-salle1");
+           btnBascule.children[0].textContent = "Audio Salle 1";
+           btnBascule.children[1].textContent = "Off";
+       }
+   
+       // Si la vidéo est en lecture, on joue immédiatement le nouvel audio
+       if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+           syncAudio();
+       }
+   });
+
+    // Synchronisation en temps réel de l'audio avec la vidéo à une fréquence plus faible
+    setInterval(syncAudio, syncInterval);
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
