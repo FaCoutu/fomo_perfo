@@ -147,7 +147,7 @@
 
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
     let lastSyncTime = 0;  // Enregistrer l'heure de la dernière synchronisation
-    let syncInterval = 1000;  // Temps d'intervalle entre les synchronisations (en ms)
+    let syncInterval = 5000;  // Temps d'intervalle entre les synchronisations (en ms)
 
     function syncAudio() {
        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) { // Vérifie si la vidéo est en lecture
