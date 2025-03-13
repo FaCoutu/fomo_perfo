@@ -138,12 +138,12 @@
     }
 
     function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING) {
-            syncAudio();  // Synchroniser immédiatement dès que la vidéo commence
-        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
-            stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
-        }
-    }
+       if (event.data == YT.PlayerState.PLAYING) {
+           setTimeout(syncAudio, 2000);  // Appeler syncAudio après un délai de 2 secondes (2000 ms)
+       } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+           stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
+       }
+   }
 
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
     let offsetMs = 200;  // Décalage en millisecondes (positif pour retarder l'audio, négatif pour devancer l'audio)
@@ -154,7 +154,7 @@
            var videoTime = player.getCurrentTime();
    
            // Vérifie si le temps de la vidéo a changé de manière significative
-           if (Math.abs(videoTime - lastVideoTime) > 0.5) {  // Changer le seuil si nécessaire
+           if (Math.abs(videoTime - lastVideoTime) > 1) {  // Changer le seuil si nécessaire
                var adjustedVideoTime = videoTime * 1000 + offsetMs;
                audioActif.currentTime = adjustedVideoTime / 1000;
                if (audioActif.paused) {
