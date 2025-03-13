@@ -199,7 +199,7 @@
     
         // Si la vidéo est en lecture, on joue immédiatement le nouvel audio
         //if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-            syncAudio();
+            setTimeout(syncAudio, 1000);
         //}
     });
 
