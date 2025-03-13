@@ -135,13 +135,12 @@
    function onYouTubeIframeAPIReady() {
        player = new YT.Player('video', {
            events: {
-               'onStateChange': onPlayerStateChange,
-               /*'onStateChange': () => {
+               //'onStateChange': onPlayerStateChange,
+               'onStateChange': () => {
                   // Ajout des événements pour détecter un seek manuel
                    player.getIframe().addEventListener("seeking", onSeeking);
                    player.getIframe().addEventListener("seeked", onSeeked);
-               }*/
-               'onPlaybackRateChange': onPlaybackRateChange,
+               }
                /*'onReady': () => {
                    // Ajout des événements pour détecter un seek manuel
                    player.getIframe().addEventListener("seeking", onSeeking);
@@ -175,6 +174,7 @@
            console.log("Pause détectée, arrêt de l'audio.");
            stopSync();
            player.pauseVideo();
+           //syncAudio(true);
        }
    }
    
