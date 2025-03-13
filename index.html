@@ -140,23 +140,27 @@
 
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING) {
-            // Ajouter un buffer de 500ms avant que l'audio et la vidéo ne démarrent
+            // Synchroniser l'audio avant le délai
+            syncAudio();  // Synchronisation avant d'appliquer le délai de buffer
+
+            // Ajouter un buffer de 500ms avant que la vidéo reprenne
             setTimeout(function() {
-                syncAudio();  // Synchroniser l'audio après le buffer
-            }, 2000);  // Délai de 500ms
+                // L'audio sera déjà synchronisé, maintenant on reprend la vidéo
+                player.playVideo();  // On assure que la vidéo reprend après le délai
+            }, 500);  // Délai de 500ms avant de reprendre la lecture de la vidéo
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
             stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
         }
     }
 
    // Gestion du déplacement du curseur de la vidéo
-    player.addEventListener('onStateChange', function(event) {
+    /*player.addEventListener('onStateChange', function(event) {
         if (event.data === YT.PlayerState.PLAYING || event.data === YT.PlayerState.PAUSED) {
             setTimeout(function() {
                 syncAudio();  // Synchroniser l'audio après le buffer
             }, 2000);  // Buffer de 500ms avant de reprendre la lecture
         }
-    });
+    });*/
 
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
     let offsetMs = 200;  // Décalage en millisecondes (positif pour retarder l'audio, négatif pour devancer l'audio)
