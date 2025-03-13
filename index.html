@@ -172,6 +172,7 @@
         if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
             var videoTime = player.getCurrentTime();
             var adjustedVideoTime = videoTime + (offsetMs / 1000);
+            audioActif.play().catch(error => console.log("Erreur audio :", error));
 
             // Force la synchronisation uniquement si un seek est détecté
             if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 0.5) {
