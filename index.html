@@ -149,26 +149,26 @@
     let syncInterval = 1000;  // Temps d'intervalle entre les synchronisations (en ms)
 
     function syncAudio() {
-        if (player && audioActif) {
-            var videoTime = player.getCurrentTime();
-            var currentTime = Date.now();
-            
-            // Ne synchroniser que si assez de temps s'est écoulé
-            if (currentTime - lastSyncTime >= syncInterval) {
-                audioActif.currentTime = videoTime;
-                if (audioActif.paused) {
-                    audioActif.play().catch((error) => {
-                        console.log("Erreur lors de la lecture de l'audio: ", error);
-                    });
-                }
-                lastSyncTime = currentTime;
-            }
-        }
-    }
+       if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) { // Vérifie si la vidéo est en lecture
+           var videoTime = player.getCurrentTime();
+           var currentTime = Date.now();
+           
+           if (currentTime - lastSyncTime >= syncInterval) {
+               audioActif.currentTime = videoTime;
+               if (audioActif.paused) {
+                   audioActif.play().catch((error) => {
+                       console.log("Erreur lors de la lecture de l'audio: ", error);
+                   });
+               }
+               lastSyncTime = currentTime;
+           }
+       }
+   }
 
     function stopSync() {
-        audioActif.pause();  // Arrêter l'audio lorsque la vidéo est mise en pause
-    }
+       clearInterval(syncInterval);  // Arrêter la synchronisation
+       audioActif.pause();  // Mettre l’audio en pause
+   }
 
     // Changement de salle au clic du bouton
     btnBascule.addEventListener("click", function () {
