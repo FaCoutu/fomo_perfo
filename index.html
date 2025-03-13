@@ -144,10 +144,11 @@
 
     function onPlayerStateChange(event) {
        if (event.data == YT.PlayerState.PLAYING) {
-           console.log("Vidéo en lecture, tentative de lecture de l'audio...");
-           syncAudio(true);
+         console.log("Vidéo en lecture, tentative de lecture de l'audio...");
+         syncAudio(true);
        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
-           stopSync();
+         console.log("Pause détectée, arrêt de l'audio.");
+         stopSync();
        }
    }
 
@@ -156,18 +157,25 @@
     }
 
     function checkForSeek() {
-       if (player && audioActif) {
-           let videoTime = player.getCurrentTime();
+       if (!player || !audioActif) return;
    
-           if (Math.abs(videoTime - lastVideoTime) > 1) {
-               console.log("Seek détecté, mise en pause...");
-               player.pauseVideo(); // Pause vidéo pour resynchro
-               audioActif.pause();  // Pause audio aussi
-               setTimeout(() => syncAudio(true), 200); // Attendre un peu et resynchroniser
+       let videoTime = player.getCurrentTime();
+   
+       if (Math.abs(videoTime - lastVideoTime) > 1) {
+           if (!seeking) {
+               seeking = true; // Marquer qu'un seek est en cours
+               console.log("Seek détecté, resynchronisation...");
+               
+               // Mettre l'audio en pause, mais pas la vidéo
+               audioActif.pause();
+               setTimeout(() => {
+                   syncAudio(true);
+                   seeking = false; // Reset le flag après synchronisation
+               }, 200);
            }
-   
-           lastVideoTime = videoTime;
        }
+   
+       lastVideoTime = videoTime;
    }
 
     function syncAudio(force = false) {
@@ -180,9 +188,13 @@
 
             // Force la synchronisation uniquement si un seek est détecté
             if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 0.5) {
-                audioActif.currentTime = adjustedVideoTime;
-                audioActif.play().catch(error => console.log("Erreur audio :", error));
-            }
+               console.log("Sync forcée, mise à jour du temps audio...");
+               audioActif.pause();
+               audioActif.currentTime = adjustedVideoTime;
+               setTimeout(() => {
+                   audioActif.play().catch(error => console.log("Erreur audio :", error));
+               }, 100); // Attendre 100ms avant de reprendre l'audio
+           }
         }
     }
 
