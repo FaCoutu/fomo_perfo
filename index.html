@@ -173,31 +173,29 @@
 
    // Changement de salle au clic du bouton
    btnBascule.addEventListener("click", function () {
-      audioActif.pause();  // Mettre en pause l'audio actuel
+    // Met en pause l'audio actuel
+    audioActif.pause();
 
-      if (audioActif === audioSalle1) {
-         audioActif = audioSalle2;
-         audioSalle2.play().catch((error) => {
-            console.log("Erreur lors de la lecture de l'audio de la salle 2: ", error);
-         });
-         btnBascule.classList.remove("btn-salle1");
-         btnBascule.classList.add("btn-salle2");
-         btnBascule.children[0].textContent = "Off";
-         btnBascule.children[1].textContent = "Audio Salle 2";
-      } else {
-         audioActif = audioSalle1;
-         audioSalle1.play().catch((error) => {
-           console.log("Erreur lors de la lecture de l'audio de la salle 1: ", error);
-         });
-         btnBascule.classList.remove("btn-salle2");
-         btnBascule.classList.add("btn-salle1");
-         btnBascule.children[0].textContent = "Audio Salle 1";
-         btnBascule.children[1].textContent = "Off";
-      }
-
-      // Synchroniser l'audio avec la vidéo après le changement
-      syncAudio();
-    });
+       // Change l'audio actif
+       if (audioActif === audioSalle1) {
+           audioActif = audioSalle2;
+           btnBascule.classList.remove("btn-salle1");
+           btnBascule.classList.add("btn-salle2");
+           btnBascule.children[0].textContent = "Off";
+           btnBascule.children[1].textContent = "Audio Salle 2";
+       } else {
+           audioActif = audioSalle1;
+           btnBascule.classList.remove("btn-salle2");
+           btnBascule.classList.add("btn-salle1");
+           btnBascule.children[0].textContent = "Audio Salle 1";
+           btnBascule.children[1].textContent = "Off";
+       }
+   
+       // Si la vidéo est en lecture, on joue immédiatement le nouvel audio
+       if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+           syncAudio();
+       }
+   });
 
     // Synchronisation en temps réel de l'audio avec la vidéo à une fréquence plus faible
     setInterval(syncAudio, syncInterval);
