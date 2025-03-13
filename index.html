@@ -129,7 +129,6 @@
    btnBascule.classList.add("btn-salle2");
 
    var player;
-   var lastVideoTime = 0;
    let offsetMs = 200;
 
    function onYouTubeIframeAPIReady() {
@@ -153,18 +152,15 @@
 
    function syncAudio(force = false) {
        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
-           console.log("Début du buffering...");
+           console.log("Synchronisation audio avec la vidéo...");
 
            var videoTime = player.getCurrentTime();
            var adjustedVideoTime = videoTime + (offsetMs / 1000);
 
            if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1.5) {
-               //player.pauseVideo();
-               console.log("Sync forcée, mise à jour du temps audio...");
                audioActif.pause();
                audioActif.currentTime = adjustedVideoTime;
                audioActif.play().catch(error => console.log("Erreur audio :", error));
-               //player.playVideo();
            }
        }
    }
@@ -196,11 +192,6 @@
        }
 
        syncAudio(true);
-   });
-
-   // Gère l'audio dès que l'utilisateur clique sur le bouton
-   btnBascule.addEventListener("click", function() {
-       audioActif.play().catch(error => console.log("Erreur lors de la lecture de l'audio :", error));
    });
 
    var tag = document.createElement('script');
