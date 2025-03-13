@@ -125,7 +125,7 @@
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
 
-    var audioActif = audioSalle2;  // L'audio actif commence par Salle 2
+    var audioActif = audioSalle2;
     btnBascule.classList.add("btn-salle2");
 
     var player;
@@ -138,43 +138,79 @@
         });
     }
 
-    let previousPlayerState = YT.PlayerState.UNSTARTED;
-
-    function onPlayerStateChange(event) {
-        const currentState = event.data;
-
-        if (currentState !== previousPlayerState) {
-            if (currentState == YT.PlayerState.PLAYING) {
-                syncAudio();  // Lancer la synchronisation dès que la vidéo joue
-            } else if (currentState == YT.PlayerState.PAUSED || currentState == YT.PlayerState.ENDED) {
-                stopSync();  // Mettre l'audio en pause si la vidéo est en pause ou terminée
-            }
-            previousPlayerState = currentState;
+   function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING) {
+            // Synchroniser l'audio avant le délai
+            syncAudio();  // Synchronisation avant d'appliquer le délai de buffer
+        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+            stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
         }
     }
+    //let previousPlayerState = YT.PlayerState.UNSTARTED;
+
+   /*function onPlayerStateChange(event) {
+       const currentState = event.data;
+   
+       // Vérifier si l'état a changé (lecture, pause ou fin)
+       if (currentState !== previousPlayerState) {
+           if (currentState == YT.PlayerState.PLAYING) {
+               // Synchroniser l'audio avant le délai de buffer si la vidéo est en lecture
+               syncAudio();
+           } else if (currentState == YT.PlayerState.PAUSED || currentState == YT.PlayerState.ENDED) {
+               // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
+               stopSync();
+           }
+   
+           // Mettre à jour l'état précédent
+           previousPlayerState = currentState;
+       }
+   }*/
+
+    // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
+    let offsetMs = 200;  // Décalage en millisecondes (positif pour retarder l'audio, négatif pour devancer l'audio)
+    let lastVideoTime = 0;  // Variable pour suivre le dernier temps de la vidéo
 
     function syncAudio() {
         if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
+           // Mettre la vidéo en pause avant de synchroniser l'audio
+            player.pauseVideo();  // Met en pause la vidéo
+
             var videoTime = player.getCurrentTime();
-            if (audioActif.paused) {
-                audioActif.currentTime = videoTime;
-                audioActif.play().catch((error) => {
-                    console.log("Erreur lors de la lecture de l'audio: ", error);
-                });
+    
+            // Vérifie si le temps de la vidéo a changé de manière significative
+            if (Math.abs(videoTime - lastVideoTime) > 1.5) {  // Changer le seuil si nécessaire
+                var adjustedVideoTime = videoTime * 1000 + offsetMs;
+                audioActif.currentTime = adjustedVideoTime / 1000;
+                if (audioActif.paused) {
+                    audioActif.play().catch((error) => {
+                        console.log("Erreur lors de la lecture de l'audio: ", error);
+                    });
+                }
+                lastVideoTime = videoTime;
             }
+           player.playVideo();
+           // Ajouter un buffer de 500ms avant que la vidéo reprenne
+            /*setTimeout(function() {
+                // L'audio sera déjà synchronisé, maintenant on reprend la vidéo
+                player.playVideo();  // Reprendre la lecture de la vidéo après le délai
+            }, 500);  // Délai de 500ms avant de reprendre la lecture de la vidéo
+           */
         }
     }
 
     function stopSync() {
-        if (audioActif) {
-            audioActif.pause();  // Mettre l'audio en pause
-        }
+        audioActif.pause();  // Mettre l’audio en pause
+    }
+
+    // Fonction pour ajuster le décalage en millisecondes
+    function adjustOffset(newOffsetMs) {
+        offsetMs = newOffsetMs;  // Met à jour le décalage en millisecondes
+        console.log(Décalage ajusté à ${offsetMs} millisecondes.);
     }
 
     // Changement de salle au clic du bouton
     btnBascule.addEventListener("click", function () {
-        console.log("Bouton cliqué, changement de salle");  // Debugger le clic
-        // Mettre en pause l'audio actuel
+        // Met en pause l'audio actuel
         audioActif.pause();
 
         // Change l'audio actif
@@ -191,7 +227,7 @@
             btnBascule.children[0].textContent = "Audio Salle 1";
             btnBascule.children[1].textContent = "Off";
         }
-
+    
         // Si la vidéo est en lecture, on joue immédiatement le nouvel audio
         if (player.getPlayerState() == YT.PlayerState.PLAYING) {
             syncAudio();
@@ -202,7 +238,7 @@
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
+   
 </script>
 </body>
 </html>
