@@ -168,14 +168,6 @@
             player.pauseVideo();  // Met en pause la vidéo
 
             var videoTime = player.getCurrentTime();
-
-            // Ajouter un buffer de 500ms avant que la vidéo reprenne
-            /*setTimeout(function() {
-                // L'audio sera déjà synchronisé, maintenant on reprend la vidéo
-                player.playVideo();  // Reprendre la lecture de la vidéo après le délai
-            }, 500);  // Délai de 500ms avant de reprendre la lecture de la vidéo
-           */
-            
     
             // Vérifie si le temps de la vidéo a changé de manière significative
             if (Math.abs(videoTime - lastVideoTime) > 1.5) {  // Changer le seuil si nécessaire
@@ -189,6 +181,12 @@
                 lastVideoTime = videoTime;
             }
            player.playVideo();
+           // Ajouter un buffer de 500ms avant que la vidéo reprenne
+            /*setTimeout(function() {
+                // L'audio sera déjà synchronisé, maintenant on reprend la vidéo
+                player.playVideo();  // Reprendre la lecture de la vidéo après le délai
+            }, 500);  // Délai de 500ms avant de reprendre la lecture de la vidéo
+           */
         }
     }
 
