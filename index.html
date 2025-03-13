@@ -159,7 +159,7 @@
            // Ajouter un délai avant d'obtenir getCurrentTime() pour stabiliser la valeur
            //
        
-               if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1) {
+               if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1.5) {
                   setTimeout(() => {
                       player.pauseVideo();
                       var videoTime = player.getCurrentTime();
