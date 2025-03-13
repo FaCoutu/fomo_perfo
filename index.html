@@ -119,7 +119,6 @@
    <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1" type="audio/mp3">
 </audio>
 
-
 <script>
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
@@ -138,74 +137,44 @@
         });
     }
 
-   function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING) {
-            // Synchroniser l'audio avant le délai
-            syncAudio();  // Synchronisation avant d'appliquer le délai de buffer
-        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
-            stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
-        }
-    }
-    //let previousPlayerState = YT.PlayerState.UNSTARTED;
-
-   /*function onPlayerStateChange(event) {
-       const currentState = event.data;
-   
-       // Vérifier si l'état a changé (lecture, pause ou fin)
-       if (currentState !== previousPlayerState) {
-           if (currentState == YT.PlayerState.PLAYING) {
-               // Synchroniser l'audio avant le délai de buffer si la vidéo est en lecture
-               syncAudio();
-           } else if (currentState == YT.PlayerState.PAUSED || currentState == YT.PlayerState.ENDED) {
-               // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
-               stopSync();
-           }
-   
-           // Mettre à jour l'état précédent
-           previousPlayerState = currentState;
+    function onPlayerStateChange(event) {
+       if (event.data == YT.PlayerState.PLAYING) {
+           setTimeout(syncAudio, 500);  // Appeler syncAudio après un délai de 2 secondes (2000 ms)
+       } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+           stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
        }
-   }*/
+   }
 
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
     let offsetMs = 200;  // Décalage en millisecondes (positif pour retarder l'audio, négatif pour devancer l'audio)
-    let lastVideoTime = 0;  // Variable pour suivre le dernier temps de la vidéo
+   let lastVideoTime = 0;  // Variable pour suivre le dernier temps de la vidéo
 
-    function syncAudio() {
-        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
-           // Mettre la vidéo en pause avant de synchroniser l'audio
-            player.pauseVideo();  // Met en pause la vidéo
-
-            var videoTime = player.getCurrentTime();
-    
-            // Vérifie si le temps de la vidéo a changé de manière significative
-            if (Math.abs(videoTime - lastVideoTime) > 1.5) {  // Changer le seuil si nécessaire
-                var adjustedVideoTime = videoTime * 1000 + offsetMs;
-                audioActif.currentTime = adjustedVideoTime / 1000;
-                if (audioActif.paused) {
-                    audioActif.play().catch((error) => {
-                        console.log("Erreur lors de la lecture de l'audio: ", error);
-                    });
-                }
-                lastVideoTime = videoTime;
-            }
-           player.playVideo();
-           // Ajouter un buffer de 500ms avant que la vidéo reprenne
-            /*setTimeout(function() {
-                // L'audio sera déjà synchronisé, maintenant on reprend la vidéo
-                player.playVideo();  // Reprendre la lecture de la vidéo après le délai
-            }, 500);  // Délai de 500ms avant de reprendre la lecture de la vidéo
-           */
-        }
-    }
+   function syncAudio() {
+       if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
+           var videoTime = player.getCurrentTime();
+   
+           // Vérifie si le temps de la vidéo a changé de manière significative
+           if (Math.abs(videoTime - lastVideoTime) > 1.5) {  // Changer le seuil si nécessaire
+               var adjustedVideoTime = videoTime * 1000 + offsetMs;
+               audioActif.currentTime = adjustedVideoTime / 1000;
+               if (audioActif.paused) {
+                   audioActif.play().catch((error) => {
+                       console.log("Erreur lors de la lecture de l'audio: ", error);
+                   });
+               }
+               lastVideoTime = videoTime;
+           }
+       }
+   }
 
     function stopSync() {
-        audioActif.pause();  // Mettre l’audio en pause
+       audioActif.pause();  // Mettre l’audio en pause
     }
 
     // Fonction pour ajuster le décalage en millisecondes
     function adjustOffset(newOffsetMs) {
         offsetMs = newOffsetMs;  // Met à jour le décalage en millisecondes
-        console.log(Décalage ajusté à ${offsetMs} millisecondes.);
+        console.log(`Décalage ajusté à ${offsetMs} millisecondes.`);
     }
 
     // Changement de salle au clic du bouton
