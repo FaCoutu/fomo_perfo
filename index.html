@@ -155,13 +155,13 @@
    function syncAudio(force = false) {
        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
            console.log("Début du buffering...");
+          player.pauseVideo();
            
            // Ajouter un délai avant d'obtenir getCurrentTime() pour stabiliser la valeur
            //
        
                if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1.5) {
                   setTimeout(() => {
-                      player.pauseVideo();
                       var videoTime = player.getCurrentTime();
                       var adjustedVideoTime = videoTime + (offsetMs / 1000);
                       console.log("Sync forcée, mise à jour du temps audio...");
