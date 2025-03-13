@@ -165,7 +165,7 @@
                var videoTime = player.getCurrentTime();
                var adjustedVideoTime = videoTime + (offsetMs / 1000);
        
-               if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 0.1) {
+               if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1) {
                    player.pauseVideo();
                    console.log("Sync forcée, mise à jour du temps audio...");
                    audioActif.pause();
