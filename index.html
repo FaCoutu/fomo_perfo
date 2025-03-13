@@ -143,7 +143,7 @@
             // Ajouter un buffer de 500ms avant que l'audio et la vidéo ne démarrent
             setTimeout(function() {
                 syncAudio();  // Synchroniser l'audio après le buffer
-            }, 500);  // Délai de 500ms
+            }, 2000);  // Délai de 500ms
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
             stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
         }
@@ -154,7 +154,7 @@
         if (event.data === YT.PlayerState.PLAYING || event.data === YT.PlayerState.PAUSED) {
             setTimeout(function() {
                 syncAudio();  // Synchroniser l'audio après le buffer
-            }, 500);  // Buffer de 500ms avant de reprendre la lecture
+            }, 2000);  // Buffer de 500ms avant de reprendre la lecture
         }
     });
 
