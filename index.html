@@ -142,12 +142,8 @@
    
    function onPlayerStateChange(event) {
        if (event.data == YT.PlayerState.PLAYING) {
-           player.pauseVideo();
-           setTimeout(() => {
-              console.log("Vidéo en lecture, tentative de lecture de l'audio...");
-              syncAudio(true);
-           }, 1000);
-            player.playVideo();
+            console.log("Vidéo en lecture, tentative de lecture de l'audio...");
+            syncAudio(true);
        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
            console.log("Pause détectée, arrêt de l'audio.");
            stopSync();
@@ -165,18 +161,19 @@
            console.log("Début du buffering...");
            
            // Ajouter un délai avant d'obtenir getCurrentTime() pour stabiliser la valeur
-           //setTimeout(() => {
+           //
        
                if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1) {
-                   var videoTime = player.getCurrentTime();
-                   var adjustedVideoTime = videoTime + (offsetMs / 1000);
-                   console.log("Sync forcée, mise à jour du temps audio...");
-                   audioActif.currentTime = adjustedVideoTime;
-                   setTimeout(() => {
-                       audioActif.play().catch(error => console.log("Erreur audio :", error));
-                   }, 0);
+                  setTimeout(() => {
+                      var videoTime = player.getCurrentTime();
+                      var adjustedVideoTime = videoTime + (offsetMs / 1000);
+                      console.log("Sync forcée, mise à jour du temps audio...");
+                      audioActif.currentTime = adjustedVideoTime;
+                      setTimeout(() => {
+                          audioActif.play().catch(error => console.log("Erreur audio :", error));
+                      }, 0);
+                  }, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
                }
-           //}, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
        }
    }
    
