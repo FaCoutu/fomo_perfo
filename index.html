@@ -120,9 +120,11 @@
 </audio>
 
 <script>
-   var audioSalle1 = document.getElementById("audioSalle1");
-   var audioSalle2 = document.getElementById("audioSalle2");
-   var btnBascule = document.getElementById("btnBascule");
+   document.addEventListener("DOMContentLoaded", function () {
+       var audioSalle1 = document.getElementById("audioSalle1");
+       var audioSalle2 = document.getElementById("audioSalle2");
+       var btnBascule = document.getElementById("btnBascule");
+   });
    
    var audioActif = audioSalle2;
    btnBascule.classList.add("btn-salle2");
@@ -180,7 +182,7 @@
    
    function adjustOffset(newOffsetMs) {
        offsetMs = newOffsetMs;
-       console.log(Décalage ajusté à ${offsetMs} millisecondes.);
+       console.log(`Décalage ajusté à ${offsetMs} millisecondes.`);
    }
    
    btnBascule.addEventListener("click", function () {
