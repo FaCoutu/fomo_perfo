@@ -162,7 +162,10 @@
                        console.log("Erreur lors de la lecture de l'audio: ", error);
                    });
                }
-               lastVideoTime = videoTime;
+               // Attendre 1 seconde avant de mettre à jour lastVideoTime
+              setTimeout(() => {
+                  lastVideoTime = videoTime;
+              }, 1000);  // 1000 ms = 1 seconde
            //}
        }
    }
