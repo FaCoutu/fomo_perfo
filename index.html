@@ -128,44 +128,55 @@
     btnBascule.classList.add("btn-salle2");
 
     var player;
-    var syncTimeout;  // Timeout pour le buffer de synchronisation
+    var lastVideoTime = 0;
+    let offsetMs = 200;
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
             events: {
-                'onReady' : onPlayerReady,
-                'onStateChange': onPlayerStateChange
+                'onStateChange': onPlayerStateChange,
+                'onPlaybackRateChange': onPlaybackRateChange
             }
         });
-    }
 
-    function onPlayerReady(event) {
-       event.target.playVideo();
+        setInterval(checkForSeek, 500); // Vérifie toutes les 500ms si l'utilisateur a déplacé le curseur
     }
 
     function onPlayerStateChange(event) {
-        clearTimeout(syncTimeout); // Annule les synchronisations précédentes
-        
         if (event.data == YT.PlayerState.PLAYING) {
-            syncTimeout = setTimeout(syncAudio, 500);  // Ajoute un délai avant la synchro
+            syncAudio();  
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
             stopSync();
         }
     }
 
-    let offsetMs = 200;  
-    let lastVideoTime = 0;
+    function onPlaybackRateChange(event) {
+        syncAudio(); // Synchronise l'audio si la vitesse de lecture change
+    }
 
-    function syncAudio() {
+    function checkForSeek() {
+        if (player && audioActif) {
+            let videoTime = player.getCurrentTime();
+
+            // Si la différence entre l'ancien et le nouveau temps est supérieure à 1s, on force la synchro
+            if (Math.abs(videoTime - lastVideoTime) > 1) {
+                console.log("Détection d'un seek, resynchronisation...");
+                syncAudio(true);
+            }
+
+            lastVideoTime = videoTime;
+        }
+    }
+
+    function syncAudio(force = false) {
         if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
             var videoTime = player.getCurrentTime();
+            var adjustedVideoTime = videoTime + (offsetMs / 1000);
 
-            // Si le saut dans la vidéo est important (>1.5s), resynchronisation immédiate
-            if (Math.abs(videoTime - lastVideoTime) > 1.5) {
-                var adjustedVideoTime = videoTime * 1000 + offsetMs;
-                audioActif.currentTime = adjustedVideoTime / 1000;
+            // Force la synchronisation uniquement si un seek est détecté
+            if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 0.5) {
+                audioActif.currentTime = adjustedVideoTime;
                 audioActif.play().catch(error => console.log("Erreur audio :", error));
-                lastVideoTime = videoTime;
             }
         }
     }
@@ -196,7 +207,7 @@
             btnBascule.children[1].textContent = "Off";
         }
 
-        setTimeout(syncAudio, 500); // Délai pour assurer la bonne synchronisation après changement de salle
+        syncAudio(true); // Resynchronise immédiatement après changement d’audio
     });
 
     var tag = document.createElement('script');
