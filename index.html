@@ -161,24 +161,21 @@
            if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1.5) {
                console.log("Sync forcée ou décalage trop important, mise à jour du temps audio...");
    
-               // Mettre en pause la vidéo et l'audio pour ajuster le temps
-               player.pauseVideo();
-               audioActif.pause();
+               audioActif.mute();
    
                // Définir le temps de l'audio pour le synchroniser avec la vidéo
                audioActif.currentTime = adjustedVideoTime;
    
                // Relancer l'audio et la vidéo après un court délai
                setTimeout(() => {
-                   audioActif.play().catch(error => console.log("Erreur audio :", error));
-                   player.playVideo();
+                   audioActif.unmute().catch(error => console.log("Erreur audio :", error));
                }, 0); // Relance la lecture immédiatement après l'ajustement
            }
        }
    }
    
    function stopSync() {
-       audioActif.pause();
+       audioActif.unmute();
    }
    
    function adjustOffset(newOffsetMs) {
@@ -187,7 +184,7 @@
    }
    
    btnBascule.addEventListener("click", function () {
-       audioActif.pause();
+       audioActif.mute();
    
        if (audioActif === audioSalle1) {
            audioActif = audioSalle2;
