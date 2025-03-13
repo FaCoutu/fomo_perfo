@@ -134,13 +134,16 @@
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
             events: {
+                'onReady': onPlayerReady,
                 'onStateChange': onPlayerStateChange,
-                'onPlaybackRateChange': onPlaybackRateChange
             }
         });
-
-        setInterval(checkForSeek, 1000); // Vérifie toutes les 500ms si l'utilisateur a déplacé le curseur
     }
+
+    function onPlayerReady(event) {
+       // Vérification toutes les 500ms si l'utilisateur effectue un seek
+       setInterval(checkSeeking, 500);
+   }
 
     function onPlayerStateChange(event) {
        if (event.data == YT.PlayerState.PLAYING) {
@@ -155,28 +158,6 @@
     function onPlaybackRateChange(event) {
         syncAudio(); // Synchronise l'audio si la vitesse de lecture change
     }
-
-    function checkForSeek() {
-       if (!player || !audioActif) return;
-   
-       let videoTime = player.getCurrentTime();
-   
-       if (Math.abs(videoTime - lastVideoTime) > 1) {
-           if (!seeking) {
-               seeking = true; // Marquer qu'un seek est en cours
-               console.log("Seek détecté, resynchronisation...");
-               
-               // Mettre l'audio en pause, mais pas la vidéo
-               audioActif.pause();
-               setTimeout(() => {
-                   syncAudio(true);
-                   seeking = false; // Reset le flag après synchronisation
-               }, 200);
-           }
-       }
-   
-       lastVideoTime = videoTime;
-   }
 
     function syncAudio(force = false) {
         if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
@@ -195,6 +176,7 @@
                    audioActif.play().catch(error => console.log("Erreur audio :", error));
                }, 500); // Attendre 100ms avant de reprendre l'audio
            }
+           videoTime = adjustedVideoTime;
         }
     }
 
