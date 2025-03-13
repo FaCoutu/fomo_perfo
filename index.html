@@ -156,7 +156,7 @@
            var videoTime = player.getCurrentTime();
    
            // Vérifie si le temps de la vidéo a changé de manière significative
-           if (Math.abs(videoTime - lastVideoTime) > 1.5) {  // Changer le seuil si nécessaire
+           //if (Math.abs(videoTime - lastVideoTime) > 1.5) {  // Changer le seuil si nécessaire
                var adjustedVideoTime = videoTime * 1000 + offsetMs;
                audioActif.currentTime = adjustedVideoTime / 1000;
                if (audioActif.paused) {
@@ -165,7 +165,7 @@
                    });
                }
                lastVideoTime = videoTime;
-           }
+           //}
        }
    }
 
