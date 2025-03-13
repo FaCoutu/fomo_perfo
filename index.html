@@ -137,13 +137,25 @@
         });
     }
 
-    function onPlayerStateChange(event) {
+   function onPlayerStateChange(event) {
        if (event.data == YT.PlayerState.PLAYING) {
-           setTimeout(syncAudio, 500);  // Appeler syncAudio après un délai de 2 secondes (2000 ms)
+           // Ajouter un buffer de 500ms avant que l'audio et la vidéo ne démarrent
+           setTimeout(function() {
+               syncAudio();  // Synchroniser l'audio après le buffer
+           }, 500);  // Délai de 500ms
        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
            stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
        }
    }
+   
+   // Gestion du déplacement du curseur de la vidéo (changer de position)
+   player.addEventListener('onStateChange', function(event) {
+       if (event.data === YT.PlayerState.PLAYING || event.data === YT.PlayerState.PAUSED) {
+           setTimeout(function() {
+               syncAudio();  // Synchroniser l'audio après le buffer
+           }, 500);  // Buffer de 500ms avant de reprendre la lecture
+       }
+   });
 
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
     let offsetMs = 200;  // Décalage en millisecondes (positif pour retarder l'audio, négatif pour devancer l'audio)
