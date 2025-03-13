@@ -165,6 +165,7 @@
        
                if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1) {
                   setTimeout(() => {
+                      player.pauseVideo();
                       var videoTime = player.getCurrentTime();
                       var adjustedVideoTime = videoTime + (offsetMs / 1000);
                       console.log("Sync forcée, mise à jour du temps audio...");
@@ -172,6 +173,7 @@
                       setTimeout(() => {
                           audioActif.play().catch(error => console.log("Erreur audio :", error));
                       }, 0);
+                      player.playVideo();
                   }, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
                }
        }
