@@ -146,7 +146,7 @@
 
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
     let lastSyncTime = 0;  // Enregistrer l'heure de la dernière synchronisation
-    let syncInterval = 200;  // Temps d'intervalle entre les synchronisations (en ms)
+    let syncInterval = 1000;  // Temps d'intervalle entre les synchronisations (en ms)
 
     function syncAudio() {
         if (player && audioActif) {
@@ -172,51 +172,32 @@
 
     // Changement de salle au clic du bouton
     btnBascule.addEventListener("click", function () {
-        audioActif.pause();  // Mettre en pause l'audio actuel avant de changer
+        if (player.getPlayerState() == YT.PlayerState.PLAYING) {  // Vérifier que la vidéo est en lecture avant de changer l'audio
+            audioActif.pause();  // Mettre en pause l'audio actuel
 
-        if (audioActif === audioSalle1) {
-            audioActif = audioSalle2;
-            audioSalle2.play().catch((error) => {
-                console.log("Erreur lors de la lecture de l'audio de la salle 2: ", error);
-            });
-            btnBascule.classList.remove("btn-salle1");
-            btnBascule.classList.add("btn-salle2");
+            if (audioActif === audioSalle1) {
+                audioActif = audioSalle2;
+                audioSalle2.play().catch((error) => {
+                    console.log("Erreur lors de la lecture de l'audio de la salle 2: ", error);
+                });
+                btnBascule.classList.remove("btn-salle1");
+                btnBascule.classList.add("btn-salle2");
+                btnBascule.children[0].textContent = "Off";
+                btnBascule.children[1].textContent = "Audio Salle 2";
+            } else {
+                audioActif = audioSalle1;
+                audioSalle1.play().catch((error) => {
+                    console.log("Erreur lors de la lecture de l'audio de la salle 1: ", error);
+                });
+                btnBascule.classList.remove("btn-salle2");
+                btnBascule.classList.add("btn-salle1");
+                btnBascule.children[0].textContent = "Audio Salle 1";
+                btnBascule.children[1].textContent = "Off";
+            }
 
-            btnBascule.children[0].textContent = "Off";
-            btnBascule.children[1].textContent = "Audio Salle 2";
-        } else {
-            audioActif = audioSalle1;
-            audioSalle1.play().catch((error) => {
-                console.log("Erreur lors de la lecture de l'audio de la salle 1: ", error);
-            });
-            btnBascule.classList.remove("btn-salle2");
-            btnBascule.classList.add("btn-salle1");
-
-            btnBascule.children[0].textContent = "Audio Salle 1";
-            btnBascule.children[1].textContent = "Off";
-        }
-
-        // Synchroniser l'audio avec la vidéo après le changement
-        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+            // Synchroniser l'audio avec la vidéo après le changement
             syncAudio();
         }
-/*
-         if (audioActif === audioSalle1) {
-            // Si audioSalle1 est actif, affiche les textes liés à la classe btn-salle1
-            btnBascule.classList.add("btn-salle1");
-            btnBascule.classList.remove("btn-salle2");
-        
-            btnBascule.children[0].textContent = "Audio Salle 1";
-            btnBascule.children[1].textContent = "Off";
-        } else {
-            // Si audioSalle2 est actif, affiche les textes liés à la classe btn-salle2
-            btnBascule.classList.add("btn-salle2");
-            btnBascule.classList.remove("btn-salle1");
-        
-            btnBascule.children[0].textContent = "Off";
-            btnBascule.children[1].textContent = "Audio Salle 2";
-        }
-        */
     });
 
     // Synchronisation en temps réel de l'audio avec la vidéo à une fréquence plus faible
