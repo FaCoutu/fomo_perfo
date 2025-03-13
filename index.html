@@ -175,6 +175,24 @@
            //}, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
        //}
    }
+
+   /*function syncAudio(force = false) {
+       if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
+           console.log("Début du buffering...");
+           
+           var videoTime = player.getCurrentTime();
+           var adjustedVideoTime = videoTime + (offsetMs / 1000);
+       
+           if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1.5) {
+               player.pauseVideo();
+               console.log("Sync forcée, mise à jour du temps audio...");
+               audioActif.pause();
+               audioActif.currentTime = adjustedVideoTime;
+               audioActif.play().catch(error => console.log("Erreur audio :", error));
+               player.playVideo();
+           }
+       }
+   }*/
    
    function stopSync() {
        audioActif.pause();
