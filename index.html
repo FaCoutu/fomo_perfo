@@ -130,6 +130,7 @@
    var player;
    var lastVideoTime = 0;
    let offsetMs = 200;
+   let isSeeking = false; // Flag pour détecter un seek manuel
    
    function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
@@ -141,36 +142,40 @@
    
    function onPlayerStateChange(event) {
        if (event.data == YT.PlayerState.PLAYING) {
-            console.log("Vidéo en lecture, tentative de lecture de l'audio...");
-            syncAudio(true);
+           console.log("Vidéo en lecture, tentative de lecture de l'audio...");
+           syncAudio(true);
        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
            console.log("Pause détectée, arrêt de l'audio.");
            stopSync();
-           //player.pauseVideo();
+           player.pauseVideo();
            //syncAudio(true);
        }
    }
    
+   function onPlaybackRateChange(event) {
+       syncAudio(); // Synchroniser l'audio si la vitesse change
+   }
+   
    function syncAudio(force = false) {
        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
-           // Récupérer le temps de la vidéo
-           var videoTime = player.getCurrentTime();
-           var adjustedVideoTime = videoTime + (offsetMs / 1000);
-   
-           // Vérifier si un décalage important existe
-           if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1.5) {
-               console.log("Sync forcée ou décalage trop important, mise à jour du temps audio...");
-   
-               audioActif.play();
-   
-               // Définir le temps de l'audio pour le synchroniser avec la vidéo
-               audioActif.currentTime = adjustedVideoTime;
-   
-               // Relancer l'audio et la vidéo après un court délai
-               setTimeout(() => {
-                   audioActif.pause().catch(error => console.log("Erreur audio :", error));
-               }, 0); // Relance la lecture immédiatement après l'ajustement
-           }
+           console.log("Début du buffering...");
+           
+           // Ajouter un délai avant d'obtenir getCurrentTime() pour stabiliser la valeur
+           setTimeout(() => {
+               var videoTime = player.getCurrentTime();
+               var adjustedVideoTime = videoTime + (offsetMs / 1000);
+       
+               if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 0.1) {
+                   player.pauseVideo();
+                   console.log("Sync forcée, mise à jour du temps audio...");
+                   audioActif.pause();
+                   audioActif.currentTime = adjustedVideoTime;
+                   setTimeout(() => {
+                       audioActif.play().catch(error => console.log("Erreur audio :", error));
+                   }, 0);
+                   player.playVideo();
+               }
+           }, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
        }
    }
    
@@ -180,11 +185,11 @@
    
    function adjustOffset(newOffsetMs) {
        offsetMs = newOffsetMs;
-       console.log(`Décalage ajusté à ${offsetMs} millisecondes.`);
+       console.log(Décalage ajusté à ${offsetMs} millisecondes.);
    }
    
    btnBascule.addEventListener("click", function () {
-       audioActif.play();
+       audioActif.pause();
    
        if (audioActif === audioSalle1) {
            audioActif = audioSalle2;
