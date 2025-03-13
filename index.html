@@ -152,10 +152,6 @@
        }
    }
    
-   function onPlaybackRateChange(event) {
-       syncAudio(); // Synchroniser l'audio si la vitesse change
-   }
-   
    function syncAudio(force = false) {
        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
            console.log("Début du buffering...");
