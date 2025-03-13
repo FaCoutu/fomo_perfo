@@ -148,14 +148,18 @@
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
     let lastSyncTime = 0;  // Enregistrer l'heure de la dernière synchronisation
     let syncInterval = 500;  // Temps d'intervalle entre les synchronisations (en ms)
+    let offset = -1;  // Décalage en secondes (positif pour retarder l'audio, négatif pour devancer l'audio)
 
     function syncAudio() {
        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) { // Vérifie si la vidéo est en lecture
            var videoTime = player.getCurrentTime();
            var currentTime = Date.now();
            
+           // Applique le décalage à l'heure de la vidéo
+           var adjustedVideoTime = videoTime + offset;
+
            if (currentTime - lastSyncTime >= syncInterval) {
-               audioActif.currentTime = videoTime;
+               audioActif.currentTime = adjustedVideoTime;
                if (audioActif.paused) {
                    audioActif.play().catch((error) => {
                        console.log("Erreur lors de la lecture de l'audio: ", error);
@@ -164,11 +168,17 @@
                lastSyncTime = currentTime;
            }
        }
-   }
+    }
 
     function stopSync() {
        clearInterval(syncInterval);  // Arrêter la synchronisation
        audioActif.pause();  // Mettre l’audio en pause
+   }
+
+   // Fonction pour ajuster le décalage
+   function adjustOffset(newOffset) {
+      offset = newOffset;  // Met à jour le décalage
+      console.log(`Décalage ajusté à ${offset} secondes.`);
    }
 
    // Changement de salle au clic du bouton
