@@ -133,9 +133,14 @@
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
             events: {
+                'onReady' : onPlayerReady,
                 'onStateChange': onPlayerStateChange
             }
         });
+    }
+
+    function onPlayerReady(event) {
+       event.target.playVideo();
     }
 
     function onPlayerStateChange(event) {
