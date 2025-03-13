@@ -193,7 +193,7 @@
                audioActif.currentTime = adjustedVideoTime;
                setTimeout(() => {
                    audioActif.play().catch(error => console.log("Erreur audio :", error));
-               }, 100); // Attendre 100ms avant de reprendre l'audio
+               }, 500); // Attendre 100ms avant de reprendre l'audio
            }
         }
     }
