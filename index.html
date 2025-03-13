@@ -140,13 +140,16 @@
 
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING) {
+            // Mettre la vidéo en pause avant de synchroniser l'audio
+            player.pauseVideo();  // Met en pause la vidéo
+
             // Synchroniser l'audio avant le délai
             syncAudio();  // Synchronisation avant d'appliquer le délai de buffer
 
             // Ajouter un buffer de 500ms avant que la vidéo reprenne
             setTimeout(function() {
                 // L'audio sera déjà synchronisé, maintenant on reprend la vidéo
-                player.playVideo();  // On assure que la vidéo reprend après le délai
+                player.playVideo();  // Reprendre la lecture de la vidéo après le délai
             }, 500);  // Délai de 500ms avant de reprendre la lecture de la vidéo
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
             stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
@@ -171,7 +174,7 @@
             var videoTime = player.getCurrentTime();
     
             // Vérifie si le temps de la vidéo a changé de manière significative
-            if (Math.abs(videoTime - lastVideoTime) > 1) {  // Changer le seuil si nécessaire
+            if (Math.abs(videoTime - lastVideoTime) > 1.5) {  // Changer le seuil si nécessaire
                 var adjustedVideoTime = videoTime * 1000 + offsetMs;
                 audioActif.currentTime = adjustedVideoTime / 1000;
                 if (audioActif.paused) {
