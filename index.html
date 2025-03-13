@@ -130,7 +130,6 @@
    var player;
    var lastVideoTime = 0;
    let offsetMs = 200;
-   let isSeeking = false; // Flag pour détecter un seek manuel
    
    function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
@@ -154,24 +153,27 @@
    
    function syncAudio(force = false) {
        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
-          console.log("Début du buffering...");
-          var videoTime = player.getCurrentTime();
-          var adjustedVideoTime = videoTime + (offsetMs / 1000);
-           
-           // Ajouter un délai avant d'obtenir getCurrentTime() pour stabiliser la valeur
-           //
-       
-               if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1.5) {
-                  setTimeout(() => {
-                      player.pauseVideo();
-                      console.log("Sync forcée, mise à jour du temps audio...");
-                      audioActif.currentTime = adjustedVideoTime;
-                      setTimeout(() => {
-                          audioActif.play().catch(error => console.log("Erreur audio :", error));
-                      }, 0);
-                      player.playVideo();
-                  }, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
-               }
+           // Récupérer le temps de la vidéo
+           var videoTime = player.getCurrentTime();
+           var adjustedVideoTime = videoTime + (offsetMs / 1000);
+   
+           // Vérifier si un décalage important existe
+           if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1.5) {
+               console.log("Sync forcée ou décalage trop important, mise à jour du temps audio...");
+   
+               // Mettre en pause la vidéo et l'audio pour ajuster le temps
+               player.pauseVideo();
+               audioActif.pause();
+   
+               // Définir le temps de l'audio pour le synchroniser avec la vidéo
+               audioActif.currentTime = adjustedVideoTime;
+   
+               // Relancer l'audio et la vidéo après un court délai
+               setTimeout(() => {
+                   audioActif.play().catch(error => console.log("Erreur audio :", error));
+                   player.playVideo();
+               }, 0); // Relance la lecture immédiatement après l'ajustement
+           }
        }
    }
    
