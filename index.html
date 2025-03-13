@@ -139,10 +139,12 @@
 
     function onPlayerStateChange(event) {
        if (event.data == YT.PlayerState.PLAYING) {
-           setTimeout(syncAudio, 1000);  // Appeler syncAudio après un délai de 2 secondes (2000 ms)
+           setTimeout(syncAudio, 1000);  // Appeler syncAudio après un délai de 1 secondes (2000 ms)
        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
            stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
        }
+       if (event.data == YT.PlayerState.BUFFERING) {
+           setTimeout(syncAudio, 1000);  // Appeler syncAudio après un délai de 1 secondes (2000 ms)
    }
 
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
