@@ -133,13 +133,12 @@
    let isSeeking = false; // Flag pour détecter un seek manuel
    
    function onYouTubeIframeAPIReady() {
-       player = new YT.Player('video', {
-           events: {
-               onStateChange': onPlayerStateChange,
-               }
-           }
-       });
-   }
+        player = new YT.Player('video', {
+            events: {
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
    
    function onPlayerStateChange(event) {
        if (event.data == YT.PlayerState.PLAYING) {
