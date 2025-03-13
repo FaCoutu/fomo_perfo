@@ -130,7 +130,6 @@
    var player;
    var lastVideoTime = 0;
    let offsetMs = 200;
-   let isSeeking = false; // Flag pour détecter un seek manuel
    
    function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
@@ -152,16 +151,12 @@
        }
    }
    
-   function onPlaybackRateChange(event) {
-       syncAudio(); // Synchroniser l'audio si la vitesse change
-   }
-   
    function syncAudio(force = false) {
        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
            console.log("Début du buffering...");
            
            // Ajouter un délai avant d'obtenir getCurrentTime() pour stabiliser la valeur
-           setTimeout(() => {
+           //setTimeout(() => {
                var videoTime = player.getCurrentTime();
                var adjustedVideoTime = videoTime + (offsetMs / 1000);
        
@@ -175,8 +170,8 @@
                    }, 0);
                    player.playVideo();
                }
-           }, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
-       }
+           //}, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
+       //}
    }
    
    function stopSync() {
