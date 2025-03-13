@@ -126,57 +126,55 @@
    var btnBascule = document.getElementById("btnBascule");
 
    var audioActif = audioSalle2;
-   btnBascule.classList.add("btn-salle2");
+   var audioInactif = audioSalle1;
+
+   // On commence par activer l'audioSalle2 et muter audioSalle1
+   audioSalle1.muted = true;
+   audioSalle2.muted = false;
+   audioSalle1.play();
+   audioSalle2.play();
 
    var player;
-   let offsetMs = 200;
+   var offsetMs = 0; // Décalage en millisecondes
 
    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('video', {
-            events: {
-                'onStateChange': onPlayerStateChange
-            }
-        });
-    }
+       player = new YT.Player('video', {
+           events: {
+               'onStateChange': onPlayerStateChange
+           }
+       });
+   }
 
    function onPlayerStateChange(event) {
        if (event.data == YT.PlayerState.PLAYING) {
-           console.log("Vidéo en lecture, tentative de lecture de l'audio...");
+           console.log("Vidéo en lecture, tentative de synchronisation de l'audio...");
            syncAudio(true);
-       } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
-           console.log("Pause détectée, arrêt de l'audio.");
-           stopSync();
-           player.pauseVideo();
+       } else if (event.data == YT.PlayerState.PAUSED) {
+           console.log("Vidéo en pause, muting de l'audio...");
+           audioSalle1.muted = true;
+           audioSalle2.muted = true;
        }
    }
 
    function syncAudio(force = false) {
-       if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
-           console.log("Synchronisation audio avec la vidéo...");
+       if (!player || !audioActif) return;
 
-           var videoTime = player.getCurrentTime();
-           var adjustedVideoTime = videoTime + (offsetMs / 1000);
+       var playerTime = player.getCurrentTime();
+       var adjustedAudioTime = playerTime + 0.2; // Décalage pour compenser la latence
 
-           if (force || Math.abs(audioActif.currentTime - adjustedVideoTime) > 1.5) {
-               audioActif.pause();
-               audioActif.currentTime = adjustedVideoTime;
-               audioActif.play().catch(error => console.log("Erreur audio :", error));
-           }
+       if (force || Math.abs(audioActif.currentTime - adjustedAudioTime) > 0.5) {
+           audioActif.currentTime = adjustedAudioTime;
        }
-   }
 
-   function stopSync() {
-       audioActif.pause();
-   }
-
-   function adjustOffset(newOffsetMs) {
-       offsetMs = newOffsetMs;
-       console.log(`Décalage ajusté à ${offsetMs} millisecondes.`);
+       audioActif.muted = false;  // Active l'audio en cours
+       audioInactif.muted = true;  // Mute l'autre audio
    }
 
    btnBascule.addEventListener("click", function () {
-       audioActif.pause();
+       audioActif.muted = true;
+       audioInactif = audioActif; // Sauvegarde du précédent actif
 
+       // Alterner les audios sans les arrêter
        if (audioActif === audioSalle1) {
            audioActif = audioSalle2;
            btnBascule.classList.remove("btn-salle1");
@@ -191,7 +189,7 @@
            btnBascule.children[1].textContent = "Off";
        }
 
-       syncAudio(true);
+       audioActif.muted = false; 
    });
 
    var tag = document.createElement('script');
