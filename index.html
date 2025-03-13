@@ -146,19 +146,19 @@
     }
 
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
-    let lastSyncTime = 0;  // Enregistrer l'heure de la dernière synchronisation
-    let syncInterval = 500;  // Temps d'intervalle entre les synchronisations (en ms)
+    //let lastSyncTime = 0;  // Enregistrer l'heure de la dernière synchronisation
+    //let syncInterval = 500;  // Temps d'intervalle entre les synchronisations (en ms)
     let offsetMs = 600;  // Décalage en millisecondes (positif pour retarder l'audio, négatif pour devancer l'audio)
 
     function syncAudio() {
        if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) { // Vérifie si la vidéo est en lecture
            var videoTime = player.getCurrentTime();
-           var currentTime = Date.now();
+           //var currentTime = Date.now();
            
            // Applique le décalage en millisecondes à l'heure de la vidéo
            var adjustedVideoTime = videoTime * 1000 + offsetMs;  // Convertir videoTime en millisecondes
 
-           if (currentTime - lastSyncTime >= syncInterval) {
+           //if (currentTime - lastSyncTime >= syncInterval) {
                audioActif.currentTime = adjustedVideoTime / 1000;  // Convertir le temps ajusté en secondes
                if (audioActif.paused) {
                    audioActif.play().catch((error) => {
@@ -166,7 +166,7 @@
                    });
                }
                lastSyncTime = currentTime;
-           }
+           //}
        }
     }
 
@@ -180,12 +180,6 @@
         offsetMs = newOffsetMs;  // Met à jour le décalage en millisecondes
         console.log(`Décalage ajusté à ${offsetMs} millisecondes.`);
     }
-
-    // Exemple d'utilisation : retarder l'audio de 500 millisecondes (0.5 seconde)
-    // adjustOffset(500);
-
-    // Exemple d'utilisation : devancer l'audio de 200 millisecondes
-    // adjustOffset(-200);
 
     // Changement de salle au clic du bouton
     btnBascule.addEventListener("click", function () {
@@ -214,7 +208,7 @@
     });
 
     // Synchronisation en temps réel de l'audio avec la vidéo à une fréquence plus faible
-    setInterval(syncAudio, syncInterval);
+    //setInterval(syncAudio, syncInterval);
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
