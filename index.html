@@ -161,7 +161,7 @@
            console.log("Début du buffering...");
            
            // Ajouter un délai avant d'obtenir getCurrentTime() pour stabiliser la valeur
-           //setTimeout(() => {
+           setTimeout(() => {
                var videoTime = player.getCurrentTime();
                var adjustedVideoTime = videoTime + (offsetMs / 1000);
        
@@ -173,7 +173,7 @@
                        audioActif.play().catch(error => console.log("Erreur audio :", error));
                    }, 100);
                }
-           //}, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
+           }, 1000); // 🕒 Buffer de 300ms pour éviter des valeurs instables
        }
    }
    
