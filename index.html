@@ -133,24 +133,35 @@
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
             events: {
+		'onReady': onPlayerReady,  // Ajout de l'événement "onReady"
                 'onStateChange': onPlayerStateChange
             }
         });
     }
 
+    let offsetMs = 600;
+    let offsetBoutonMs = 200;
+    let offsetReadyMs = 350;
+    let lastVideoTime = 0;
+
+    function onPlayerReady(event) {
+    	console.log("Le lecteur YouTube est prêt !");
+	setTimeout(function() {
+    		var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
+        	var adjustedVideoTime = videoTime * 1000 + offsetReadyMs;
+	    		audioActif.currentTime = adjustedVideoTime / 1000;
+	}, 200);  // Buffer
+    }
+
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING && !syncCalled) {
-            setTimeout(syncAudio, 0);  // Appeler syncAudio après un délai de 500ms
+            syncAudio (0);  // Appeler syncAudio après un délai de 500ms
             syncCalled = true;  // Marque que la fonction a été appelée
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
             stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
             syncCalled = false;  // Réinitialise le drapeau lorsque la vidéo est en pause ou terminée
         }
     }
-
-    let offsetMs = 600;
-    let offsetBoutonMs = 200;
-    let lastVideoTime = 0;
 
     function syncAudio() {
         // Crée un buffer de 500ms avant de récupérer le temps de la vidéo
@@ -189,13 +200,14 @@
     }
 
     function syncAudioBouton() {
-       var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
-       var adjustedVideoTime = videoTime * 1000 + offsetBoutonMs;
+       setTimeout(function() {
+       	var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
+       	var adjustedVideoTime = videoTime * 1000 + offsetBoutonMs;
 
-       // Si l'écart entre le temps de la vidéo et l'audio est plus grand que 2 secondes
+       	// Si l'écart entre le temps de la vidéo et l'audio est plus grand que 2 secondes
           if (Math.abs(videoTime - lastVideoTime) > 2) {
 
-		    // Ajuste le temps de l'audio et démarre la lecture si nécessaire
+		 // Ajuste le temps de l'audio et démarre la lecture si nécessaire
         	 audioActif.currentTime = adjustedVideoTime / 1000;
 
    		if (audioActif.paused) {
@@ -208,6 +220,7 @@
          lastVideoTime = videoTime;
          }
 	    audioActif.play();
+	}, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
     }
 
     btnBascule.addEventListener("click", function () {
