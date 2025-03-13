@@ -138,8 +138,8 @@
                //'onStateChange': onPlayerStateChange,
                'onStateChange': () => {
                   // Ajout des événements pour détecter un seek manuel
-                   player.getIframe().addEventListener("seeking", onSeeking);
-                   player.getIframe().addEventListener("seeked", onSeeked);
+                   player.getIframe().addEventListener("YT.PlayerState.PLAYING", onSeeking);
+                   player.getIframe().addEventListener("YT.PlayerState.PAUSED", onSeeked);
                }
                /*'onReady': () => {
                    // Ajout des événements pour détecter un seek manuel
