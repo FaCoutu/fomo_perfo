@@ -37,38 +37,60 @@
       height: 100%;
    }
 
-   .btn-video {
-       position: absolute;
-       top: 10px;
-       left: 50%;
-       transform: translateX(-50%);
-       width: 150px;
-       height: 30px;
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       background-color: #433d69;
-       color: white;
-       font-size: 12px;
-       font-weight: bold;
-       border: none;
-       cursor: pointer;
-       border-radius: 3px;
-       opacity: 0.8;
-       transition: opacity 0.2s, background-color 0.3s;
-       z-index: 10;
+    .btn-video {
+      position: absolute;
+      top: 10px;  /* Déplace le bouton en haut de la vidéo */
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      width: 240px;
+      height: 40px;
+      border: none;
+      border-radius: 3px;
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s, background-color 0.3s;
+      z-index: 10;
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      background-color: transparent;  /* Assure qu'il n'y a pas de fond blanc */
    }
 
    .btn-video:hover {
-       opacity: 1;
+      opacity: 1;
    }
-
-   .btn-salle1 {
-       background-color: #194f18;
+   
+   .btn-section {
+      flex: 1;
+      display: flex;
+      width: 120px;
+      height: 34px;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.8;
+      border-radius: 3px;
+      transition: background-color 0.3s;
    }
-
-   .btn-salle2 {
-       background-color: #433d69;
+   .btn-section.left {
+      margin-right: 28px; /* Ajoute un espace entre les deux sections */
+   }
+   .btn-salle1 .left {
+      /*background-color: #194f18;*/
+      background-color: grey;
+   }
+   .btn-salle1 .right {
+      /*background-color: grey;*/
+      background-color: #433d69;
+   }
+   .btn-salle2 .left {
+      /*background-color: grey;*/
+      background-color: #433d69;
+   }
+   .btn-salle2 .right {
+      /*background-color: #433d69;*/
+      background-color: grey
    }
 </style>
 </head>
@@ -82,7 +104,10 @@
       frameborder="0">
    </iframe>
 
-   <button id="btnBascule" class="btn-video">Audio salle de droite</button>
+   <button id="btnBascule" class="btn-video btn-salle2">
+      <div class="btn-section left">off</div>
+      <div class="btn-section right">Audio Salle 2</div>
+   </button>
 </div>
 
 <audio id="audioSalle1" loop>
@@ -154,23 +179,44 @@
             audioSalle2.play().catch((error) => {
                 console.log("Erreur lors de la lecture de l'audio de la salle 2: ", error);
             });
-            btnBascule.textContent = "Audio salle de droite";
             btnBascule.classList.remove("btn-salle1");
             btnBascule.classList.add("btn-salle2");
+
+            btnBascule.children[0].textContent = "Off";
+            btnBascule.children[1].textContent = "Audio Salle 2";
         } else {
             audioActif = audioSalle1;
             audioSalle1.play().catch((error) => {
                 console.log("Erreur lors de la lecture de l'audio de la salle 1: ", error);
             });
-            btnBascule.textContent = "Audio salle de gauche";
             btnBascule.classList.remove("btn-salle2");
             btnBascule.classList.add("btn-salle1");
+
+            btnBascule.children[0].textContent = "Audio Salle 1";
+            btnBascule.children[1].textContent = "Off";
         }
 
         // Synchroniser l'audio avec la vidéo après le changement
         if (player.getPlayerState() == YT.PlayerState.PLAYING) {
             syncAudio();
         }
+/*
+         if (audioActif === audioSalle1) {
+            // Si audioSalle1 est actif, affiche les textes liés à la classe btn-salle1
+            btnBascule.classList.add("btn-salle1");
+            btnBascule.classList.remove("btn-salle2");
+        
+            btnBascule.children[0].textContent = "Audio Salle 1";
+            btnBascule.children[1].textContent = "Off";
+        } else {
+            // Si audioSalle2 est actif, affiche les textes liés à la classe btn-salle2
+            btnBascule.classList.add("btn-salle2");
+            btnBascule.classList.remove("btn-salle1");
+        
+            btnBascule.children[0].textContent = "Off";
+            btnBascule.children[1].textContent = "Audio Salle 2";
+        }
+        */
     });
 
     // Synchronisation en temps réel de l'audio avec la vidéo à une fréquence plus faible
