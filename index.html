@@ -156,18 +156,19 @@
     }
 
     function checkForSeek() {
-        if (player && audioActif) {
-            let videoTime = player.getCurrentTime();
-
-            // Si la différence entre l'ancien et le nouveau temps est supérieure à 1s, on force la synchro
-            if (Math.abs(videoTime - lastVideoTime) > 1) {
-                console.log("Détection d'un seek, resynchronisation...");
-                syncAudio(true);
-            }
-
-            lastVideoTime = videoTime;
-        }
-    }
+       if (player && audioActif) {
+           let videoTime = player.getCurrentTime();
+   
+           if (Math.abs(videoTime - lastVideoTime) > 1) {
+               console.log("Seek détecté, mise en pause...");
+               player.pauseVideo(); // Pause vidéo pour resynchro
+               audioActif.pause();  // Pause audio aussi
+               setTimeout(() => syncAudio(true), 200); // Attendre un peu et resynchroniser
+           }
+   
+           lastVideoTime = videoTime;
+       }
+   }
 
     function syncAudio(force = false) {
         if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
