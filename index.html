@@ -142,4 +142,45 @@
     }
 
     function stopSync() {
-        audioActif.pause();  // Arrêter l'audio lorsque la v
+        audioActif.pause();  // Arrêter l'audio lorsque la vidéo est mise en pause
+    }
+
+    // Changement de salle au clic du bouton
+    btnBascule.addEventListener("click", function () {
+        audioActif.pause();  // Mettre en pause l'audio actuel avant de changer
+
+        if (audioActif === audioSalle1) {
+            audioActif = audioSalle2;
+            audioSalle2.play().catch((error) => {
+                console.log("Erreur lors de la lecture de l'audio de la salle 2: ", error);
+            });
+            btnBascule.textContent = "Audio salle de droite";
+            btnBascule.classList.remove("btn-salle1");
+            btnBascule.classList.add("btn-salle2");
+        } else {
+            audioActif = audioSalle1;
+            audioSalle1.play().catch((error) => {
+                console.log("Erreur lors de la lecture de l'audio de la salle 1: ", error);
+            });
+            btnBascule.textContent = "Audio salle de gauche";
+            btnBascule.classList.remove("btn-salle2");
+            btnBascule.classList.add("btn-salle1");
+        }
+
+        // Synchroniser l'audio avec la vidéo après le changement
+        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+            syncAudio();
+        }
+    });
+
+    // Synchronisation en temps réel de l'audio avec la vidéo à une fréquence plus faible
+    setInterval(syncAudio, syncInterval);
+
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+</script>
+
+</body>
+</html>
