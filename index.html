@@ -146,7 +146,9 @@
    }
 
     function onPlayerStateChange(event) {
-       if (event.data == YT.PlayerState.PLAYING) {
+       if (event.data == YT.PlayerState.PLAYING && isSeeking) {
+         isSeeking = false;
+         console.log("seeked");
          console.log("Vidéo en lecture, tentative de lecture de l'audio...");
          syncAudio(true);
        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
@@ -155,9 +157,19 @@
        }
    }
 
-    function onPlaybackRateChange(event) {
-        syncAudio(); // Synchronise l'audio si la vitesse de lecture change
-    }
+    function checkSeeking() {
+       if (!player || typeof player.getCurrentTime !== "function") return;
+   
+       var currentTime = player.getCurrentTime();
+       if (Math.abs(currentTime - lastTime) > 0.5) { // Tolérance de 0.5s
+           if (!isSeeking) {
+               isSeeking = true;
+               console.log("seeking");
+               player.pauseVideo(); // Met en pause la vidéo pour synchroniser l'audio
+           }
+       }
+       lastTime = currentTime;
+   }
 
     function syncAudio(force = false) {
         if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
