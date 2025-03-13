@@ -157,7 +157,7 @@
        if (isSeeking) {
            console.log("Seek terminé, resynchronisation...");
            syncAudio(true); // Forcer la synchronisation
-           player.playVideo(); // Relancer la vidéo
+           player.pauseVideo(); // Relancer la vidéo
            isSeeking = false; // Réinitialiser le flag
        }
    }
