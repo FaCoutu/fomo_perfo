@@ -142,12 +142,12 @@
    
    function onPlayerStateChange(event) {
        if (event.data == YT.PlayerState.PLAYING) {
-           //player.pauseVideo();
-           //setTimeout(() => {
+           player.pauseVideo();
+           setTimeout(() => {
               console.log("Vidéo en lecture, tentative de lecture de l'audio...");
               syncAudio(true);
-           // }, 1000);
-            //player.playVideo();
+           }, 1000);
+            player.playVideo();
        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
            console.log("Pause détectée, arrêt de l'audio.");
            stopSync();
