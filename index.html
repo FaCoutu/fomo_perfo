@@ -138,23 +138,25 @@
         });
     }
 
-    function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING) {
-            // Synchroniser l'audio avant le délai
-            syncAudio();  // Synchronisation avant d'appliquer le délai de buffer
-        } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
-            stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
-        }
-    }
+    let previousPlayerState = YT.PlayerState.UNSTARTED;
 
-   // Gestion du déplacement du curseur de la vidéo
-    /*player.addEventListener('onStateChange', function(event) {
-        if (event.data === YT.PlayerState.PLAYING || event.data === YT.PlayerState.PAUSED) {
-            setTimeout(function() {
-                syncAudio();  // Synchroniser l'audio après le buffer
-            }, 2000);  // Buffer de 500ms avant de reprendre la lecture
-        }
-    });*/
+   function onPlayerStateChange(event) {
+       const currentState = event.data;
+   
+       // Vérifier si l'état a changé (lecture, pause ou fin)
+       if (currentState !== previousPlayerState) {
+           if (currentState == YT.PlayerState.PLAYING) {
+               // Synchroniser l'audio avant le délai de buffer si la vidéo est en lecture
+               syncAudio();
+           } else if (currentState == YT.PlayerState.PAUSED || currentState == YT.PlayerState.ENDED) {
+               // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
+               stopSync();
+           }
+   
+           // Mettre à jour l'état précédent
+           previousPlayerState = currentState;
+       }
+   }
 
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
     let offsetMs = 200;  // Décalage en millisecondes (positif pour retarder l'audio, négatif pour devancer l'audio)
