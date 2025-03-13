@@ -140,23 +140,23 @@
 
     let previousPlayerState = YT.PlayerState.UNSTARTED;
 
-   function onPlayerStateChange(event) {
-       const currentState = event.data;
-   
-       // Vérifier si l'état a changé (lecture, pause ou fin)
-       if (currentState !== previousPlayerState) {
-           if (currentState == YT.PlayerState.PLAYING) {
-               // Synchroniser l'audio avant le délai de buffer si la vidéo est en lecture
-               syncAudio();
-           } else if (currentState == YT.PlayerState.PAUSED || currentState == YT.PlayerState.ENDED) {
-               // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
-               stopSync();
-           }
-   
-           // Mettre à jour l'état précédent
-           previousPlayerState = currentState;
-       }
-   }
+    function onPlayerStateChange(event) {
+        const currentState = event.data;
+
+        // Vérifier si l'état a changé (lecture, pause ou fin)
+        if (currentState !== previousPlayerState) {
+            if (currentState == YT.PlayerState.PLAYING) {
+                // Synchroniser l'audio avant le délai de buffer si la vidéo est en lecture
+                syncAudio();
+            } else if (currentState == YT.PlayerState.PAUSED || currentState == YT.PlayerState.ENDED) {
+                // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
+                stopSync();
+            }
+
+            // Mettre à jour l'état précédent
+            previousPlayerState = currentState;
+        }
+    }
 
     // Synchronisation de l'audio avec la vidéo (lors d'un changement ou d'une lecture)
     let offsetMs = 200;  // Décalage en millisecondes (positif pour retarder l'audio, négatif pour devancer l'audio)
@@ -164,13 +164,8 @@
 
     function syncAudio() {
         if (player && audioActif && player.getPlayerState() == YT.PlayerState.PLAYING) {
-           // Mettre la vidéo en pause avant de synchroniser l'audio
-            player.pauseVideo();  // Met en pause la vidéo
-
             var videoTime = player.getCurrentTime();
-    
-            // Vérifie si le temps de la vidéo a changé de manière significative
-            if (Math.abs(videoTime - lastVideoTime) > 1.5) {  // Changer le seuil si nécessaire
+            if (Math.abs(videoTime - lastVideoTime) > 1.5) {  // Seuil ajustable
                 var adjustedVideoTime = videoTime * 1000 + offsetMs;
                 audioActif.currentTime = adjustedVideoTime / 1000;
                 if (audioActif.paused) {
@@ -180,13 +175,6 @@
                 }
                 lastVideoTime = videoTime;
             }
-           player.playVideo();
-           // Ajouter un buffer de 500ms avant que la vidéo reprenne
-            /*setTimeout(function() {
-                // L'audio sera déjà synchronisé, maintenant on reprend la vidéo
-                player.playVideo();  // Reprendre la lecture de la vidéo après le délai
-            }, 500);  // Délai de 500ms avant de reprendre la lecture de la vidéo
-           */
         }
     }
 
@@ -230,7 +218,7 @@
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-   
+
 </script>
 </body>
 </html>
