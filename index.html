@@ -139,9 +139,9 @@
         });
     }
 
-    let offsetMs = 600;
+    let offsetMs = 560;
     let offsetBoutonMs = 100;
-    let offsetReadyMs = 350;
+    let offsetReadyMs = 260;
     let lastVideoTime = 0;
 
     function onPlayerReady(event) {
@@ -152,7 +152,7 @@
 	    	//audioActif.currentTime = adjustedVideoTime / 1000;
 		audioSalle1.currentTime = adjustedVideoTime / 1000;
 		audioSalle2.currentTime = adjustedVideoTime / 1000;
-	}, 1000);  // Buffer
+	}, 500);  // Buffer
     }
 
     function onPlayerStateChange(event) {
@@ -164,7 +164,7 @@
             syncCalled = false;  // Réinitialise le drapeau lorsque la vidéo est en pause ou terminée
 	    setTimeout(function() {
     		var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
-        	var adjustedVideoTime = videoTime * 1000 + offsetReadyMs;
+        	var adjustedVideoTime = videoTime * 1000 + offsetMs;
 	    	audioActif.currentTime = adjustedVideoTime / 1000;
 	    }, 200);  // Buffer
 	    //player.pauseVideo();
@@ -222,7 +222,7 @@
                         console.log("Erreur lors de la lecture de l'audio: ", error);
                     });
                 }
-       }, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
+       }, 500);  // Le buffer avant de récupérer le temps vidéo est de 500ms
        audioActif.play();
     }
 
