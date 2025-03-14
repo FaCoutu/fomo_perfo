@@ -152,7 +152,7 @@
 	    	//audioActif.currentTime = adjustedVideoTime / 1000;
 		audioSalle1.currentTime = adjustedVideoTime / 1000;
 		audioSalle2.currentTime = adjustedVideoTime / 1000;
-	}, 200);  // Buffer
+	}, 1000);  // Buffer
     }
 
     function onPlayerStateChange(event) {
@@ -165,9 +165,8 @@
 	    setTimeout(function() {
     		var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
         	var adjustedVideoTime = videoTime * 1000 + offsetReadyMs;
-	    	audioSalle1.currentTime = adjustedVideoTime / 1000;
-		audioSalle2.currentTime = adjustedVideoTime / 1000;
-	    }, 0);  // Buffer
+	    	audioActif.currentTime = adjustedVideoTime / 1000;
+	    }, 200);  // Buffer
 	    //player.pauseVideo();
         }
     }
@@ -183,7 +182,6 @@
                 player.pauseVideo();  // Met la vidéo en pause
 
 		// Ajuste le temps de l'audio et démarre la lecture si nécessaire
-        	//audioActif.currentTime = adjustedVideoTime / 1000;
 		audioSalle1.currentTime = adjustedVideoTime / 1000;
 		audioSalle2.currentTime = adjustedVideoTime / 1000;
 
@@ -202,7 +200,7 @@
                 }, 1500); // Le délai est de 500ms 
             }
 	    audioActif.play();
-        }, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
+        }, 0);  // Le buffer avant de récupérer le temps vidéo est de 500ms
     }    
    
     function stopSync() {
@@ -215,9 +213,9 @@
        	  var adjustedVideoTime = videoTime * 1000 + offsetBoutonMs;
 
 		// Ajuste le temps de l'audio et démarre la lecture si nécessaire
-        	//audioActif.currentTime = adjustedVideoTime / 1000;
-	        audioSalle1.currentTime = adjustedVideoTime / 1000;
+        	audioSalle1.currentTime = adjustedVideoTime / 1000;
 		audioSalle2.currentTime = adjustedVideoTime / 1000;
+	        audioActif.currentTime = adjustedVideoTime / 1000;
 
    		if (audioActif.paused) {
                     audioActif.play().catch((error) => {
@@ -247,7 +245,7 @@
 
         if (player.getPlayerState() == YT.PlayerState.PLAYING) {
             syncAudioBouton();
-        }
+	}
     });
 
     var tag = document.createElement('script');
