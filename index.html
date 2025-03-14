@@ -140,7 +140,7 @@
     }
 
     let offsetMs = 600;
-    let offsetBoutonMs = 200;
+    let offsetBoutonMs = 100;
     let offsetReadyMs = 350;
     let lastVideoTime = 0;
 
@@ -149,17 +149,25 @@
 	setTimeout(function() {
     		var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
         	var adjustedVideoTime = videoTime * 1000 + offsetReadyMs;
-	    		audioActif.currentTime = adjustedVideoTime / 1000;
+	    	//audioActif.currentTime = adjustedVideoTime / 1000;
+		audioSalle1.currentTime = adjustedVideoTime / 1000;
+		audioSalle2.currentTime = adjustedVideoTime / 1000;
 	}, 200);  // Buffer
     }
 
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING && !syncCalled) {
-            syncAudio (0);  // Appeler syncAudio après un délai de 500ms
+            syncAudio ();  // Appeler syncAudio après un délai de 500ms
             syncCalled = true;  // Marque que la fonction a été appelée
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
             stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
             syncCalled = false;  // Réinitialise le drapeau lorsque la vidéo est en pause ou terminée
+	    setTimeout(function() {
+    		var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
+        	var adjustedVideoTime = videoTime * 1000 + offsetReadyMs;
+	    	audioActif.currentTime = adjustedVideoTime / 1000;
+	    }, 0);  // Buffer
+	    //player.pauseVideo();
         }
     }
 
@@ -174,7 +182,9 @@
                 player.pauseVideo();  // Met la vidéo en pause
 
 		// Ajuste le temps de l'audio et démarre la lecture si nécessaire
-        	audioActif.currentTime = adjustedVideoTime / 1000;
+        	//audioActif.currentTime = adjustedVideoTime / 1000;
+		audioSalle1.currentTime = adjustedVideoTime / 1000;
+		audioSalle2.currentTime = adjustedVideoTime / 1000;
 
 		if (audioActif.paused) {
                     audioActif.play().catch((error) => {
@@ -201,26 +211,19 @@
 
     function syncAudioBouton() {
        setTimeout(function() {
-       	var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
-       	var adjustedVideoTime = videoTime * 1000 + offsetBoutonMs;
+       	  var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
+       	  var adjustedVideoTime = videoTime * 1000 + offsetBoutonMs;
 
-       	// Si l'écart entre le temps de la vidéo et l'audio est plus grand que 2 secondes
-          if (Math.abs(videoTime - lastVideoTime) > 2) {
-
-		 // Ajuste le temps de l'audio et démarre la lecture si nécessaire
-        	 audioActif.currentTime = adjustedVideoTime / 1000;
+		// Ajuste le temps de l'audio et démarre la lecture si nécessaire
+        	audioActif.currentTime = adjustedVideoTime / 1000;
 
    		if (audioActif.paused) {
-             audioActif.play().catch((error) => {
-                console.log("Erreur lors de la lecture de l'audio: ", error);
-             });
-         }
-
-         // Met à jour le dernier temps de la vidéo
-         lastVideoTime = videoTime;
-         }
-	    audioActif.play();
-	}, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
+                    audioActif.play().catch((error) => {
+                        console.log("Erreur lors de la lecture de l'audio: ", error);
+                    });
+                }
+       }, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
+       audioActif.play();
     }
 
     btnBascule.addEventListener("click", function () {
