@@ -165,7 +165,8 @@
 	    setTimeout(function() {
     		var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
         	var adjustedVideoTime = videoTime * 1000 + offsetReadyMs;
-	    	audioActif.currentTime = adjustedVideoTime / 1000;
+	    	audioSalle1.currentTime = adjustedVideoTime / 1000;
+		audioSalle2.currentTime = adjustedVideoTime / 1000;
 	    }, 0);  // Buffer
 	    //player.pauseVideo();
         }
@@ -215,7 +216,9 @@
        	  var adjustedVideoTime = videoTime * 1000 + offsetBoutonMs;
 
 		// Ajuste le temps de l'audio et démarre la lecture si nécessaire
-        	audioActif.currentTime = adjustedVideoTime / 1000;
+        	//audioActif.currentTime = adjustedVideoTime / 1000;
+	        audioSalle1.currentTime = adjustedVideoTime / 1000;
+		audioSalle2.currentTime = adjustedVideoTime / 1000;
 
    		if (audioActif.paused) {
                     audioActif.play().catch((error) => {
