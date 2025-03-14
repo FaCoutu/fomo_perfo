@@ -146,13 +146,13 @@
 
     function onPlayerReady(event) {
     	console.log("Le lecteur YouTube est prêt !");
-	/*setTimeout(function() {
+	setTimeout(function() {
     		var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
         	var adjustedVideoTime = videoTime * 1000 + offsetReadyMs;
 	    	//audioActif.currentTime = adjustedVideoTime / 1000;
 		audioSalle1.currentTime = adjustedVideoTime / 1000;
 		audioSalle2.currentTime = adjustedVideoTime / 1000;
-	}, 1000); */ // Buffer
+	}, 1000);  // Buffer
     }
 
     function onPlayerStateChange(event) {
