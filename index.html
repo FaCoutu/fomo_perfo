@@ -127,12 +127,19 @@
     var player;
     var audioActif = audioSalle1;
     btnBascule.classList.add("btn-salle1");
+    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   
     let lastVideoTime = 0;
     let syncCalled = false;
     let offsetMs = 650;
     let offsetBoutonMs = 450;
     let offsetReadyMs = 250;
+
+    if (isSafari) {
+    	offsetMs += 300;
+    	offsetBoutonMs += 200;
+    	offsetReadyMs += 200;
+    }
 
     // Désactiver le bouton au départ
     btnBascule.disabled = true;
