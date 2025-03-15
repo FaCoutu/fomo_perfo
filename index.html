@@ -127,124 +127,135 @@
     var audioActif = audioSalle1;
     btnBascule.classList.add("btn-salle1");
 
+
+    // Désactiver le bouton au départ
+    btnBascule.disabled = true;
+
     var player;
-    let syncCalled = false;  // Drapeau pour vérifier si syncAudio a été appelé
+    let syncCalled = false;
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
             events: {
-		'onReady': onPlayerReady,  // Ajout de l'événement "onReady"
+                'onReady': onPlayerReady,
                 'onStateChange': onPlayerStateChange
             }
         });
     }
 
-    let offsetMs = 560;
-    let offsetBoutonMs = 100;
-    let offsetReadyMs = 260;
+    let offsetMs = 250;
+    let offsetBoutonMs = 250;
+    let offsetReadyMs = 300;
     let lastVideoTime = 0;
 
+    function catchWhenReady(audioElement, callback) {
+        if (audioElement.readyState >= 4) {
+            callback();
+        } else {
+            audioElement.addEventListener("canplaythrough", function onReady() {
+                audioElement.removeEventListener("canplaythrough", onReady);
+                callback();
+            });
+        }
+    }
+
     function onPlayerReady(event) {
-    	console.log("Le lecteur YouTube est prêt !");
-	setTimeout(function() {
-    		var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
-        	var adjustedVideoTime = videoTime * 1000 + offsetReadyMs;
-	    	//audioActif.currentTime = adjustedVideoTime / 1000;
-		audioSalle1.currentTime = adjustedVideoTime / 1000;
-		audioSalle2.currentTime = adjustedVideoTime / 1000;
-	}, 500);  // Buffer
+      setTimeout(function() {
+        console.log("Le lecteur YouTube est prêt !");
+        catchWhenReady(audioSalle1, function() {
+            catchWhenReady(audioSalle2, function() {
+                var videoTime = player.getCurrentTime();
+                var adjustedVideoTime = videoTime * 1000 + offsetReadyMs;
+                audioSalle1.currentTime = adjustedVideoTime / 1000;
+                audioSalle2.currentTime = adjustedVideoTime / 1000;
+            });
+        });
+      }, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
     }
 
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING && !syncCalled) {
-            syncAudio ();  // Appeler syncAudio après un délai de 500ms
-            syncCalled = true;  // Marque que la fonction a été appelée
+            syncAudio();
+            syncCalled = true;
+	    btnBascule.disabled = false; // Activer le bouton
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
-            stopSync();  // Mettre en pause l'audio lorsque la vidéo est en pause ou terminée
-            syncCalled = false;  // Réinitialise le drapeau lorsque la vidéo est en pause ou terminée
-	    setTimeout(function() {
-    		var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
-        	var adjustedVideoTime = videoTime * 1000 + offsetMs;
-	    	audioActif.currentTime = adjustedVideoTime / 1000;
-	    }, 200);  // Buffer
-	    //player.pauseVideo();
+            stopSync();
+            syncCalled = false;
+	    //À voir, désactiver la fonction catchWhenReady ici
+            catchWhenReady(audioActif, function() {
+                var videoTime = player.getCurrentTime();
+                var adjustedVideoTime = videoTime * 1000 + offsetMs;
+                audioActif.currentTime = adjustedVideoTime / 1000;
+            });
+	    btnBascule.disabled = true; // Désactiver le bouton
         }
     }
 
     function syncAudio() {
-        // Crée un buffer de 500ms avant de récupérer le temps de la vidéo
-        setTimeout(function() {
-            var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
+      // Crée un buffer de 500ms avant de récupérer le temps de la vidéo
+      setTimeout(function() {
+        catchWhenReady(audioActif, function() {
+            var videoTime = player.getCurrentTime();
             var adjustedVideoTime = videoTime * 1000 + offsetMs;
+	    if (Math.abs(videoTime - lastVideoTime) > 2) {
+            
+                audioSalle1.currentTime = adjustedVideoTime / 1000;
+                audioSalle2.currentTime = adjustedVideoTime / 1000;
 
-            // Si l'écart entre le temps de la vidéo et l'audio est plus grand que 2 secondes
-            if (Math.abs(videoTime - lastVideoTime) > 2) {
-                player.pauseVideo();  // Met la vidéo en pause
-
-		// Ajuste le temps de l'audio et démarre la lecture si nécessaire
-        	//audioActif.currentTime = adjustedVideoTime / 1000;
-		audioSalle1.currentTime = adjustedVideoTime / 1000;
-		audioSalle2.currentTime = adjustedVideoTime / 1000;
-
-		if (audioActif.paused) {
+                if (audioActif.paused) {
                     audioActif.play().catch((error) => {
-                    console.log("Erreur lors de la lecture de l'audio: ", error);
+                        console.log("Erreur lors de la lecture de l'audio: ", error);
                     });
-                }
-
-                // Met à jour le dernier temps de la vidéo
-                lastVideoTime = videoTime;
-
-                // Redémarre la vidéo après un délai
-                setTimeout(function() {
-                    player.playVideo();  // Relance la vidéo après le délai
-                }, 1500); // Le délai est de 500ms 
+		}
+		lastVideoTime = videoTime;
             }
 	    audioActif.play();
-        }, 0);  // Le buffer avant de récupérer le temps vidéo est de 500ms
-    }    
-   
+        });
+      }, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
+    }
+
     function stopSync() {
         audioActif.pause();
     }
 
     function syncAudioBouton() {
-       setTimeout(function() {
-       	  var videoTime = player.getCurrentTime();  // Récupère le temps actuel de la vidéo
-       	  var adjustedVideoTime = videoTime * 1000 + offsetBoutonMs;
+      setTimeout(function() {
+        catchWhenReady(audioActif, function() {
+            var videoTime = player.getCurrentTime();
+            var adjustedVideoTime = videoTime * 1000 + offsetBoutonMs;
+            
+            audioSalle1.currentTime = adjustedVideoTime / 1000;
+            audioSalle2.currentTime = adjustedVideoTime / 1000;
 
-		// Ajuste le temps de l'audio et démarre la lecture si nécessaire
-        	audioSalle1.currentTime = adjustedVideoTime / 1000;
-		audioSalle2.currentTime = adjustedVideoTime / 1000;
-
-   		if (audioActif.paused) {
-                    audioActif.play().catch((error) => {
-                        console.log("Erreur lors de la lecture de l'audio: ", error);
-                    });
-                }
-       }, 500);  // Le buffer avant de récupérer le temps vidéo est de 500ms
-       audioActif.play();
+            if (audioActif.paused) {
+                audioActif.play().catch((error) => {
+                    console.log("Erreur lors de la lecture de l'audio: ", error);
+                });
+            }
+        });
+      }, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
     }
 
     btnBascule.addEventListener("click", function () {
-        audioActif.pause();
-
-        if (audioActif === audioSalle1) {
-            audioActif = audioSalle2;
-            btnBascule.classList.remove("btn-salle1");
-            btnBascule.classList.add("btn-salle2");
-            btnBascule.children[0].textContent = "Off";
-            btnBascule.children[1].textContent = "Audio Salle 2";
-        } else {
-            audioActif = audioSalle1;
-            btnBascule.classList.remove("btn-salle2");
-            btnBascule.classList.add("btn-salle1");
-            btnBascule.children[0].textContent = "Audio Salle 1";
-            btnBascule.children[1].textContent = "Off";
-        }
-
-        if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-            syncAudioBouton();
+	if (!syncCalled) return; // Empêcher l'exécution si le bouton est désactivé
+	audioActif.pause();
+	
+	if (audioActif === audioSalle1) {
+	            audioActif = audioSalle2;
+	            btnBascule.classList.remove("btn-salle1");
+	            btnBascule.classList.add("btn-salle2");
+	            btnBascule.children[0].textContent = "Off";
+	            btnBascule.children[1].textContent = "Audio Salle 2";
+	} else {
+	            audioActif = audioSalle1;
+	            btnBascule.classList.remove("btn-salle2");
+	            btnBascule.classList.add("btn-salle1");
+	            btnBascule.children[0].textContent = "Audio Salle 1";
+	            btnBascule.children[1].textContent = "Off";
+	}
+	
+	if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+	            syncAudioBouton();
 	}
     });
 
