@@ -18,10 +18,11 @@
       color: Grey;
       margin: 0;
       border: none;
+      width: 100%;
    }
 
    .titre-1 {
-       margin-bottom: 16px;
+       margin-bottom: 4px;
    }
 
    .video-container {
@@ -123,16 +124,19 @@
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
-
+    var player;
     var audioActif = audioSalle1;
     btnBascule.classList.add("btn-salle1");
-
+  
+    let lastVideoTime = 0;
+    let syncCalled = false;
+    let offsetMs = 650;
+    let offsetBoutonMs = 450;
+    let offsetReadyMs = 250;
 
     // Désactiver le bouton au départ
     btnBascule.disabled = true;
 
-    var player;
-    let syncCalled = false;
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
@@ -143,39 +147,39 @@
         });
     }
 
-    let offsetMs = 250;
-    let offsetBoutonMs = 250;
-    let offsetReadyMs = 300;
-    let lastVideoTime = 0;
-
     function catchWhenReady(audioElement, callback) {
-        if (audioElement.readyState >= 4) {
+        if (audioElement.readyState >= 3) { // HAVE_FUTURE_DATA (compatible Safari/Firefox)
             callback();
         } else {
-            audioElement.addEventListener("canplaythrough", function onReady() {
-                audioElement.removeEventListener("canplaythrough", onReady);
+            audioElement.addEventListener("loadedmetadata", function onLoaded() {
+                audioElement.removeEventListener("loadedmetadata", onLoaded);
                 callback();
             });
         }
     }
 
     function onPlayerReady(event) {
-      setTimeout(function() {
         console.log("Le lecteur YouTube est prêt !");
-        catchWhenReady(audioSalle1, function() {
-            catchWhenReady(audioSalle2, function() {
-                var videoTime = player.getCurrentTime();
-                var adjustedVideoTime = videoTime * 1000 + offsetReadyMs;
-                audioSalle1.currentTime = adjustedVideoTime / 1000;
-                audioSalle2.currentTime = adjustedVideoTime / 1000;
-            });
-        });
-      }, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
+	document.addEventListener("click", function enableAudio() {
+    	    audioSalle1.play().catch(e => console.log("Audio bloqué:", e));
+    	    audioSalle2.play().catch(e => console.log("Audio bloqué:", e));
+	    setTimeout(function() {
+		catchWhenReady(audioActif, function() {
+                    var videoTime = player.getCurrentTime();
+		    var adjustedVideoTime = (videoTime * 1000 + offsetReadyMs) / 1000;
+                    setTimeout(() => {
+                        audioSalle1.currentTime = adjustedVideoTime;
+                        audioSalle2.currentTime = adjustedVideoTime;
+                    }, 200);
+		});
+	    }, 1000);
+	    document.removeEventListener("click", enableAudio);
+	});
     }
 
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING && !syncCalled) {
-            syncAudio();
+	    syncAudio();
             syncCalled = true;
 	    btnBascule.disabled = false; // Activer le bouton
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
@@ -184,34 +188,40 @@
 	    //À voir, désactiver la fonction catchWhenReady ici
             catchWhenReady(audioActif, function() {
                 var videoTime = player.getCurrentTime();
-                var adjustedVideoTime = videoTime * 1000 + offsetMs;
-                audioActif.currentTime = adjustedVideoTime / 1000;
+                var adjustedVideoTime = (videoTime * 1000 + offsetMs) / 1000;
+                setTimeout(() => {
+                    audioSalle1.currentTime = adjustedVideoTime;
+                    audioSalle2.currentTime = adjustedVideoTime;
+                }, 200);
             });
 	    btnBascule.disabled = true; // Désactiver le bouton
         }
     }
 
     function syncAudio() {
-      // Crée un buffer de 500ms avant de récupérer le temps de la vidéo
+      // Crée un buffer avant de récupérer le temps de la vidéo
+      audioActif.pause();
       setTimeout(function() {
         catchWhenReady(audioActif, function() {
             var videoTime = player.getCurrentTime();
-            var adjustedVideoTime = videoTime * 1000 + offsetMs;
-	    if (Math.abs(videoTime - lastVideoTime) > 2) {
-            
-                audioSalle1.currentTime = adjustedVideoTime / 1000;
-                audioSalle2.currentTime = adjustedVideoTime / 1000;
+            var adjustedVideoTime = (videoTime * 1000 + offsetMs) / 1000;
+            setTimeout(() => {
+		audioSalle1.currentTime = adjustedVideoTime;
+            	audioSalle2.currentTime = adjustedVideoTime;
+	    }, 600);  // Petit délai pour garantir la mise à jour correcte
 
-                if (audioActif.paused) {
-                    audioActif.play().catch((error) => {
-                        console.log("Erreur lors de la lecture de l'audio: ", error);
-                    });
-		}
-		lastVideoTime = videoTime;
+	    if (audioActif.paused) {
+    		audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
+	    }
+
+	    // Toujours arrêter l'autre audio
+            if (audioActif === audioSalle1) {
+            	audioSalle2.pause();
+            } else {
+                audioSalle1.pause();
             }
-	    audioActif.play();
         });
-      }, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
+      }, 200);  // Le buffer avant de récupérer le temps vidéo
     }
 
     function stopSync() {
@@ -222,24 +232,31 @@
       setTimeout(function() {
         catchWhenReady(audioActif, function() {
             var videoTime = player.getCurrentTime();
-            var adjustedVideoTime = videoTime * 1000 + offsetBoutonMs;
+            var adjustedVideoTime = (videoTime * 1000 + offsetMs) / 1000;
             
-            audioSalle1.currentTime = adjustedVideoTime / 1000;
-            audioSalle2.currentTime = adjustedVideoTime / 1000;
+            setTimeout(() => {
+    		audioSalle1.currentTime = adjustedVideoTime;
+                audioSalle2.currentTime = adjustedVideoTime;
+	    }, 400);  // Petit délai pour garantir la mise à jour correcte
 
-            if (audioActif.paused) {
-                audioActif.play().catch((error) => {
-                    console.log("Erreur lors de la lecture de l'audio: ", error);
-                });
+	    if (audioActif.paused) {
+    		audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
+            }
+
+	    // Toujours arrêter l'autre audio
+            if (audioActif === audioSalle1) {
+            	audioSalle2.pause();
+            } else {
+                audioSalle1.pause();
             }
         });
-      }, 200);  // Le buffer avant de récupérer le temps vidéo est de 500ms
+      }, 200);  // Le buffer avant de récupérer le temps vidéo
     }
 
     btnBascule.addEventListener("click", function () {
 	if (!syncCalled) return; // Empêcher l'exécution si le bouton est désactivé
 	audioActif.pause();
-	
+
 	if (audioActif === audioSalle1) {
 	            audioActif = audioSalle2;
 	            btnBascule.classList.remove("btn-salle1");
@@ -255,7 +272,7 @@
 	}
 	
 	if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-	            syncAudioBouton();
+		syncAudioBouton();
 	}
     });
 
