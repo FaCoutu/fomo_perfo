@@ -288,7 +288,7 @@
                 audioSalle1.pause();
             }
             
-            if (Math.abs(videoTime - lastVideoTime) > 0.2) {
+            if (Math.abs(videoTime - lastVideoTime) > 0.1) {
                 setTimeout(() => {
     		    //audioActif.currentTime = adjustedVideoTime / 1000;
         		    audioSalle1.currentTime = adjustedVideoTime;
