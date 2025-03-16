@@ -130,6 +130,18 @@
       background-color: grey;
       /*color: Black;*/
    }
+
+   @media screen and (orientation: portrait) {
+     body {
+       transform: rotate(90deg);
+       transform-origin: center center;
+       width: 100vh;
+       height: 100vw;
+       overflow-x: hidden;
+       position: fixed;
+     }
+   }
+
 </style>
 </head>
 <body>
@@ -159,6 +171,22 @@
 <audio id="audioSalle2" loop>
    <source src="https://www.dropbox.com/scl/fi/vxsx4wc0ojrao15vsi3rd/FOMO_Audio_Perfo-res-Bain-Mathieu_INSTALL.mp3?rlkey=yuieg0gk2a5t0b6kquxjgoav4&st=15anchfs&raw=1" type="audio/mp3">
 </audio>
+
+<div id="orientation-warning" style="
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: white;
+  font-size: 24px;
+  text-align: center;
+  padding-top: 40%;
+  z-index: 1000;">
+  Veuillez tourner votre appareil en mode paysage.
+</div>
  
 <script>
    
@@ -356,6 +384,29 @@
 		syncAudioBouton();
 	}
     });
+
+    /*if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        window.addEventListener("orientationchange", function() {
+            // Attendez un peu pour que l'orientation soit bien prise en compte
+            setTimeout(function() {
+                if (typeof player !== "undefined" && player.pauseVideo) {
+                    player.pauseVideo();
+                }
+            }, 200); // Attendez 200ms pour garantir la prise en compte du changement
+        });
+    }*/
+
+    function checkOrientation() {
+    	if (window.innerHeight > window.innerWidth) {
+            document.getElementById("orientation-warning").style.display = "block";
+    	} else {
+            document.getElementById("orientation-warning").style.display = "none";
+    	}
+    }
+
+    window.addEventListener("load", checkOrientation);
+    window.addEventListener("resize", checkOrientation);
+    window.addEventListener("orientationchange", checkOrientation);
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
