@@ -167,9 +167,16 @@
         document.getElementById("btnBascule").classList.add("visible");  // Ajoute la classe visible au bouton
     };
     
-    document.getElementById("coverImage").addEventListener("click", function() {
+    /*document.getElementById("coverImage").addEventListener("click", function() {
         document.getElementById("cover").style.display = "none"; // Cache l'image
         player.playVideo(); // Démarre la vidéo
+    });*/
+
+    document.getElementById("coverImage").addEventListener("click", function() {
+        player.playVideo(); // Démarre la vidéo
+        setTimeout(() => {
+            document.getElementById("cover").style.display = "none"; // Cache l'image
+        }, 200);
     });
  
     var audioSalle1 = document.getElementById("audioSalle1");
@@ -299,7 +306,7 @@
     		    lastVideoTime = videoTime;
             	}
             });
-        }, 600); */ // Le buffer avant de récupérer le temps vidéo
+        }, 600);*/ // Le buffer avant de récupérer le temps vidéo
     }
 
     function syncAudioBouton() {
