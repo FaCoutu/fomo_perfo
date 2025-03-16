@@ -259,7 +259,7 @@
                 setTimeout(() => {
                     audioSalle1.currentTime = adjustedVideoTime;
                     audioSalle2.currentTime = adjustedVideoTime;
-                }, 200);
+                }, 0);
             });
 	    btnBascule.disabled = true; // Désactiver le bouton
         }
@@ -288,15 +288,15 @@
                 audioSalle1.pause();
             }
             
-            if (Math.abs(videoTime - lastVideoTime) > 0.1) {
+            if (Math.abs(videoTime - lastVideoTime) > 0.2) {
                 setTimeout(() => {
     		    //audioActif.currentTime = adjustedVideoTime / 1000;
         		    audioSalle1.currentTime = adjustedVideoTime;
                         audioSalle2.currentTime = adjustedVideoTime;
-    		    }, 200);  // Petit délai pour garantir la mise à jour correcte
+    		    }, 600);  // Petit délai pour garantir la mise à jour correcte
 
     		    lastVideoTime = videoTime;
-            }                                                   
+            }                                                
         });
       }, 200);  // Le buffer avant de récupérer le temps vidéo
     }
@@ -353,7 +353,7 @@
 	}
     });
 
-    if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    /*if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         window.addEventListener("orientationchange", function() {
             // Attendez un peu pour que l'orientation soit bien prise en compte
             setTimeout(function() {
@@ -362,7 +362,7 @@
                 }
             }, 200); // Attendez 200ms pour garantir la prise en compte du changement
         });
-    }
+    }*/
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
