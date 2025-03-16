@@ -145,7 +145,7 @@
    <iframe id="video" 
       src="https://www.youtube.com/embed/fm00cFcoJM8?enablejsapi=1&modestbranding=1&rel=0&showinfo=0&vq=hd1080" 
       frameborder="0"
-      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+      allow="autoplay">
    </iframe>
 
    <button id="btnBascule" class="btn-video btn-salle1">
@@ -170,11 +170,15 @@
     };
     
     document.getElementById("coverImage").addEventListener("click", function() {
-	player.playVideo(); // Démarre la vidéo
-	setTimeout(() => {
-            document.getElementById("cover").style.display = "none"; // Cache l'image
-	}, 200);
-    });
+        if (player && typeof player.playVideo === "function") {
+            player.playVideo(); // Démarre la vidéo
+            setTimeout(() => {
+                document.getElementById("cover").style.display = "none"; // Cache l'image
+            }, 200);
+        } else {
+            console.error("Le lecteur YouTube n'est pas encore prêt.");
+        }
+    }); 
  
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
@@ -269,20 +273,30 @@
             var videoTime = player.getCurrentTime();
             var adjustedVideoTime = (videoTime * 1000 + offsetMs) / 1000;
             setTimeout(() => {
-		audioSalle1.currentTime = adjustedVideoTime;
-            	audioSalle2.currentTime = adjustedVideoTime;
-	    }, 600);  // Petit délai pour garantir la mise à jour correcte
+    		audioSalle1.currentTime = adjustedVideoTime;
+                	audioSalle2.currentTime = adjustedVideoTime;
+    	    }, 600);  // Petit délai pour garantir la mise à jour correcte
 
-	    if (audioActif.paused) {
-    		audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
-	    }
+    	    if (audioActif.paused) {
+        		audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
+    	    }
 
-	    // Toujours arrêter l'autre audio
+	        // Toujours arrêter l'autre audio
             if (audioActif === audioSalle1) {
             	audioSalle2.pause();
             } else {
                 audioSalle1.pause();
             }
+            
+            if (Math.abs(videoTime - lastVideoTime) > 0.2) {
+                setTimeout(() => {
+    		    //audioActif.currentTime = adjustedVideoTime / 1000;
+        		    audioSalle1.currentTime = adjustedVideoTime;
+                        audioSalle2.currentTime = adjustedVideoTime;
+    		    }, 200);  // Petit délai pour garantir la mise à jour correcte
+
+    		    lastVideoTime = videoTime;
+            }                                                   
         });
       }, 200);  // Le buffer avant de récupérer le temps vidéo
     }
