@@ -44,6 +44,30 @@
       width: 100%;
       height: 100%;
    }
+   
+   #video {
+        visibility: hidden;
+    }
+
+   .cover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        z-index: 10; /* Devant la vidéo */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+   
+   .cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
+    }
 
     .btn-video {
       position: absolute;
@@ -59,12 +83,18 @@
       cursor: pointer;
       opacity: 0.8;
       transition: opacity 0.2s, background-color 0.3s;
-      z-index: 10;
+      z-index: 20; /* Le bouton doit être au-dessus de la vidéo */
       font-size: 12px;
       font-weight: bold;
       text-align: center;
       background-color: transparent;
+      visibility: hidden;  /* Commence caché */
    }
+   
+   .btn-video.visible {
+    visibility: visible !important;  /* Assure que le bouton est visible même en plein écran */
+    z-index: 20;  /* S'assure que le bouton soit devant tout autre élément */
+}
 
    .btn-video:hover {
       opacity: 1;
@@ -108,9 +138,13 @@
 <h1 class="titre-1">Appuyer sur le bouton pour faire basculer le son entre Salle 1 et Salle 2</h1>
 
 <div class="video-container">
+    <div class="cover" id="cover">
+        <img src="https://www.dropbox.com/scl/fi/tjyl8sp1x4vylslec80l2/Capture-d-ecran-le-2025-03-15-20.32.38-2.jpg?rlkey=rlz3oio1ic79yagjsbqcouy3z&st=imua5657&raw=1" alt="Cover" id="coverImage" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+    </div>
    <iframe id="video" 
       src="https://www.youtube.com/embed/fm00cFcoJM8?enablejsapi=1&modestbranding=1&rel=0&showinfo=0" 
-      frameborder="0">
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen">
    </iframe>
 
    <button id="btnBascule" class="btn-video btn-salle1">
@@ -128,6 +162,17 @@
 </audio>
  
 <script>
+   
+    document.getElementById("coverImage").onload = function() {
+        document.getElementById("video").style.visibility = "visible";
+        document.getElementById("btnBascule").classList.add("visible");  // Ajoute la classe visible au bouton
+    };
+    
+    document.getElementById("coverImage").addEventListener("click", function() {
+        document.getElementById("cover").style.display = "none"; // Cache l'image
+        player.playVideo(); // Démarre la vidéo
+    });
+ 
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
@@ -151,7 +196,6 @@
     // Désactiver le bouton au départ
     btnBascule.disabled = true;
 
-
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
             events: {
@@ -174,21 +218,23 @@
 
     function onPlayerReady(event) {
         console.log("Le lecteur YouTube est prêt !");
-	document.addEventListener("click", function enableAudio() {
-    	    audioSalle1.play().catch(e => console.log("Audio bloqué:", e));
-    	    audioSalle2.play().catch(e => console.log("Audio bloqué:", e));
-	    setTimeout(function() {
-		catchWhenReady(audioActif, function() {
+        document.addEventListener("click", function enableAudio() {
+            // Assurez-vous que l'audio commence après un clic utilisateur
+            audioSalle1.play().catch(e => console.log("Audio bloqué:", e));
+            audioSalle2.play().catch(e => console.log("Audio bloqué:", e));
+    
+            setTimeout(function() {
+                catchWhenReady(audioActif, function() {
                     var videoTime = player.getCurrentTime();
-		    var adjustedVideoTime = (videoTime * 1000 + offsetReadyMs) / 1000;
+                    var adjustedVideoTime = (videoTime * 1000 + offsetReadyMs) / 1000;
                     setTimeout(() => {
                         audioSalle1.currentTime = adjustedVideoTime;
                         audioSalle2.currentTime = adjustedVideoTime;
                     }, 200);
-		});
-	    }, 1000);
-	    document.removeEventListener("click", enableAudio);
-	});
+                });
+            }, 1000);
+            document.removeEventListener("click", enableAudio); // Désactive l'écouteur après la lecture
+        });
     }
 
     function onPlayerStateChange(event) {
@@ -294,6 +340,7 @@
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    
 </script>
 </body>
 </html>
