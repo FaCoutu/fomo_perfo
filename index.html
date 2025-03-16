@@ -337,11 +337,29 @@
     });
 
     window.addEventListener("orientationchange", function() {
-	    // Réactivez l'audio lorsque l'orientation change
-	    if (!audioActif.paused) {
-	        audioActif.play().catch(e => console.log("Audio bloqué après rotation:", e));
-	    }
-    });
+	    // Attendez un peu pour que l'orientation change soit bien pris en compte
+	    setTimeout(function() {
+	        catchWhenReady(audioActif, function() {
+	            var videoTime = player.getCurrentTime();
+	            var adjustedVideoTime = (videoTime * 1000 + offsetMs) / 1000;
+	            setTimeout(() => {
+			audioSalle1.currentTime = adjustedVideoTime;
+	            	audioSalle2.currentTime = adjustedVideoTime;
+		    }, 600);  // Petit délai pour garantir la mise à jour correcte
+	
+		    if (audioActif.paused) {
+	    		audioActif.play().catch((error) => console.log("Erreur lecture audio:", error));
+		    }
+	
+		    // Toujours arrêter l'autre audio
+	            if (audioActif === audioSalle1) {
+	            	audioSalle2.pause();
+	            } else {
+	                audioSalle1.pause();
+	            }
+	        });
+	    }, 200);  // Attendez 500ms pour garantir la prise en compte du changement
+	});
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
