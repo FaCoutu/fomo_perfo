@@ -60,6 +60,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+	transition: opacity 0.8s, background-color 1s;
     }
    
    .cover img {
@@ -169,8 +170,10 @@
     };
     
     document.getElementById("coverImage").addEventListener("click", function() {
-        document.getElementById("cover").style.display = "none"; // Cache l'image
-        player.playVideo(); // Démarre la vidéo
+	player.playVideo(); // Démarre la vidéo
+	setTimeout(() => {
+            document.getElementById("cover").style.display = "none"; // Cache l'image
+	}, 200);
     });
  
     var audioSalle1 = document.getElementById("audioSalle1");
