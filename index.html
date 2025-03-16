@@ -336,6 +336,13 @@
 	}
     });
 
+    window.addEventListener("orientationchange", function() {
+	    // Réactivez l'audio lorsque l'orientation change
+	    if (!audioActif.paused) {
+	        audioActif.play().catch(e => console.log("Audio bloqué après rotation:", e));
+	    }
+    });
+
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
