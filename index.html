@@ -341,6 +341,7 @@
 
     window.addEventListener("orientationchange", function() {
 	    // Attendez un peu pour que l'orientation change soit bien pris en compte
+	  if (event.data == YT.PlayerState.PLAYING) {
 	    setTimeout(function() {
 	        catchWhenReady(audioActif, function() {
 	            var videoTime = player.getCurrentTime();
@@ -362,6 +363,7 @@
 	            }
 	        });
 	    }, 200);  // Attendez 500ms pour garantir la prise en compte du changement
+	  }
 	});
 
     var tag = document.createElement('script');
