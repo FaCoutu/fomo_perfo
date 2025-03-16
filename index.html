@@ -236,7 +236,7 @@
     }
 
     function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING && !syncCalled) {
+        if (event.data == YT.PlayerState.PLAYING && !syncCalled || event.data == YT.PlayerState.CUED) {
 	    syncAudio();
             syncCalled = true;
 	    btnBascule.disabled = false; // Activer le bouton  
@@ -258,7 +258,7 @@
 
     function syncAudio() {
       // Crée un buffer avant de récupérer le temps de la vidéo
-      audioActif.pause();
+      //audioActif.pause();
       setTimeout(function() {
         catchWhenReady(audioActif, function() {
             var videoTime = player.getCurrentTime();
@@ -286,6 +286,20 @@
 
     function stopSync() {
         audioActif.pause();
+	/*setTimeout(function() {
+            catchWhenReady(audioActif, function() {
+            	var videoTime = player.getCurrentTime();
+            	var adjustedVideoTime = (videoTime * 1000 + offsetMs) / 1000;
+		if (Math.abs(videoTime - lastVideoTime) > 0.2) {
+                    setTimeout(() => {
+        		audioSalle1.currentTime = adjustedVideoTime;
+                        audioSalle2.currentTime = adjustedVideoTime;
+    		    }, 400);  // Petit délai pour garantir la mise à jour correcte
+
+    		    lastVideoTime = videoTime;
+            	}
+            });
+        }, 600); */ // Le buffer avant de récupérer le temps vidéo
     }
 
     function syncAudioBouton() {
