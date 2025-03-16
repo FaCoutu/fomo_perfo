@@ -386,22 +386,15 @@
 	}
     });
 
-    /*if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        window.addEventListener("orientationchange", function() {
-            // Attendez un peu pour que l'orientation soit bien prise en compte
-            setTimeout(function() {
-                if (typeof player !== "undefined" && player.pauseVideo) {
-                    player.pauseVideo();
-                }
-            }, 200); // Attendez 200ms pour garantir la prise en compte du changement
-        });
-    }*/
-
     function checkOrientation() {
     	if (window.innerHeight > window.innerWidth) {
             document.getElementById("orientation-warning").style.display = "block";
-	    audioSalle1.pause();
-	    audioSalle2.pause();
+	    setTimeout(() => {
+                audioSalle1.pause();
+                audioSalle2.pause();
+            }, 800); // Petit délai avant d’arrêter l’audio (ajustable si nécessaire)
+	    //audioSalle1.pause();
+	    //audioSalle2.pause();
 	    player.pauseVideo();
     	} else {
             document.getElementById("orientation-warning").style.display = "none";
