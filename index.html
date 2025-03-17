@@ -243,6 +243,7 @@
     function onPlayerReady(event) {
         console.log("Le lecteur YouTube est prêt !");
 	monitorYouTubeVolume();
+	/*reSyncAudio();*/
 
 	document.addEventListener("click", function enableAudio() {
     	    audioSalle1.play().catch(e => console.log("Audio bloqué:", e));
@@ -285,7 +286,7 @@
 
     /////////////////////// GESTION SYNC AUDIO ///////////////////////
 
-    function catchWhenReady(audioElement, callback) {
+    /*function catchWhenReady(audioElement, callback) {
         if (audioElement.readyState >= 3) { // HAVE_FUTURE_DATA (compatible Safari/Firefox)
             callback();
         } else {
@@ -294,7 +295,39 @@
                 callback();
             });
         }
-    }
+    }*/
+
+    function catchWhenReady(audioElement, callback, timeout = 5000) {
+	    if (audioElement.readyState >= 3) { // HAVE_FUTURE_DATA
+	        callback();
+	        return;
+	    }
+	
+	    function onReady() {
+	        clearInterval(checkInterval);
+	        clearTimeout(timeoutId);
+	        audioElement.removeEventListener("loadedmetadata", onReady);
+	        audioElement.removeEventListener("canplaythrough", onReady);
+	        callback();
+	    }
+	
+	    // Écouteurs d'événements pour compatibilité maximale
+	    audioElement.addEventListener("loadedmetadata", onReady);
+	    audioElement.addEventListener("canplaythrough", onReady);
+	
+	    // Vérification régulière (utile pour Safari iOS)
+	    let checkInterval = setInterval(() => {
+	        if (audioElement.readyState >= 3) {
+	            onReady();
+	        }
+	    }, 200);
+	
+	    // Timeout de sécurité pour éviter les blocages
+	    let timeoutId = setTimeout(() => {
+	        console.warn("Audio timeout: forcé à continuer");
+	        onReady();
+	    }, timeout);
+    }    
 
     function syncAudio() {
       // Crée un buffer avant de récupérer le temps de la vidéo
@@ -352,6 +385,19 @@
         });
       }, 400);  // Le buffer avant de récupérer le temps vidéo
     }
+
+    /*function reSyncAudio() {
+	    var videoTime = player.getCurrentTime();
+            var adjustedVideoTime = (videoTime * 1000 + offsetMs) / 1000;
+    	    if (Math.abs(videoTime - lastVideoTime) > 0.2) {
+                setTimeout(() => {
+        		audioSalle1.currentTime = adjustedVideoTime;
+                        audioSalle2.currentTime = adjustedVideoTime;
+    		}, 600);  // Petit délai pour garantir la mise à jour correcte
+
+    		lastVideoTime = videoTime;
+            } 
+    }*/
 
 
     /////////////////////// GESTION DU VOLUME AUDIO ///////////////////////
@@ -429,14 +475,14 @@
 		    }
 	    	}
 	    }
+	    
+  	    window.addEventListener("load", checkOrientation);
+    	    window.addEventListener("resize", checkOrientation);
+    	    window.addEventListener("orientationchange", checkOrientation);    
     }
 
 
     /////////////////////// AUTRE ///////////////////////
-
-    window.addEventListener("load", checkOrientation);
-    window.addEventListener("resize", checkOrientation);
-    window.addEventListener("orientationchange", checkOrientation);
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
