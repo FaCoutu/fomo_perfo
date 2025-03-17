@@ -243,7 +243,6 @@
     function onPlayerReady(event) {
         console.log("Le lecteur YouTube est prêt !");
 	monitorYouTubeVolume();
-	/*reSyncAudio();*/
 
 	document.addEventListener("click", function enableAudio() {
     	    audioSalle1.play().catch(e => console.log("Audio bloqué:", e));
@@ -385,19 +384,6 @@
         });
       }, 400);  // Le buffer avant de récupérer le temps vidéo
     }
-
-    /*function reSyncAudio() {
-	    var videoTime = player.getCurrentTime();
-            var adjustedVideoTime = (videoTime * 1000 + offsetMs) / 1000;
-    	    if (Math.abs(videoTime - lastVideoTime) > 0.2) {
-                setTimeout(() => {
-        		audioSalle1.currentTime = adjustedVideoTime;
-                        audioSalle2.currentTime = adjustedVideoTime;
-    		}, 600);  // Petit délai pour garantir la mise à jour correcte
-
-    		lastVideoTime = videoTime;
-            } 
-    }*/
 
 
     /////////////////////// GESTION DU VOLUME AUDIO ///////////////////////
