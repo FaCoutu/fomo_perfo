@@ -190,30 +190,12 @@
 </div>
  
 <script>
-   
-    document.getElementById("coverImage").onload = function() {
-        document.getElementById("video").style.visibility = "visible";
-        document.getElementById("btnBascule").classList.add("visible");  // Ajoute la classe visible au bouton
-    };
-    
-    /*document.getElementById("coverImage").addEventListener("click", function() {
-        document.getElementById("cover").style.display = "none"; // Cache l'image
-        player.playVideo(); // Démarre la vidéo
-    });*/
 
-    document.getElementById("coverImage").addEventListener("click", function() {
-        player.playVideo(); // Démarre la vidéo
-        setTimeout(() => {
-            document.getElementById("cover").style.display = "none"; // Cache l'image
-        }, 200);
-    });
- 
     var audioSalle1 = document.getElementById("audioSalle1");
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
     var player;
     var audioActif = audioSalle1;
-    btnBascule.classList.add("btn-salle1");
     var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   
     let lastVideoTime = 0;
@@ -228,9 +210,24 @@
     	offsetReadyMs += 200;
     }
 
+    btnBascule.classList.add("btn-salle1");
     // Désactiver le bouton au départ
     btnBascule.disabled = true;
 
+   
+    /////////////////////// INITIALISATION ///////////////////////
+
+    document.getElementById("coverImage").onload = function() {
+        document.getElementById("video").style.visibility = "visible";
+        document.getElementById("btnBascule").classList.add("visible");  // Ajoute la classe visible au bouton
+    };
+
+    document.getElementById("coverImage").addEventListener("click", function() {
+        player.playVideo(); // Démarre la vidéo
+        setTimeout(() => {
+            document.getElementById("cover").style.display = "none"; // Cache l'image
+        }, 200);
+    });
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
@@ -241,19 +238,13 @@
         });
     }
 
-    function catchWhenReady(audioElement, callback) {
-        if (audioElement.readyState >= 3) { // HAVE_FUTURE_DATA (compatible Safari/Firefox)
-            callback();
-        } else {
-            audioElement.addEventListener("loadedmetadata", function onLoaded() {
-                audioElement.removeEventListener("loadedmetadata", onLoaded);
-                callback();
-            });
-        }
-    }
+
+    /////////////////////// GESTION PLAYER VIDEO ///////////////////////
 
     function onPlayerReady(event) {
         console.log("Le lecteur YouTube est prêt !");
+	monitorYouTubeVolume();
+
 	document.addEventListener("click", function enableAudio() {
     	    audioSalle1.play().catch(e => console.log("Audio bloqué:", e));
     	    audioSalle2.play().catch(e => console.log("Audio bloqué:", e));
@@ -279,7 +270,7 @@
         } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
             stopSync();
             syncCalled = false;
-	    //À voir, désactiver la fonction catchWhenReady ici
+	    //Sync audio
             catchWhenReady(audioActif, function() {
                 var videoTime = player.getCurrentTime();
                 var adjustedVideoTime = (videoTime * 1000 + offsetMs) / 1000;
@@ -289,6 +280,20 @@
                 }, 200);
             });
 	    btnBascule.disabled = true; // Désactiver le bouton
+        }
+    }
+
+
+    /////////////////////// GESTION SYNC AUDIO ///////////////////////
+
+    function catchWhenReady(audioElement, callback) {
+        if (audioElement.readyState >= 3) { // HAVE_FUTURE_DATA (compatible Safari/Firefox)
+            callback();
+        } else {
+            audioElement.addEventListener("loadedmetadata", function onLoaded() {
+                audioElement.removeEventListener("loadedmetadata", onLoaded);
+                callback();
+            });
         }
     }
 
@@ -322,20 +327,6 @@
 
     function stopSync() {
         audioActif.pause();
-	/*setTimeout(function() {
-            catchWhenReady(audioActif, function() {
-            	var videoTime = player.getCurrentTime();
-            	var adjustedVideoTime = (videoTime * 1000 + offsetMs) / 1000;
-		if (Math.abs(videoTime - lastVideoTime) > 0.2) {
-                    setTimeout(() => {
-        		audioSalle1.currentTime = adjustedVideoTime;
-                        audioSalle2.currentTime = adjustedVideoTime;
-    		    }, 400);  // Petit délai pour garantir la mise à jour correcte
-
-    		    lastVideoTime = videoTime;
-            	}
-            });
-        }, 600);*/ // Le buffer avant de récupérer le temps vidéo
     }
 
     function syncAudioBouton() {
@@ -363,6 +354,36 @@
       }, 400);  // Le buffer avant de récupérer le temps vidéo
     }
 
+
+    /////////////////////// GESTION DU VOLUME AUDIO ///////////////////////
+
+    // Écoute les changements de volume et mute sur la vidéo YouTube
+    function monitorYouTubeVolume() {
+    	setInterval(() => {
+        	syncAudioVolume();
+        	syncAudioMute();
+    	}, 500); // Vérification toutes les 500ms
+    }
+
+    function syncAudioVolume() {
+    	if (player && audioSalle1 && audioSalle2) {
+        	let videoVolume = player.getVolume() / 100; // YouTube donne le volume en % (0-100), on le convertit en 0-1
+        	audioSalle1.volume = videoVolume;
+        	audioSalle2.volume = videoVolume;
+    	}
+    }
+
+	function syncAudioMute() {
+    	if (player && audioSalle1 && audioSalle2) {
+        	let isMuted = player.isMuted();
+        	audioSalle1.muted = isMuted;
+        	audioSalle2.muted = isMuted;
+    	}
+    }
+    
+
+    /////////////////////// GESTION DU BOUTON BASCULE AUDIO ///////////////////////
+
     btnBascule.addEventListener("click", function () {
 	if (!syncCalled) return; // Empêcher l'exécution si le bouton est désactivé
 	audioActif.pause();
@@ -386,6 +407,9 @@
 	}
     });
 
+
+    /////////////////////// GESTION APPRAREILS MOBILES ///////////////////////
+
     if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
 	    function checkOrientation() {
 	    	if (window.innerHeight > window.innerWidth) {
@@ -408,6 +432,9 @@
 	    }
     }
 
+
+    /////////////////////// AUTRE ///////////////////////
+
     window.addEventListener("load", checkOrientation);
     window.addEventListener("resize", checkOrientation);
     window.addEventListener("orientationchange", checkOrientation);
@@ -416,6 +443,7 @@
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
     
 </script>
 </body>
