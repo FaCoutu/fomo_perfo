@@ -291,17 +291,6 @@
 
     /////////////////////// GESTION SYNC AUDIO ///////////////////////
 
-    /*function catchWhenReady(audioElement, callback) {
-        if (audioElement.readyState >= 3) { // HAVE_FUTURE_DATA (compatible Safari/Firefox)
-            callback();
-        } else {
-            audioElement.addEventListener("loadedmetadata", function onLoaded() {
-                audioElement.removeEventListener("loadedmetadata", onLoaded);
-                callback();
-            });
-        }
-    }*/
-
     function catchWhenReady(audioElement, callback, timeout = 5000) {
 	    if (audioElement.readyState >= 3) { // HAVE_FUTURE_DATA
 	        callback();
@@ -336,7 +325,6 @@
 
     function syncAudio() {
       // Crée un buffer avant de récupérer le temps de la vidéo
-      //audioActif.pause();
       setTimeout(function() {
         catchWhenReady(audioActif, function() {
             var videoTime = player.getCurrentTime();
@@ -465,13 +453,10 @@
 	                audioSalle1.pause();
 	                audioSalle2.pause();
 	            }, 800); // Petit délai avant d’arrêter l’audio (ajustable si nécessaire)
-		    //audioSalle1.pause();
-		    //audioSalle2.pause();
 		    player.pauseVideo();
 	    	} else {
 	            document.getElementById("orientation-warning").style.display = "none";
 		    if (player && player.getPlayerState && player.getPlayerState() === YT.PlayerState.PLAYING) {
-		        /*audioActif.play().catch(error => console.log("Erreur lecture audio :", error));*/
 			audioActif.pause();
 			syncAudio();
 		    }
