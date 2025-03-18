@@ -29,6 +29,10 @@
       overflow: hidden;
    }
 
+   .titrer-1.visible {
+      visibility: visible; /* Devient visible une fois l'image chargée */
+   }
+
    .titre-1 {
        margin-bottom: 4px;
    }
@@ -219,6 +223,7 @@
     document.getElementById("coverImage").onload = function() {
    	document.getElementById("video").style.visibility = "visible";
         document.getElementById("btnBascule").classList.add("visible");  // Ajoute la classe visible au bouton
+	document.getElementById("titre-1").classList.add("visible");
     };
 
     document.getElementById("coverImage").addEventListener("click", function() {
