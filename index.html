@@ -467,6 +467,28 @@
     	    window.addEventListener("orientationchange", checkOrientation);
     //} 
 
+    if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+	    function checkOrientation() {
+	    	if (window.innerHeight > window.innerWidth) {
+	            document.getElementById("orientation-warning").style.display = "block";
+		    setTimeout(() => {
+	                audioSalle1.pause();
+	                audioSalle2.pause();
+	            }, 800); // Petit délai avant d’arrêter l’audio (ajustable si nécessaire)
+		    player.pauseVideo();
+	    	} else {
+	            document.getElementById("orientation-warning").style.display = "none";
+		    if (player && player.getPlayerState && player.getPlayerState() === YT.PlayerState.PLAYING) {
+			audioActif.pause();
+			syncAudio();
+		    }
+	    	}
+	    }
+	    window.addEventListener("resize", checkOrientation);  
+	    //window.addEventListener("load", checkOrientation);
+    	    //window.addEventListener("orientationchange", checkOrientation);
+    } 
+
 
     /////////////////////// AUTRE ///////////////////////
 
