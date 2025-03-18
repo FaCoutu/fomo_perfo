@@ -445,7 +445,7 @@
 
     /////////////////////// GESTION APPRAREILS MOBILES ///////////////////////
 
-    if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    //if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
 	    function checkOrientation() {
 	    	if (window.innerHeight > window.innerWidth) {
 	            document.getElementById("orientation-warning").style.display = "block";
@@ -462,10 +462,10 @@
 		    }
 	    	}
 	    }
-	    window.addEventListener("resize", checkOrientation);  
+	    //window.addEventListener("resize", checkOrientation);  
 	    window.addEventListener("load", checkOrientation);
     	    window.addEventListener("orientationchange", checkOrientation);
-    } 
+    //} 
 
 
     /////////////////////// AUTRE ///////////////////////
