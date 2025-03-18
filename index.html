@@ -39,7 +39,6 @@
       width: 100%;
       max-width: 2000px;
       aspect-ratio: 16 / 9;
-      justify-content: center;
    }
 
    iframe {
@@ -463,11 +462,11 @@
 		    }
 	    	}
 	    }
-	    
-  	    window.addEventListener("load", checkOrientation);
-    	    window.addEventListener("resize", checkOrientation);
-    	    window.addEventListener("orientationchange", checkOrientation);    
+	    window.addEventListener("resize", checkOrientation);   
     }
+
+    window.addEventListener("load", checkOrientation);
+    window.addEventListener("orientationchange", checkOrientation); 
 
 
     /////////////////////// AUTRE ///////////////////////
