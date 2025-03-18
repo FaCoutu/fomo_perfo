@@ -13,6 +13,15 @@
       margin: 0 auto;
       max-width: 85vw;
       overflow-x: hidden;
+
+   @media screen and (orientation: portrait) {
+      /*transform: rotate(90deg);*/
+      transform-origin: center center;
+      width: 100%;
+      height: 100vw;
+      overflow-x: hidden;
+      position: fixed;
+      }   
    }
 
    h1 {
@@ -136,16 +145,16 @@
       /*color: Black;*/
    }
 
-   @media screen and (orientation: portrait) {
+   /*@media screen and (orientation: portrait) {
      body {
        /*transform: rotate(90deg);*/
-       transform-origin: center center;
+       /*transform-origin: center center;
        width: 100%;
        height: 100%;
        overflow-x: hidden;
        position: fixed;
      }
-   }
+   }*/
 
 </style>
 </head>
@@ -223,7 +232,7 @@
     document.getElementById("coverImage").onload = function() {
    	document.getElementById("video").style.visibility = "visible";
         document.getElementById("btnBascule").classList.add("visible");  // Ajoute la classe visible au bouton
-	document.querySelector("titre-1").classList.add("visible");
+	//document.querySelector("titre-1").classList.add("visible");
     };
 
     document.getElementById("coverImage").addEventListener("click", function() {
