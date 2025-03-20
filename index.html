@@ -199,6 +199,7 @@
     var player;
     var audioActif = audioSalle1;
     var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    let isAndroid = /Android/i.test(navigator.userAgent);
   
     let lastVideoTime = 0;
     let syncCalled = false;
@@ -208,6 +209,10 @@
 
     if (isSafari) {
     	offsetMs += 300;
+    	offsetBoutonMs += 200;
+    	offsetReadyMs += 200;
+    } else if (isAndroid) {
+    	offsetMs += 300;  // Ajuste selon le besoin
     	offsetBoutonMs += 200;
     	offsetReadyMs += 200;
     }
