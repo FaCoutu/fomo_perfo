@@ -209,11 +209,11 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 100px;
-    height: 100px;
+    width: clamp(60px, 13vw, 100px);
+    height: clamp(60px, 13vw, 100px);
     /*background-color: rgba(0, 0, 0, 0.1);*/
     color: #e7e6f4;
-    font-size: 32px;
+    font-size: clamp(18px, 4.9vw, 32px);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -223,7 +223,7 @@
     justify-content: center;
     transition: opacity 0.2s, background-color 0.3s;
     background-color: #433d69;
-    visibility: hidden;  /* Commence caché */
+    //visibility: hidden;  /* Commence caché */
    }
 
    .btn-play:hover {
