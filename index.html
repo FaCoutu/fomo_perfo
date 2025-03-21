@@ -16,6 +16,8 @@
       margin: 0 auto;
       max-width: 85vw;
       overflow-x: hidden;
+      
+   /* PRESENTATION PORTRAIT MOBILE */
 
    @media screen and (orientation: portrait) {
       /*transform: rotate(90deg);*/
@@ -25,6 +27,8 @@
       position: relative;
       }   
    }
+   
+   /* TEXTES */
 
    h1 {
       font-size: clamp(8px, 2.3vw, 24px); /* min 16px, idéal 2.3vw, max 48px */
@@ -65,24 +69,7 @@
        margin-bottom: 40px;
        margin-top: 40px;
    }
-
-   .video-container {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-      max-width: 2000px;
-      aspect-ratio: 16 / 9;
-   }
-
-   iframe {
-      width: 100%;
-      height: 100%;
-   }
    
-   #video {
-        visibility: hidden;
-    }
-    
    h3 {
       font-size: 1.2vw;
       font-style: italic;
@@ -100,6 +87,34 @@
        margin-top: 200px;
        margin-bottom: 40px;
    }
+   
+   .titre-1, .titre-2, .titre-3 {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;    
+   }
+   
+   .titre-1.visible, .titre-2.visible, .titre-3.visible {
+    opacity: 1;
+   }
+   
+   /* VIDEO */
+
+   .video-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      max-width: 2000px;
+      aspect-ratio: 16 / 9;
+   }
+
+   iframe {
+      width: 100%;
+      height: 100%;
+   }
+   
+   #video {
+        visibility: hidden;
+    }
 
    .cover {
         position: absolute;
@@ -120,6 +135,8 @@
         object-fit: cover;
         cursor: pointer;
     }
+    
+    /* BOUTONS */
 
     .btn-video {
       position: absolute;
@@ -186,6 +203,39 @@
       background-color: #e7e6f4;
       color: #433d69;
    }
+   
+   .btn-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    /*background-color: rgba(0, 0, 0, 0.1);*/
+    color: #e7e6f4;
+    font-size: 32px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s, background-color 0.3s;
+    background-color: #433d69;
+    visibility: hidden;  /* Commence caché */
+   }
+
+   .btn-play:hover {
+    background-color: rgba(0, 0, 0, 1.0);
+    background-color: #433d69;
+    /*opacity: 1;*/
+    filter: brightness(1.4);
+   }
+   
+   .btn-play.visible {
+      visibility: visible; /* Devient visible une fois l'image chargée */
+   }
 
 </style>
 </head>
@@ -198,6 +248,7 @@
 <div class="video-container">
     <div class="cover" id="cover">
         <img src="https://www.dropbox.com/scl/fi/tjyl8sp1x4vylslec80l2/Capture-d-ecran-le-2025-03-15-20.32.38-2.jpg?rlkey=rlz3oio1ic79yagjsbqcouy3z&st=imua5657&raw=1" alt="Cover" id="coverImage" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+        <button id="btnPlayCover" class="btn-play">▶</button>
     </div>
    <iframe id="video" 
       src="https://www.youtube.com/embed/fm00cFcoJM8?enablejsapi=1&modestbranding=1&rel=0&showinfo=0" 
@@ -279,17 +330,35 @@
     /////////////////////// INITIALISATION ///////////////////////
 
     document.getElementById("coverImage").onload = function() {
-   	document.getElementById("video").style.visibility = "visible";
-        document.getElementById("btnBascule").classList.add("visible");  // Ajoute la classe visible au bouton
-	//document.querySelector("titre-1").classList.add("visible");
+   	    document.getElementById("video").style.visibility = "visible";
+        document.getElementById("btnBascule").classList.add("visible");  // Ajoute la classe visible au bouton bascule
+        document.getElementById("btnPlayCover").classList.add("visible");  // Ajoute la classe visible au bouton play
     };
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        const coverImage = document.querySelector(".cover img");
+        const texts = document.querySelectorAll(".titre-1, .titre-2, .titre-3");
 
-    document.getElementById("coverImage").addEventListener("click", function() {
+        coverImage.addEventListener("load", function() {
+            texts.forEach(text => {
+                text.classList.add("visible");
+            });
+        });
+    });
+    
+    document.getElementById("btnPlayCover").addEventListener("click", function() {
         player.playVideo(); // Démarre la vidéo
         setTimeout(() => {
             document.getElementById("cover").style.display = "none"; // Cache l'image
         }, 200);
     });
+
+    /*document.getElementById("coverImage").addEventListener("click", function() {
+        player.playVideo(); // Démarre la vidéo
+        setTimeout(() => {
+            document.getElementById("cover").style.display = "none"; // Cache l'image
+        }, 200);
+    });*/
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
@@ -414,7 +483,8 @@
     }
 
     function stopSync() {
-        audioActif.pause();
+        audioSalle1.pause();
+        audioSalle2.pause();
         setTimeout(function() {
             catchWhenReady(audioActif, function() {
                 var videoTime = player.getCurrentTime();
