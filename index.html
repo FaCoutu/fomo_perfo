@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>F-A Coutu_Fumée</title>
@@ -25,7 +28,7 @@
 
    h1 {
       font-size: clamp(8px, 2.3vw, 24px); /* min 16px, idéal 2.3vw, max 48px */
-      font-weight: bold;
+      font-weight: normal;
       text-align: center; /* Centre le texte */
       color: #433d69;
       margin: 0;
@@ -90,6 +93,7 @@
       padding: 0;
       border: none;
       max-width: 100%; /* Assure que le texte occupe toute la largeur */
+      /*overflow: hidden;*/
    }
 
    .titre-3 {
@@ -159,6 +163,10 @@
       transition: background-color 0.3s;
       color: Black;
    }
+   .btn-section i {
+    font-size: 18px;
+    margin-right: 5px;
+   }   
    .btn-section.left {
       margin-right: 28px; /* Ajoute un espace entre les deux sections */
    }
@@ -198,9 +206,10 @@
       playsinline>
    </iframe>
 
+   
    <button id="btnBascule" class="btn-video btn-salle2">
-      <div class="btn-section left">off</div>
-      <div class="btn-section right">Audio Salle 2</div>
+      <div class="btn-section left"><i class="fa-solid fa-volume-xmark"></i></div>
+      <div class="btn-section right"><i class="fa-solid fa-volume-high"></i></div>
    </button>
 </div>
 
@@ -473,7 +482,7 @@
 
     /////////////////////// GESTION DU BOUTON BASCULE AUDIO ///////////////////////
 
-    btnBascule.addEventListener("click", function () {
+    /*btnBascule.addEventListener("click", function () {
 	  //if (!syncCalled) return; // Empêcher l'exécution si le bouton est désactivé
 	    audioActif.pause();
 
@@ -497,7 +506,31 @@
                 stopSync();
 	    }
 	  //}
-    });
+    });*/
+    
+    btnBascule.addEventListener("click", function () {
+    audioActif.pause();
+
+    if (audioActif === audioSalle1) {
+        audioActif = audioSalle2;
+        btnBascule.classList.remove("btn-salle1");
+        btnBascule.classList.add("btn-salle2");
+        btnBascule.children[0].innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+        btnBascule.children[1].innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+    } else {
+        audioActif = audioSalle1;
+        btnBascule.classList.remove("btn-salle2");
+        btnBascule.classList.add("btn-salle1");
+        btnBascule.children[0].innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+        btnBascule.children[1].innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+    }
+
+    if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+        syncAudioBouton();
+    } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+        stopSync();
+    }
+});
 
 
     /////////////////////// GESTION APPRAREILS MOBILES ///////////////////////
