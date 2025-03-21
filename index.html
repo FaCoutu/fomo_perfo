@@ -215,7 +215,7 @@
     var audioSalle2 = document.getElementById("audioSalle2");
     var btnBascule = document.getElementById("btnBascule");
     var player;
-    var audioActif = audioSalle1;
+    var audioActif = audioSalle2;
     var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     let isAndroid = /Android/i.test(navigator.userAgent);
   
@@ -235,7 +235,7 @@
     	offsetReadyMs += 200;
     }
 
-    btnBascule.classList.add("btn-salle1");
+    btnBascule.classList.add("btn-salle2");
     btnBascule.disabled = true; // Désactiver le bouton au départ
 
    
