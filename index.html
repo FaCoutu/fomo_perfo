@@ -236,7 +236,7 @@
     }
 
     btnBascule.classList.add("btn-salle2");
-    btnBascule.disabled = true; // Désactiver le bouton au départ
+    //btnBascule.disabled = true; // Désactiver le bouton au départ
 
    
     /////////////////////// INITIALISATION ///////////////////////
@@ -291,7 +291,7 @@
         if (event.data == YT.PlayerState.PLAYING && !syncCalled) {
 	    syncAudio();
             syncCalled = true;
-	    btnBascule.disabled = false; // Activer le bouton 
+	    //btnBascule.disabled = false; // Activer le bouton 
 		
 	} else if (event.data == YT.PlayerState.PLAYING) {
 	    
@@ -309,7 +309,7 @@
             stopSync();
             syncCalled = false;
 		
-	    btnBascule.disabled = true; // Désactiver le bouton
+	    //btnBascule.disabled = true; // Désactiver le bouton
 	    clearInterval(timeMonitor);
         }
     }
@@ -446,26 +446,29 @@
     /////////////////////// GESTION DU BOUTON BASCULE AUDIO ///////////////////////
 
     btnBascule.addEventListener("click", function () {
-	if (!syncCalled) return; // Empêcher l'exécution si le bouton est désactivé
-	audioActif.pause();
+	  //if (!syncCalled) return; // Empêcher l'exécution si le bouton est désactivé
+	    audioActif.pause();
 
-	if (audioActif === audioSalle1) {
+	    if (audioActif === audioSalle1) {
 	            audioActif = audioSalle2;
 	            btnBascule.classList.remove("btn-salle1");
 	            btnBascule.classList.add("btn-salle2");
 	            btnBascule.children[0].textContent = "Off";
 	            btnBascule.children[1].textContent = "Audio Salle 2";
-	} else {
+    	} else {
 	            audioActif = audioSalle1;
 	            btnBascule.classList.remove("btn-salle2");
 	            btnBascule.classList.add("btn-salle1");
 	            btnBascule.children[0].textContent = "Audio Salle 1";
 	            btnBascule.children[1].textContent = "Off";
-	}
+	    }
 	
-	if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-		syncAudioBouton();
-	}
+	    if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+		    syncAudioBouton();
+	    } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+                stopSync();
+	    }
+	  //}
     });
 
 
