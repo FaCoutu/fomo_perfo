@@ -88,12 +88,30 @@
        margin-bottom: 40px;
    }
    
-   .titre-1, .titre-2, .titre-3 {
+   h4 {
+      font-size: 1.2vw;
+      font-style: normal;
+      font-weight: normal;
+      text-align: left;
+      color: #433d69;
+      margin: 0;
+      padding: 0;
+      border: none;
+      max-width: 100%; /* Assure que le texte occupe toute la largeur */
+      /*overflow: hidden;*/
+   }
+
+   .titre-4 {
+       margin-top: 80px;
+       margin-bottom: 00px;
+   }
+   
+   .titre-1, .titre-2, .titre-3, .titre-4 {
     opacity: 0;
     transition: opacity 0.3s ease-in-out;    
    }
    
-   .titre-1.visible, .titre-2.visible, .titre-3.visible {
+   .titre-1.visible, .titre-2.visible, .titre-3.visible, .titre-4.visible {
     opacity: 1;
    }
    
@@ -266,6 +284,8 @@
    
 </div>
 
+<h4 class="titre-4">Advenant une désynchronisation entre l’audio et la vidéo, vous pouvez appuyer sur l’icône de bascule audio, sinon mettre la vidéo sur pause brièvement et cela devrait régler le problème. Malgré tout, sur certains navigateurs web, il peut arriver que les problèmes de synchronisation persistent. Si c’est votre cas, vous pouvez cliquer sur <a href="https://youtu.be/3uKC271IF_A" target="_blank">ce lien</a> pour écouter la vidéo sans l’audio interactif.</h4>
+
 <h3 class="titre-3">
     <strong>Félix-Antoine Coutu</strong> : performance, conception instruments et électronique<br>
     <strong>Jean-Philippe Jullin</strong> : programmation système interactif sonore<br>
@@ -327,7 +347,9 @@
     }
 
     btnBascule.classList.add("btn-salle2");
-    //btnBascule.disabled = true; // Désactiver le bouton au départ
+    
+    audioSalle1.pause(); // Empêcher l'auto-play
+    audioSalle2.pause();
 
    
     /////////////////////// INITIALISATION ///////////////////////
@@ -340,7 +362,7 @@
     
     document.addEventListener("DOMContentLoaded", function() {
         const coverImage = document.querySelector(".cover img");
-        const texts = document.querySelectorAll(".titre-1, .titre-2, .titre-3");
+        const texts = document.querySelectorAll(".titre-1, .titre-2, .titre-3, .titre-4");
 
         coverImage.addEventListener("load", function() {
             texts.forEach(text => {
@@ -354,14 +376,22 @@
         setTimeout(() => {
             document.getElementById("cover").style.display = "none"; // Cache l'image
         }, 200);
+        document.addEventListener("click", function enableAudio() {
+    	    audioSalle1.play().catch(e => console.log("Audio bloqué:", e));
+    	    audioSalle2.play().catch(e => console.log("Audio bloqué:", e));
+	        setTimeout(function() {
+		        catchWhenReady(audioActif, function() {
+                    var videoTime = player.getCurrentTime();
+		            var adjustedVideoTime = (videoTime * 1000 + offsetReadyMs) / 1000;
+                    setTimeout(() => {
+                        audioSalle1.currentTime = adjustedVideoTime;
+                        audioSalle2.currentTime = adjustedVideoTime;
+                    }, 200);
+		        });
+	        }, 2500);
+	        document.removeEventListener("click", enableAudio);
+	    });
     });
-
-    /*document.getElementById("coverImage").addEventListener("click", function() {
-        player.playVideo(); // Démarre la vidéo
-        setTimeout(() => {
-            document.getElementById("cover").style.display = "none"; // Cache l'image
-        }, 200);
-    });*/
 
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('video', {
@@ -379,21 +409,21 @@
         console.log("Le lecteur YouTube est prêt !");
 	monitorYouTubeVolume();
 
-	document.addEventListener("click", function enableAudio() {
+	    /*document.addEventListener("click", function enableAudio() {
     	    audioSalle1.play().catch(e => console.log("Audio bloqué:", e));
     	    audioSalle2.play().catch(e => console.log("Audio bloqué:", e));
-	    setTimeout(function() {
-		catchWhenReady(audioActif, function() {
+	        setTimeout(function() {
+		        catchWhenReady(audioActif, function() {
                     var videoTime = player.getCurrentTime();
-		    var adjustedVideoTime = (videoTime * 1000 + offsetReadyMs) / 1000;
+		            var adjustedVideoTime = (videoTime * 1000 + offsetReadyMs) / 1000;
                     setTimeout(() => {
                         audioSalle1.currentTime = adjustedVideoTime;
                         audioSalle2.currentTime = adjustedVideoTime;
                     }, 200);
-		});
-	    }, 2500);
-	    document.removeEventListener("click", enableAudio);
-	});
+		        });
+	        }, 2500);
+	        document.removeEventListener("click", enableAudio);
+	    });*/
     }
 
     function onPlayerStateChange(event) {
@@ -554,32 +584,6 @@
     
 
     /////////////////////// GESTION DU BOUTON BASCULE AUDIO ///////////////////////
-
-    /*btnBascule.addEventListener("click", function () {
-	  //if (!syncCalled) return; // Empêcher l'exécution si le bouton est désactivé
-	    audioActif.pause();
-
-	    if (audioActif === audioSalle1) {
-	            audioActif = audioSalle2;
-	            btnBascule.classList.remove("btn-salle1");
-	            btnBascule.classList.add("btn-salle2");
-	            btnBascule.children[0].textContent = "Off";
-	            btnBascule.children[1].textContent = "Audio Salle 2";
-    	} else {
-	            audioActif = audioSalle1;
-	            btnBascule.classList.remove("btn-salle2");
-	            btnBascule.classList.add("btn-salle1");
-	            btnBascule.children[0].textContent = "Audio Salle 1";
-	            btnBascule.children[1].textContent = "Off";
-	    }
-	
-	    if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-		    syncAudioBouton();
-	    } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
-                stopSync();
-	    }
-	  //}
-    });*/
     
     btnBascule.addEventListener("click", function () {
     audioActif.pause();
